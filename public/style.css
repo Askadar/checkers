@@ -83,7 +83,7 @@
 .checkers-table .checker:nth-child(8n+1) {
 	margin-left: 0 !important;
 }
-/*.checkers-table .checker:after {
+.checkers-table .checker:after {
 	content: attr(id);
 	color: #a57d19;
 	position: absolute;
@@ -91,7 +91,7 @@
 	right: 2%;
 	font-size: 1rem;
 	display: inline-block;
-}*/
+}
 .checkers-table .checker:before {
 	content: "";
 	-webkit-transition: all 1s;
@@ -116,7 +116,7 @@
 	-webkit-transform: rotateX(180deg);
 					transform: rotateX(180deg);
 }
-/*.checkers-table[data-whites="true"] .checker:after {
+.checkers-table[data-whites="true"] .checker:after {
 	-webkit-transform: rotateX(180deg);
 					transform: rotateX(180deg);
-}*/
+}
