@@ -29705,15 +29705,40 @@
 	    };
 	};
 
+	function findAllPaths(table) {
+	    var newTable = {};
+	    var t0 = performance.now();
+
+	    var _loop = function _loop(pieceKey) {
+	        if (table[pieceKey].checker !== 0 && Object.keys(table[pieceKey].connected).filter(function (d) {
+	            return table[table[pieceKey].connected[d]].checker * table[pieceKey].checker < 0 || d * table[pieceKey].checker > 0 && table[table[pieceKey].connected[d]].checker == 0;
+	        }).length > 0) {
+	            newTable[pieceKey] = _extends({}, table[pieceKey], {
+	                paths: findPaths(table, table[pieceKey])
+	            });
+	        } else {
+	            newTable[pieceKey] = table[pieceKey];
+	        }
+	    };
+
+	    for (var pieceKey in table) {
+	        _loop(pieceKey);
+	    }
+	    var t1 = performance.now();
+	    console.log("Pathing took " + (t1 - t0) + " milliseconds.");
+	    return newTable;
+	}
+
 	function findPaths(table, piece) {
 	    var path = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {
 	        weight: 0,
 	        points: [],
-	        vectors: [] };
+	        vectors: []
+	    };
 
 	    var paths = [];
 
-	    var _loop = function _loop(direction) {
+	    var _loop2 = function _loop2(direction) {
 	        console.log(piece.id, 'We\'re seekers of truth going to ' + direction + ' while standing at ' + piece.id + ', and we have: ', path.vectors, table[piece.connected[direction]].id, path.vectors.filter(function (p) {
 	            return p.id == table[piece.connected[direction]].id;
 	        }).length == 0);
@@ -29729,10 +29754,22 @@
 	    };
 
 	    for (var direction in piece.connected) {
-	        _loop(direction);
+	        _loop2(direction);
 	    }
-	    paths.push(path);
-	    console.log(piece.id, 'we\'ve found our way to glory and death', paths);
+	    path.weight > 0 && paths.push(path);
+	    //console.log(piece.id, `we've found our way to glory and death`, paths);
+	    var maxR = -1;
+
+	    function max(b) {
+	        maxR = b;
+	    }
+	    var bestPaths = paths.filter(function (a) {
+	        a && a.weight > maxR && max(a.weight);
+	        return a;
+	    }).filter(function (a) {
+	        return a.weight == maxR;
+	    });
+	    console.log('And the king is', bestPaths);
 	    return paths;
 	}
 
@@ -29786,11 +29823,11 @@
 	    } //we're going from empty ground and there's no enemy pieces nearby
 	}
 	function logic(state, action) {
-	    var game = Object.assign({}, state.game);
+	    var game = _extends({}, state.game);
 	    var pos;
 	    var foundToEat;
 
-	    var _ret2 = function () {
+	    var _ret3 = function () {
 	        switch (action.type) {
 	            case 'hideMove':
 	                Object.keys(game.table).map(function (pos) {
@@ -29867,6 +29904,8 @@
 	                game.table[game.lastChecker].checker = 0;
 	                game.table[pos].checker = color;
 	                console.log('state: ', state, game);
+	                game.table = findAllPaths(game.table);
+	                console.log('new table: ', game.table);
 	                return {
 	                    v: _extends({}, state, {
 	                        game: _extends({}, game, {
@@ -29882,7 +29921,7 @@
 	        }
 	    }();
 
-	    if ((typeof _ret2 === 'undefined' ? 'undefined' : _typeof(_ret2)) === "object") return _ret2.v;
+	    if ((typeof _ret3 === 'undefined' ? 'undefined' : _typeof(_ret3)) === "object") return _ret3.v;
 	}
 
 	// switch (game.table[pos].checker) {
