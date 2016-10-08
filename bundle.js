@@ -29649,7 +29649,7 @@
 
 	var _redux = __webpack_require__(180);
 
-	var _reducers = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./reducers\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	var _reducers = __webpack_require__(268);
 
 	var _reducers2 = _interopRequireDefault(_reducers);
 
@@ -29668,7 +29668,268 @@
 	exports.default = (0, _redux.createStore)(_reducers2.default, state, window.devToolsExtension && window.devToolsExtension());
 
 /***/ },
-/* 268 */,
+/* 268 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	exports.default = logic;
+
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+	var getLeft = function getLeft(color, indecis) {
+	    if (color === -1) return parseInt(indecis[0]) - 1 + '-' + String.fromCharCode(indecis[1].charCodeAt() - 1);else return parseInt(indecis[0]) + 1 + '-' + String.fromCharCode(indecis[1].charCodeAt() + 1);
+	};
+	var getRight = function getRight(color, indecis) {
+	    if (color === -1) parseInt(indecis[0]) - 1 + '-' + String.fromCharCode(indecis[1].charCodeAt() + 1);else return parseInt(indecis[0]) + 1 + '-' + String.fromCharCode(indecis[1].charCodeAt() - 1);
+	};
+
+	/*notes
+	Checker.connected = [..where < 0 are down and > 0 are up (for whites)]
+	Checker.color = -2,-1,0,1,2 where number declare color and whether it's a king, positive are white, negative are black and 0 is none
+
+	Path.points - array of points where we can end up
+	Path.vectors - array of point that we 'fly' over, like enemy piece
+	*/
+	if (!Array.prototype.last) {
+	    Array.prototype.last = function () {
+	        return this[this.length - 1];
+	    };
+	};
+
+	function findPaths(table, piece) {
+	    var path = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {
+	        weight: 0,
+	        points: [],
+	        vectors: [] };
+
+	    var paths = [];
+
+	    var _loop = function _loop(direction) {
+	        console.log(piece.id, 'We\'re seekers of truth going to ' + direction + ' while standing at ' + piece.id + ', and we have: ', path.vectors, table[piece.connected[direction]].id, path.vectors.filter(function (p) {
+	            return p.id == table[piece.connected[direction]].id;
+	        }).length == 0);
+	        if (path.vectors.filter(function (p) {
+	            return p.id == table[piece.connected[direction]].id;
+	        }).length == 0) paths = paths.concat(findPath(table, piece, direction, path));
+	        //console.log(findPath(table, piece, direction, path));
+	        //beware of .concat(null or undefined), or just filter it afterwards while getting max value
+	        // or just flush everything later via array.filter
+
+
+	        //~~~we're returning undef on hitting end of path, replace with prev path or smth/
+	    };
+
+	    for (var direction in piece.connected) {
+	        _loop(direction);
+	    }
+	    paths.push(path);
+	    console.log(piece.id, 'we\'ve found our way to glory and death', paths);
+	    return paths;
+	}
+
+	function findPath(table, piece, direction) {
+	    var path = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {
+	        weight: 0,
+	        points: [],
+	        vectors: []
+	    };
+
+	    //for(let direction in piece.connected){
+	    var connectedPiece = table[piece.connected[direction]];
+	    if (!connectedPiece) return;
+	    console.log(piece.id, 'We\'ve gone to solice at ' + connectedPiece.id + ', and got ourselves a nice pieces ', connectedPiece, piece);
+	    if (piece.checker != 0 && piece.checker % 2 == 0) {
+	        // we're damsel
+	        console.log(piece.id, 'All hail our mightyness!');
+	        return _extends({}, path);
+	    } else {
+	        //we're peasant
+	        console.log(piece.id, 'We\'re just a peasant, but we are still stand strong, ', connectedPiece, piece, path);
+	        if (connectedPiece.checker * piece.checker < 0 || path.vectors[0] && path.vectors[0].checker * connectedPiece.checker > 0) {
+	            //got enemy checker
+	            var nextConnectedPiece = table[connectedPiece.connected[direction]];
+	            console.log(piece.id, 'We\'ve faced an enemy, but we\'ll never give up until we hit a wall of them or other', nextConnectedPiece);
+	            if (nextConnectedPiece && nextConnectedPiece.checker == 0) {
+	                //we got enemy with space behind them, strike!
+	                return findPaths(table, nextConnectedPiece, {
+	                    weight: path.weight + 1,
+	                    points: path.points.concat(nextConnectedPiece),
+	                    vectors: path.vectors.concat(connectedPiece)
+	                });
+	            }
+	        } else if (connectedPiece.checker * piece.checker > 0 || direction * piece.checker < 0 && connectedPiece.checker == 0) {
+	            //got our checker or heading back and got empty spot
+	            console.log(piece.id, 'We haven\'t found our enemy today, but we\'ll try another time');
+	            return {
+	                weight: path.weight - 1,
+	                points: [].concat(_toConsumableArray(path.points), [connectedPiece]),
+	                vectors: path.vectors
+	            };
+	        } else if (direction * piece.checker > 0 && connectedPiece.checker == 0) {
+	            //heading forth and got empty spot
+	            console.log(piece.id, 'At last some place to rest our flaty surface.', path.weight, [].concat(_toConsumableArray(path.points), [connectedPiece]), path.vectors);
+	            return {
+	                weight: path.weight + 0,
+	                points: [].concat(_toConsumableArray(path.points), [connectedPiece]),
+	                vectors: path.vectors
+	            };
+	        } else return console.log(piece.id, 'We\'ve stuck in field and can\'t move forth', piece.id, path); //, path;
+	    } //we're going from empty ground and there's no enemy pieces nearby
+	}
+	function logic(state, action) {
+	    var game = Object.assign({}, state.game);
+	    var pos;
+	    var foundToEat;
+
+	    var _ret2 = function () {
+	        switch (action.type) {
+	            case 'hideMove':
+	                Object.keys(game.table).map(function (pos) {
+	                    game.table[pos] = Object.assign({}, game.table[pos], {
+	                        possibleMove: '',
+	                        active: '',
+	                        consume: undefined
+	                    });
+	                });
+	                return {
+	                    v: _extends({}, state, {
+	                        game: _extends({}, game, {
+	                            table: _extends({}, game.table)
+	                        })
+	                    })
+	                };
+	            case 'showMove':
+	                game.lastChecker = action.id;
+	                pos = action.id;
+
+	                findPaths(game.table, game.table[pos]);
+	                if (game.table[pos].checker !== 0 && game.table[pos].checker == game.turn) {
+	                    game.table[pos].active = 'active';
+	                    switch (game.table[pos].checker) {
+	                        case -1:
+	                            foundToEat = false;
+
+	                            Object.keys(game.table[pos].connected).map(function (d) {
+	                                var key = game.table[pos].connected[d];
+	                                //console.log(d, key);
+	                                if (d < 0 && game.table[key].checker === 0 || game.table[key].checker > 0) // if we are looking black worfard and they aren't another black checkers OR if thi is a white checker
+	                                    if (game.table[key].checker > 0 && game.table[game.table[key].connected[d]] && game.table[game.table[key].connected[d]].checker === 0) {
+	                                        game.table[game.table[key].connected[d]].possibleMove = 'possible-move';
+	                                        game.table[game.table[key].connected[d]].consume = key;
+	                                        console.log('Black can move to ', game.table[key].connected[d], 'while eating', key, 'and the checker is ', game.table[game.table[key].connected[d]]);
+	                                    } else if (game.table[key].checker === 0 && !foundToEat) game.table[key].possibleMove = 'possible-move';
+	                                //else in case
+	                            });
+	                            break;
+	                        case 1:
+	                            Object.keys(game.table[pos].connected).map(function (d) {
+	                                var key = game.table[pos].connected[d];
+	                                //console.log(d, key);
+	                                if (d > 0 && game.table[key].checker === 0 || game.table[key].checker < 0) // if we are looking white forward and they aren't another white checkers OR if thi is a black checker
+	                                    if (game.table[key].checker === 0) game.table[key].possibleMove = 'possible-move';else if (game.table[key].checker === -1 && game.table[game.table[key].connected[d]] && game.table[game.table[key].connected[d]].checker === 0) {
+	                                        game.table[game.table[key].connected[d]].possibleMove = 'possible-move';
+	                                        game.table[game.table[key].connected[d]].consume = key;
+	                                        console.log('White can move to ', game.table[key].connected[d], 'while eating', key, 'and the checker is ', game.table[game.table[key].connected[d]]);
+	                                    }
+	                            });
+	                            break;
+	                    }
+	                    console.log('state', state, game);
+	                    return {
+	                        v: _extends({}, state, {
+	                            game: _extends({}, game, {
+	                                table: _extends({}, game.table)
+	                            })
+	                        })
+	                    };
+	                }
+	                return {
+	                    v: state
+	                };
+	            case 'move':
+	                var pos = action.id;
+	                console.log('Moving to ', pos, 'and should consume ', game.table[pos].consume);
+	                var color = game.table[game.lastChecker].checker;
+	                var turn = color > 0 ? -1 : 1;
+	                if (game.table[pos].consume) {
+	                    game.table[game.table[pos].consume].checker = 0;
+	                    console.log('and consuming ', pos);
+	                }
+	                game.table[game.lastChecker].checker = 0;
+	                game.table[pos].checker = color;
+	                console.log('state: ', state, game);
+	                return {
+	                    v: _extends({}, state, {
+	                        game: _extends({}, game, {
+	                            table: _extends({}, game.table),
+	                            turn: turn
+	                        })
+	                    })
+	                };
+	            default:
+	                return {
+	                    v: state
+	                };
+	        }
+	    }();
+
+	    if ((typeof _ret2 === 'undefined' ? 'undefined' : _typeof(_ret2)) === "object") return _ret2.v;
+	}
+
+	// switch (game.table[pos].checker) {
+	// 	case 'black':
+	// 		var indecis = pos.split('-');
+	// 		var right = getRight('black', indecis);
+	// 		var left = getLeft('black', indecis);
+	// 		break;
+	// 	case 'white':
+	// 		var indecis = pos.split('-');
+	// 		var right = getRight('white', indecis);
+	// 		var left = getLeft('white', indecis);
+	// }
+	// var poses = [left, right],
+	// 	currentColor = game.table[pos].checker;
+	// poses.map((p, i) => {
+	// 	let l, r;
+	// 	console.log(p, game.table[p])
+	// 	switch (game.table[p].checker) {
+	// 		case 'white':
+	// 			l = getLeft('white', p.split('-'));
+	// 			r = getRight('white', p.split('-'));
+	// 			if (i == 0 && game.table[l] && game.table[l].checker === 0)
+	// 				game.table[l].possibleMove = 'possible-move';
+	// 			if (i == 1 && game.table[r] && game.table[r].checker === 0)
+	// 				game.table[r].possibleMove = 'possible-move';
+	// 		case 'black':
+	// 			l = getLeft('black', p.split('-'));
+	// 			r = getRight('black', p.split('-'));
+	// 			if (i == 0 && game.table[l] && game.table[l].checker === 0)
+	// 				game.table[l].possibleMove = 'possible-move';
+	// 			if (i == 1 && game.table[r] && game.table[r].checker === 0)
+	// 				game.table[r].possibleMove = 'possible-move';
+	// 		case 'black-damsel':
+	// 			break;
+	// 		case 'white-damsel':
+	// 			break;
+	// 		case 'none':
+	// 		default:
+	// 			game.table[p].possibleMove = 'possible-move'
+	// 			break;
+	// 	}
+	// })
+	// game.table[pos].active = 'active';
+	// console.log(game.table[pos]);
+
+/***/ },
 /* 269 */
 /***/ function(module, exports) {
 
@@ -29679,12 +29940,14 @@
 	});
 	exports.default = {
 		"1-A": {
+			"id": '1-A',
 			"checker": 1,
 			connected: {
 				'2': '2-B'
 			}
 		},
 		"1-C": {
+			"id": '1-C',
 			"checker": 1,
 			connected: {
 				'1': '2-B',
@@ -29692,6 +29955,7 @@
 			}
 		},
 		"1-E": {
+			"id": '1-E',
 			"checker": 1,
 			connected: {
 				'1': '2-D',
@@ -29699,6 +29963,7 @@
 			}
 		},
 		"1-G": {
+			"id": '1-G',
 			"checker": 1,
 			connected: {
 				2: '2-H',
@@ -29706,6 +29971,7 @@
 			}
 		},
 		"2-B": {
+			"id": '2-B',
 			"checker": 1,
 			connected: {
 				1: '3-A',
@@ -29715,6 +29981,7 @@
 			}
 		},
 		"2-D": {
+			"id": '2-D',
 			"checker": 1,
 			connected: {
 				2: '3-E',
@@ -29724,6 +29991,7 @@
 			}
 		},
 		"2-F": {
+			"id": '2-F',
 			"checker": 1,
 			connected: {
 				1: '3-E',
@@ -29733,6 +30001,7 @@
 			}
 		},
 		"2-H": {
+			"id": '2-H',
 			"checker": 1,
 			connected: {
 				1: '3-G',
@@ -29740,6 +30009,7 @@
 			}
 		},
 		"3-A": {
+			"id": '3-A',
 			"checker": 1,
 			connected: {
 				'-2': '2-B',
@@ -29747,6 +30017,7 @@
 			}
 		},
 		"3-C": {
+			"id": '3-C',
 			"checker": 1,
 			connected: {
 				'-1': '2-B',
@@ -29756,6 +30027,7 @@
 			}
 		},
 		"3-E": {
+			"id": '3-E',
 			"checker": 1,
 			connected: {
 				'-2': '2-F',
@@ -29765,6 +30037,7 @@
 			}
 		},
 		"3-G": {
+			"id": '3-G',
 			"checker": 1,
 			connected: {
 				'-1': '2-F',
@@ -29774,6 +30047,7 @@
 			}
 		},
 		"4-B": {
+			"id": '4-B',
 			"checker": 0,
 			connected: {
 				1: '5-A',
@@ -29783,6 +30057,7 @@
 			}
 		},
 		"4-D": {
+			"id": '4-D',
 			"checker": 0,
 			connected: {
 				2: '5-E',
@@ -29792,6 +30067,7 @@
 			}
 		},
 		"4-F": {
+			"id": '4-F',
 			"checker": 0,
 			connected: {
 				1: '5-E',
@@ -29801,6 +30077,7 @@
 			}
 		},
 		"4-H": {
+			"id": '4-H',
 			"checker": 0,
 			connected: {
 				1: '5-G',
@@ -29808,6 +30085,7 @@
 			}
 		},
 		"5-A": {
+			"id": '5-A',
 			"checker": 0,
 			connected: {
 				2: '6-B',
@@ -29815,6 +30093,7 @@
 			}
 		},
 		"5-C": {
+			"id": '5-C',
 			"checker": 0,
 			connected: {
 				'1': '6-B',
@@ -29824,6 +30103,7 @@
 			}
 		},
 		"5-E": {
+			"id": '5-E',
 			"checker": 0,
 			connected: {
 				'2': '6-F',
@@ -29833,6 +30113,7 @@
 			}
 		},
 		"5-G": {
+			"id": '5-G',
 			"checker": 0,
 			connected: {
 				'1': '6-F',
@@ -29842,6 +30123,7 @@
 			}
 		},
 		"6-B": {
+			"id": '6-B',
 			"checker": -1,
 			connected: {
 				'1': '7-A',
@@ -29851,6 +30133,7 @@
 			}
 		},
 		"6-D": {
+			"id": '6-D',
 			"checker": -1,
 			connected: {
 				'1': '7-C',
@@ -29860,6 +30143,7 @@
 			}
 		},
 		"6-F": {
+			"id": '6-F',
 			"checker": -1,
 			connected: {
 				'1': '7-E',
@@ -29869,6 +30153,7 @@
 			}
 		},
 		"6-H": {
+			"id": '6-H',
 			"checker": -1,
 			connected: {
 				'1': '7-G',
@@ -29876,6 +30161,7 @@
 			}
 		},
 		"7-A": {
+			"id": '7-A',
 			"checker": -1,
 			connected: {
 				'2': '8-B',
@@ -29883,6 +30169,7 @@
 			}
 		},
 		"7-C": {
+			"id": '7-C',
 			"checker": -1,
 			connected: {
 				'1': '8-B',
@@ -29892,6 +30179,7 @@
 			}
 		},
 		"7-E": {
+			"id": '7-E',
 			"checker": -1,
 			connected: {
 				'2': '8-F',
@@ -29901,6 +30189,7 @@
 			}
 		},
 		"7-G": {
+			"id": '7-G',
 			"checker": -1,
 			connected: {
 				'1': '8-F',
@@ -29910,6 +30199,7 @@
 			}
 		},
 		"8-B": {
+			"id": '8-B',
 			"checker": -1,
 			connected: {
 				'-1': '7-A',
@@ -29917,6 +30207,7 @@
 			}
 		},
 		"8-D": {
+			"id": '8-D',
 			"checker": -1,
 			connected: {
 				'-2': '7-E',
@@ -29924,6 +30215,7 @@
 			}
 		},
 		"8-F": {
+			"id": '8-F',
 			"checker": -1,
 			connected: {
 				'-1': '7-E',
@@ -29931,6 +30223,7 @@
 			}
 		},
 		"8-H": {
+			"id": '8-H',
 			"checker": -1,
 			connected: {
 				'-1': '7-G'
