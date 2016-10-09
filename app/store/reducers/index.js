@@ -53,12 +53,6 @@ function findPaths(table, piece, path = {
         //console.log(piece.id, `We're seekers of truth going to ${direction} while standing at ${piece.id}, and we have: `, path.vectors, table[piece.connected[direction]].id, path.vectors.filter(p => p.id == table[piece.connected[direction]].id).length == 0);
         if (path.vectors.filter(p => p.id == table[piece.connected[direction]].id).length == 0)
             paths = paths.concat(findPath(table, piece, direction, path))
-            //console.log(findPath(table, piece, direction, path));
-            //beware of .concat(null or undefined), or just filter it afterwards while getting max value
-            // or just flush everything later via array.filter
-
-
-        //~~~we're returning undef on hitting end of path, replace with prev path or smth/
     }
     path.weight > 0 && paths.push(path);
     //console.log(piece.id, `we've found our way to glory and death`, paths);
@@ -158,54 +152,6 @@ export default function logic(state, action) {
 					lastChecker: action.id
 				}
 			}
-            // game.lastChecker = action.id
-            // var pos = action.id;
-            // findPaths(game.table, game.table[pos]);
-            // if (game.table[pos].checker !== 0 && game.table[pos].checker == game.turn) {
-            //     game.table[pos].active = 'active'
-            //     switch (game.table[pos].checker) {
-            //         case -1:
-            //             var foundToEat = false;
-            //             Object.keys(game.table[pos].connected).map(d => {
-            //                 let key = game.table[pos].connected[d];
-            //                 //console.log(d, key);
-            //                 if ((d < 0 && game.table[key].checker === 0) || game.table[key].checker > 0) // if we are looking black worfard and they aren't another black checkers OR if thi is a white checker
-            //                     if (game.table[key].checker > 0 &&
-            //                     (game.table[game.table[key].connected[d]] && game.table[game.table[key].connected[d]].checker === 0)) {
-            //                     game.table[game.table[key].connected[d]].possibleMove = 'possible-move';
-            //                     game.table[game.table[key].connected[d]].consume = key;
-            //                     //console.log('Black can move to ', game.table[key].connected[d], 'while eating', key, 'and the checker is ', game.table[game.table[key].connected[d]]);
-            //                 } else if (game.table[key].checker === 0 && !foundToEat)
-            //                     game.table[key].possibleMove = 'possible-move';
-            //                 //else in case
-            //             })
-            //             break;
-            //         case 1:
-            //             Object.keys(game.table[pos].connected).map(d => {
-            //                 let key = game.table[pos].connected[d];
-            //                 //console.log(d, key);
-            //                 if ((d > 0 && game.table[key].checker === 0) || (game.table[key].checker < 0)) // if we are looking white forward and they aren't another white checkers OR if thi is a black checker
-            //                     if (game.table[key].checker === 0)
-            //                         game.table[key].possibleMove = 'possible-move';
-            //                     else if (game.table[key].checker === -1 && (game.table[game.table[key].connected[d]] && game.table[game.table[key].connected[d]].checker === 0)) {
-            //                     game.table[game.table[key].connected[d]].possibleMove = 'possible-move';
-            //                     game.table[game.table[key].connected[d]].consume = key;
-            //                     //console.log('White can move to ', game.table[key].connected[d], 'while eating', key, 'and the checker is ', game.table[game.table[key].connected[d]]);
-            //                 }
-            //             })
-            //             break;
-            //     }
-            //     //console.log('state', state, game)
-            //     return {
-            //         ...state,
-            //         game: {
-            //             ...game,
-            //             table: {
-            //                 ...game.table
-            //             }
-            //         }
-            //     };
-            // }
         case 'move':
 			const {piece, pieceTo, consume, turn} = action;
 			console.log('Moving debug', piece,pieceTo,consume, turn);
@@ -226,28 +172,6 @@ export default function logic(state, action) {
 					turn
 				}
 			}
-            // let pos = action.id;
-            // let turn = action.turn;
-            // //console.log('Moving to ', pos, 'and should consume ', game.table[pos].consume);
-            // let color = game.table[game.lastChecker].checker;
-            // if (game.table[pos].consume) {
-            //     game.table[game.table[pos].consume].checker = 0;
-            //     //console.log('and consuming ', pos);
-            // }
-            // game.table[game.lastChecker].checker = 0
-            // game.table[pos].checker = color;
-        	// //console.log('state: ', state, game)
-            // //console.log('new table: ', game.table);
-            // return {
-            //     ...state,
-            //     game: {
-            //         ...game,
-            //         table: {
-            //             ...game.table
-            //         },
-            //         turn
-            //     }
-            // }
 		case 'updateAllPaths':
 			game.table = findAllPaths(game.table);
 			//console.log('new table: ', game.table);
@@ -264,47 +188,3 @@ export default function logic(state, action) {
             return state
     }
 }
-
-// switch (game.table[pos].checker) {
-// 	case 'black':
-// 		var indecis = pos.split('-');
-// 		var right = getRight('black', indecis);
-// 		var left = getLeft('black', indecis);
-// 		break;
-// 	case 'white':
-// 		var indecis = pos.split('-');
-// 		var right = getRight('white', indecis);
-// 		var left = getLeft('white', indecis);
-// }
-// var poses = [left, right],
-// 	currentColor = game.table[pos].checker;
-// poses.map((p, i) => {
-// 	let l, r;
-// 	console.log(p, game.table[p])
-// 	switch (game.table[p].checker) {
-// 		case 'white':
-// 			l = getLeft('white', p.split('-'));
-// 			r = getRight('white', p.split('-'));
-// 			if (i == 0 && game.table[l] && game.table[l].checker === 0)
-// 				game.table[l].possibleMove = 'possible-move';
-// 			if (i == 1 && game.table[r] && game.table[r].checker === 0)
-// 				game.table[r].possibleMove = 'possible-move';
-// 		case 'black':
-// 			l = getLeft('black', p.split('-'));
-// 			r = getRight('black', p.split('-'));
-// 			if (i == 0 && game.table[l] && game.table[l].checker === 0)
-// 				game.table[l].possibleMove = 'possible-move';
-// 			if (i == 1 && game.table[r] && game.table[r].checker === 0)
-// 				game.table[r].possibleMove = 'possible-move';
-// 		case 'black-damsel':
-// 			break;
-// 		case 'white-damsel':
-// 			break;
-// 		case 'none':
-// 		default:
-// 			game.table[p].possibleMove = 'possible-move'
-// 			break;
-// 	}
-// })
-// game.table[pos].active = 'active';
-// console.log(game.table[pos]);
