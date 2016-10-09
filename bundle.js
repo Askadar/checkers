@@ -29086,7 +29086,7 @@
 							'div',
 							{ className: 'panel' },
 							_react2.default.createElement(
-								'ul',
+								'nav',
 								{ role: 'nav', className: 'nav nav-tabs nav-justified' },
 								_react2.default.createElement(
 									'li',
@@ -29244,18 +29244,7 @@
 					_react2.default.createElement(
 						'p',
 						null,
-						'\u0418\u0433\u0440\u0430\u044E\u0442',
-						_react2.default.createElement(
-							'span',
-							null,
-							this.props.routeParams.firstPlayer
-						),
-						'\u0438',
-						_react2.default.createElement(
-							'span',
-							null,
-							this.props.routeParams.secondPlayer
-						)
+						'\u0418\u0433\u0440\u0430\u044E\u0442 ' + this.props.routeParams.firstPlayer + ' \u0438 ' + this.props.routeParams.secondPlayer
 					),
 					_react2.default.createElement(
 						'p',
@@ -29322,12 +29311,41 @@
 		_createClass(CheckersTable, [{
 			key: 'showMoves',
 			value: function showMoves(id) {
-				this.props.showMove(id);
+				var piece = this.props.table[id];
+				if (piece.checker * this.props.turn > 0) this.props.showMoves(piece.paths, id);
 			}
 		}, {
 			key: 'move',
 			value: function move(id) {
-				this.props.move(id);
+				var _props = this.props;
+				var turn = _props.turn;
+				var lastChecker = _props.lastChecker;
+
+				var pieceTo = this.props.table[id];
+				var piece = this.props.table[lastChecker];
+				var consume = void 0;
+				if (piece.checker * turn > 0) {
+					console.log('Moved', id, piece, pieceTo, piece.paths);
+					var path = piece.paths.filter(function (path) {
+						return path.points[0].id == pieceTo.id;
+					})[0];
+					if (path.vectors.length > 0) {
+						consume = path.vectors.shift().id;
+					}
+					var nextTurn = path.points.length - 1 > 0 ? turn : -turn;
+					path.points.shift();
+					this.props.move(piece, pieceTo, consume, nextTurn);
+					console.log('Turnings', nextTurn, turn);
+					if (nextTurn == turn) {
+						this.props.showMoves([path], pieceTo.id);
+					}
+					this.props.updateAllPaths();
+				}
+			}
+		}, {
+			key: 'componentDidMount',
+			value: function componentDidMount() {
+				this.props.updateAllPaths();
 			}
 		}, {
 			key: 'render',
@@ -29342,7 +29360,7 @@
 							width: window.innerHeight * 3 / 4
 						}, 'data-whites': this.props.whites },
 					Object.keys(this.props.table).map(function (a) {
-						return _react2.default.createElement(_Checker2.default, _extends({ id: a, key: a }, _this2.props.table[a], { hideMove: _this2.props.hideMove, showMove: _this2.props.showMove, move: _this2.props.move }));
+						return _react2.default.createElement(_Checker2.default, _extends({ id: a, key: a }, _this2.props.table[a], { hideMove: _this2.props.hideMoves, showMove: _this2.showMoves.bind(_this2), move: _this2.move.bind(_this2) }));
 					})
 				);
 			}
@@ -29352,18 +29370,26 @@
 	}(_react2.default.Component);
 
 	var mapStateToProps = function mapStateToProps(store) {
-		return { table: store.game.table, turn: store.game.turn };
+		var _store$game = store.game;
+		var table = _store$game.table;
+		var turn = _store$game.turn;
+		var lastChecker = _store$game.lastChecker;
+
+		return { table: table, turn: turn, lastChecker: lastChecker };
 	};
 	var mapDispatchToProps = function mapDispatchToProps(dispatch, ownProps) {
 		return {
-			hideMove: function hideMove() {
-				dispatch({ type: 'hideMove' });
+			hideMoves: function hideMoves() {
+				dispatch({ type: 'hideMoves' });
 			},
-			showMove: function showMove(id) {
-				dispatch({ type: 'showMove', id: id });
+			showMoves: function showMoves(paths, id) {
+				dispatch({ type: 'showMoves', paths: paths, id: id });
 			},
-			move: function move(id) {
-				dispatch({ type: 'move', id: id });
+			move: function move(piece, pieceTo, consume, turn) {
+				dispatch({ type: 'move', piece: piece, pieceTo: pieceTo, consume: consume, turn: turn });
+			},
+			updateAllPaths: function updateAllPaths() {
+				dispatch({ type: 'updateAllPaths' });
 			}
 		};
 	};
@@ -29411,12 +29437,13 @@
 				if (this.props.possibleMove) return this.props.move(this.props.id), this.props.hideMove();
 				this.props.hideMove();
 				if (this.props.active) return;
-				return this.props.showMove(this.props.id);
+				if (this.props.checker !== 0) {
+					return this.props.showMove(this.props.id);
+				}
 			}
 		}, {
 			key: 'render',
 			value: function render() {
-				console.log('Checker ' + this.props.id + ' rendered');
 				return _react2.default.createElement('div', { className: 'checker ' + (this.props.active || '') + ' ' + (this.props.possibleMove || ''), id: this.props.id, 'data-checker': this.props.checker, onClick: this.handleClick.bind(this) });
 			}
 		}]);
@@ -29688,8 +29715,6 @@
 	    value: true
 	});
 
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 	exports.default = logic;
@@ -29707,7 +29732,7 @@
 	Checker.connected = [..where < 0 are down and > 0 are up (for whites)]
 	Checker.color = -2,-1,0,1,2 where number declare color and whether it's a king, positive are white, negative are black and 0 is none
 
-	Path.points - array of points where we can end up
+	Path.points - array of points [pieces] where we can end up
 	Path.vectors - array of point that we 'fly' over, like enemy piece
 	*/
 	if (!Array.prototype.last) {
@@ -29750,9 +29775,7 @@
 	    var paths = [];
 
 	    var _loop2 = function _loop2(direction) {
-	        console.log(piece.id, 'We\'re seekers of truth going to ' + direction + ' while standing at ' + piece.id + ', and we have: ', path.vectors, table[piece.connected[direction]].id, path.vectors.filter(function (p) {
-	            return p.id == table[piece.connected[direction]].id;
-	        }).length == 0);
+	        //console.log(piece.id, `We're seekers of truth going to ${direction} while standing at ${piece.id}, and we have: `, path.vectors, table[piece.connected[direction]].id, path.vectors.filter(p => p.id == table[piece.connected[direction]].id).length == 0);
 	        if (path.vectors.filter(function (p) {
 	            return p.id == table[piece.connected[direction]].id;
 	        }).length == 0) paths = paths.concat(findPath(table, piece, direction, path));
@@ -29769,8 +29792,7 @@
 	    }
 	    path.weight > 0 && paths.push(path);
 	    //console.log(piece.id, `we've found our way to glory and death`, paths);
-	    var maxR = -1;
-
+	    var maxR = 0;
 	    function max(b) {
 	        maxR = b;
 	    }
@@ -29780,8 +29802,8 @@
 	    }).filter(function (a) {
 	        return a.weight == maxR;
 	    });
-	    console.log('And the king is', bestPaths);
-	    return paths;
+	    //console.log('And the king is', bestPaths);
+	    return bestPaths;
 	}
 
 	function findPath(table, piece, direction) {
@@ -29794,18 +29816,18 @@
 	    //for(let direction in piece.connected){
 	    var connectedPiece = table[piece.connected[direction]];
 	    if (!connectedPiece) return;
-	    console.log(piece.id, 'We\'ve gone to solice at ' + connectedPiece.id + ', and got ourselves a nice pieces ', connectedPiece, piece);
+	    //console.log(piece.id, `We've gone to solice at ${connectedPiece.id}, and got ourselves a nice pieces `, connectedPiece, piece);
 	    if (piece.checker != 0 && piece.checker % 2 == 0) {
 	        // we're damsel
-	        console.log(piece.id, 'All hail our mightyness!');
+	        //console.log(piece.id, 'All hail our mightyness!');
 	        return _extends({}, path);
 	    } else {
 	        //we're peasant
-	        console.log(piece.id, 'We\'re just a peasant, but we are still stand strong, ', connectedPiece, piece, path);
+	        //console.log(piece.id, `We're just a peasant, but we are still stand strong, `, connectedPiece, piece, path);
 	        if (connectedPiece.checker * piece.checker < 0 || path.vectors[0] && path.vectors[0].checker * connectedPiece.checker > 0) {
 	            //got enemy checker
 	            var nextConnectedPiece = table[connectedPiece.connected[direction]];
-	            console.log(piece.id, 'We\'ve faced an enemy, but we\'ll never give up until we hit a wall of them or other', nextConnectedPiece);
+	            //console.log(piece.id, `We've faced an enemy, but we'll never give up until we hit a wall of them or other`, nextConnectedPiece);
 	            if (nextConnectedPiece && nextConnectedPiece.checker == 0) {
 	                //we got enemy with space behind them, strike!
 	                return findPaths(table, nextConnectedPiece, {
@@ -29816,7 +29838,7 @@
 	            }
 	        } else if (connectedPiece.checker * piece.checker > 0 || direction * piece.checker < 0 && connectedPiece.checker == 0) {
 	            //got our checker or heading back and got empty spot
-	            console.log(piece.id, 'We haven\'t found our enemy today, but we\'ll try another time');
+	            //console.log(piece.id, `We haven't found our enemy today, but we'll try another time`);
 	            return {
 	                weight: path.weight - 1,
 	                points: [].concat(_toConsumableArray(path.points), [connectedPiece]),
@@ -29824,115 +29846,145 @@
 	            };
 	        } else if (direction * piece.checker > 0 && connectedPiece.checker == 0) {
 	            //heading forth and got empty spot
-	            console.log(piece.id, 'At last some place to rest our flaty surface.', path.weight, [].concat(_toConsumableArray(path.points), [connectedPiece]), path.vectors);
+	            //console.log(piece.id, `At last some place to rest our flaty surface.`, path.weight, [...path.points, connectedPiece], path.vectors);
 	            return {
 	                weight: path.weight + 0,
 	                points: [].concat(_toConsumableArray(path.points), [connectedPiece]),
 	                vectors: path.vectors
 	            };
-	        } else return console.log(piece.id, 'We\'ve stuck in field and can\'t move forth', piece.id, path); //, path;
+	        } else ; //return console.log(piece.id, `We've stuck in field and can't move forth`, piece.id, path) //, path;
 	    } //we're going from empty ground and there's no enemy pieces nearby
 	}
 	function logic(state, action) {
 	    var game = _extends({}, state.game);
-	    var pos;
-	    var foundToEat;
-
-	    var _ret3 = function () {
-	        switch (action.type) {
-	            case 'hideMove':
-	                Object.keys(game.table).map(function (pos) {
-	                    game.table[pos] = Object.assign({}, game.table[pos], {
-	                        possibleMove: '',
-	                        active: '',
-	                        consume: undefined
-	                    });
+	    var table = _extends({}, state.game.table);
+	    switch (action.type) {
+	        case 'hideMoves':
+	            Object.keys(table).map(function (pos) {
+	                table[pos] = _extends({}, table[pos], {
+	                    possibleMove: '',
+	                    active: '',
+	                    consume: undefined
 	                });
-	                return {
-	                    v: _extends({}, state, {
-	                        game: _extends({}, game, {
-	                            table: _extends({}, game.table)
-	                        })
-	                    })
-	                };
-	            case 'showMove':
-	                game.lastChecker = action.id;
-	                pos = action.id;
+	            });
+	            return _extends({}, state, {
+	                game: _extends({}, state.game, {
+	                    table: _extends({}, table)
+	                })
+	            });
+	        case 'showMoves':
+	            var paths = [].concat(_toConsumableArray(action.paths));
+	            paths.map(function (path) {
+	                //path.points.map(point=>{
+	                table[path.points[0].id].possibleMove = 'possible-move';
+	                //})
+	            });
+	            table[action.id].active = 'active';
+	            return _extends({}, state, { game: _extends({}, state.game, {
+	                    table: _extends({}, state.game.table, table),
+	                    lastChecker: action.id
+	                })
+	            });
+	        // game.lastChecker = action.id
+	        // var pos = action.id;
+	        // findPaths(game.table, game.table[pos]);
+	        // if (game.table[pos].checker !== 0 && game.table[pos].checker == game.turn) {
+	        //     game.table[pos].active = 'active'
+	        //     switch (game.table[pos].checker) {
+	        //         case -1:
+	        //             var foundToEat = false;
+	        //             Object.keys(game.table[pos].connected).map(d => {
+	        //                 let key = game.table[pos].connected[d];
+	        //                 //console.log(d, key);
+	        //                 if ((d < 0 && game.table[key].checker === 0) || game.table[key].checker > 0) // if we are looking black worfard and they aren't another black checkers OR if thi is a white checker
+	        //                     if (game.table[key].checker > 0 &&
+	        //                     (game.table[game.table[key].connected[d]] && game.table[game.table[key].connected[d]].checker === 0)) {
+	        //                     game.table[game.table[key].connected[d]].possibleMove = 'possible-move';
+	        //                     game.table[game.table[key].connected[d]].consume = key;
+	        //                     //console.log('Black can move to ', game.table[key].connected[d], 'while eating', key, 'and the checker is ', game.table[game.table[key].connected[d]]);
+	        //                 } else if (game.table[key].checker === 0 && !foundToEat)
+	        //                     game.table[key].possibleMove = 'possible-move';
+	        //                 //else in case
+	        //             })
+	        //             break;
+	        //         case 1:
+	        //             Object.keys(game.table[pos].connected).map(d => {
+	        //                 let key = game.table[pos].connected[d];
+	        //                 //console.log(d, key);
+	        //                 if ((d > 0 && game.table[key].checker === 0) || (game.table[key].checker < 0)) // if we are looking white forward and they aren't another white checkers OR if thi is a black checker
+	        //                     if (game.table[key].checker === 0)
+	        //                         game.table[key].possibleMove = 'possible-move';
+	        //                     else if (game.table[key].checker === -1 && (game.table[game.table[key].connected[d]] && game.table[game.table[key].connected[d]].checker === 0)) {
+	        //                     game.table[game.table[key].connected[d]].possibleMove = 'possible-move';
+	        //                     game.table[game.table[key].connected[d]].consume = key;
+	        //                     //console.log('White can move to ', game.table[key].connected[d], 'while eating', key, 'and the checker is ', game.table[game.table[key].connected[d]]);
+	        //                 }
+	        //             })
+	        //             break;
+	        //     }
+	        //     //console.log('state', state, game)
+	        //     return {
+	        //         ...state,
+	        //         game: {
+	        //             ...game,
+	        //             table: {
+	        //                 ...game.table
+	        //             }
+	        //         }
+	        //     };
+	        // }
+	        case 'move':
+	            var piece = action.piece;
+	            var pieceTo = action.pieceTo;
+	            var consume = action.consume;
+	            var turn = action.turn;
 
-	                findPaths(game.table, game.table[pos]);
-	                if (game.table[pos].checker !== 0 && game.table[pos].checker == game.turn) {
-	                    game.table[pos].active = 'active';
-	                    switch (game.table[pos].checker) {
-	                        case -1:
-	                            foundToEat = false;
-
-	                            Object.keys(game.table[pos].connected).map(function (d) {
-	                                var key = game.table[pos].connected[d];
-	                                //console.log(d, key);
-	                                if (d < 0 && game.table[key].checker === 0 || game.table[key].checker > 0) // if we are looking black worfard and they aren't another black checkers OR if thi is a white checker
-	                                    if (game.table[key].checker > 0 && game.table[game.table[key].connected[d]] && game.table[game.table[key].connected[d]].checker === 0) {
-	                                        game.table[game.table[key].connected[d]].possibleMove = 'possible-move';
-	                                        game.table[game.table[key].connected[d]].consume = key;
-	                                        console.log('Black can move to ', game.table[key].connected[d], 'while eating', key, 'and the checker is ', game.table[game.table[key].connected[d]]);
-	                                    } else if (game.table[key].checker === 0 && !foundToEat) game.table[key].possibleMove = 'possible-move';
-	                                //else in case
-	                            });
-	                            break;
-	                        case 1:
-	                            Object.keys(game.table[pos].connected).map(function (d) {
-	                                var key = game.table[pos].connected[d];
-	                                //console.log(d, key);
-	                                if (d > 0 && game.table[key].checker === 0 || game.table[key].checker < 0) // if we are looking white forward and they aren't another white checkers OR if thi is a black checker
-	                                    if (game.table[key].checker === 0) game.table[key].possibleMove = 'possible-move';else if (game.table[key].checker === -1 && game.table[game.table[key].connected[d]] && game.table[game.table[key].connected[d]].checker === 0) {
-	                                        game.table[game.table[key].connected[d]].possibleMove = 'possible-move';
-	                                        game.table[game.table[key].connected[d]].consume = key;
-	                                        console.log('White can move to ', game.table[key].connected[d], 'while eating', key, 'and the checker is ', game.table[game.table[key].connected[d]]);
-	                                    }
-	                            });
-	                            break;
-	                    }
-	                    console.log('state', state, game);
-	                    return {
-	                        v: _extends({}, state, {
-	                            game: _extends({}, game, {
-	                                table: _extends({}, game.table)
-	                            })
-	                        })
-	                    };
-	                }
-	                return {
-	                    v: state
-	                };
-	            case 'move':
-	                var pos = action.id;
-	                console.log('Moving to ', pos, 'and should consume ', game.table[pos].consume);
-	                var color = game.table[game.lastChecker].checker;
-	                var turn = color > 0 ? -1 : 1;
-	                if (game.table[pos].consume) {
-	                    game.table[game.table[pos].consume].checker = 0;
-	                    console.log('and consuming ', pos);
-	                }
-	                game.table[game.lastChecker].checker = 0;
-	                game.table[pos].checker = color;
-	                console.log('state: ', state, game);
-	                game.table = findAllPaths(game.table);
-	                console.log('new table: ', game.table);
-	                return {
-	                    v: _extends({}, state, {
-	                        game: _extends({}, game, {
-	                            table: _extends({}, game.table),
-	                            turn: turn
-	                        })
-	                    })
-	                };
-	            default:
-	                return {
-	                    v: state
-	                };
-	        }
-	    }();
-
-	    if ((typeof _ret3 === 'undefined' ? 'undefined' : _typeof(_ret3)) === "object") return _ret3.v;
+	            console.log('Moving debug', piece, pieceTo, consume, turn);
+	            if (consume) {
+	                table[consume].checker = 0;
+	            }
+	            table[pieceTo.id].checker = piece.checker;
+	            table[pieceTo.id].active = 'active';
+	            table[piece.id].checker = 0;
+	            return _extends({}, state, {
+	                game: _extends({}, state.game, {
+	                    table: _extends({}, state.game.table, table),
+	                    turn: turn
+	                })
+	            });
+	        // let pos = action.id;
+	        // let turn = action.turn;
+	        // //console.log('Moving to ', pos, 'and should consume ', game.table[pos].consume);
+	        // let color = game.table[game.lastChecker].checker;
+	        // if (game.table[pos].consume) {
+	        //     game.table[game.table[pos].consume].checker = 0;
+	        //     //console.log('and consuming ', pos);
+	        // }
+	        // game.table[game.lastChecker].checker = 0
+	        // game.table[pos].checker = color;
+	        // //console.log('state: ', state, game)
+	        // //console.log('new table: ', game.table);
+	        // return {
+	        //     ...state,
+	        //     game: {
+	        //         ...game,
+	        //         table: {
+	        //             ...game.table
+	        //         },
+	        //         turn
+	        //     }
+	        // }
+	        case 'updateAllPaths':
+	            game.table = findAllPaths(game.table);
+	            //console.log('new table: ', game.table);
+	            return _extends({}, state, {
+	                game: _extends({}, game, {
+	                    table: _extends({}, game.table)
+	                })
+	            });
+	        default:
+	            return state;
+	    }
 	}
 
 	// switch (game.table[pos].checker) {
