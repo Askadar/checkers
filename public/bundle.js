@@ -29320,6 +29320,16 @@
 		}
 
 		_createClass(CheckersTable, [{
+			key: 'showMoves',
+			value: function showMoves(id) {
+				this.props.showMove(id);
+			}
+		}, {
+			key: 'move',
+			value: function move(id) {
+				this.props.move(id);
+			}
+		}, {
 			key: 'render',
 			value: function render() {
 				var _this2 = this;
@@ -29406,6 +29416,7 @@
 		}, {
 			key: 'render',
 			value: function render() {
+				console.log('Checker ' + this.props.id + ' rendered');
 				return _react2.default.createElement('div', { className: 'checker ' + (this.props.active || '') + ' ' + (this.props.possibleMove || ''), id: this.props.id, 'data-checker': this.props.checker, onClick: this.handleClick.bind(this) });
 			}
 		}]);

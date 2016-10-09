@@ -3,6 +3,12 @@ import {connect} from 'react-redux';
 import Checker from './Checker'
 
 class CheckersTable extends React.Component {
+	showMoves(id) {
+		this.props.showMove(id);
+	}
+	move(id) {
+		this.props.move(id);
+	}
 	render() {
 		return (
 			<div className="checkers-table center-block" style={{

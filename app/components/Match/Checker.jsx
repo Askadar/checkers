@@ -13,6 +13,7 @@ class Checker extends React.Component {
 		return this.props.showMove(this.props.id);
 	}
 	render() {
+		console.log(`Checker ${this.props.id} rendered`);
 		return <div className={`checker ${this.props.active || ''} ${this.props.possibleMove || ''}`} id={this.props.id} data-checker={this.props.checker} onClick={this.handleClick.bind(this)}/>
 	}
 }
