@@ -10,10 +10,11 @@ class Checker extends React.Component {
 		this.props.hideMove();
 		if (this.props.active)
 			return;
-		return this.props.showMove(this.props.id);
+		if (this.props.checker !== 0) {
+			return this.props.showMove(this.props.id);
+		}
 	}
 	render() {
-		console.log(`Checker ${this.props.id} rendered`);
 		return <div className={`checker ${this.props.active || ''} ${this.props.possibleMove || ''}`} id={this.props.id} data-checker={this.props.checker} onClick={this.handleClick.bind(this)}/>
 	}
 }

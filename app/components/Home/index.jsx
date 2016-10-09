@@ -12,7 +12,7 @@ class Home extends React.Component {
 			<div className="col-md-12">
 				<div className="col-md-9 row">
 					<div className="panel">
-						<ul role="nav" className="nav nav-tabs nav-justified">
+						<nav role="nav" className="nav nav-tabs nav-justified">
 							<li className={this.router.isActive({pathname: 'Live'})
 								? 'active'
 								: ''}>
@@ -28,7 +28,7 @@ class Home extends React.Component {
 								: ''}>
 								<Link to="Tournament">Tournament</Link>
 							</li>
-						</ul>
+						</nav>
 						<div className="tab-content">
 							{this.props.children}
 						</div>

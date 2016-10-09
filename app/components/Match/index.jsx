@@ -6,11 +6,7 @@ class Match extends React.Component {
 	render() {
 		return (
 			<div>
-				<p>Играют
-					<span>{this.props.routeParams.firstPlayer}</span>
-					и
-					<span>{this.props.routeParams.secondPlayer}</span>
-				</p>
+				<p>{`Играют ${this.props.routeParams.firstPlayer} и ${this.props.routeParams.secondPlayer}`}</p>
 				<p>Сейчас ход {this.props.turn == 1
 						? 'белых'
 						: 'черных'}.</p>
