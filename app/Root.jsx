@@ -14,11 +14,11 @@ export default class Root extends React.Component {
 			<Provider store={this.props.store}>
 				<Router history={this.props.history}>
 					{/* <Route path="/" component={Login}/> */}
-					<Route path="/" component={Home}>
-						<Route name="Live" path="/Live" component={Live}/>
-						<Route path="/NewGame" component={NewGame}/>
-						<Route path="/Tournament" component={Tournament}/>
-						<Route path="/match/:firstPlayer-:secondPlayer" component={Match}/>
+					<Route path="/checkers/" component={Home}>
+						<Route name="Live" path="/checkers/Live" component={Live}/>
+						<Route path="/checkers/NewGame" component={NewGame}/>
+						<Route path="/checkers/Tournament" component={Tournament}/>
+						<Route path="/checkers/match/:firstPlayer-:secondPlayer" component={Match}/>
 					</Route>
 				</Router>
 			</Provider>

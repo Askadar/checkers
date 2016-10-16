@@ -16,17 +16,17 @@ class Home extends React.Component {
 							<li className={this.router.isActive({pathname: 'Live'})
 								? 'active'
 								: ''}>
-								<Link to="Live">Live</Link>
+								<Link to="/checkers/Live">Live</Link>
 							</li>
 							<li className={this.router.isActive({pathname: 'NewGame'})
 								? 'active'
 								: ''}>
-								<Link to="NewGame">Newgame</Link>
+								<Link to="/checkers/NewGame">Newgame</Link>
 							</li>
 							<li className={this.router.isActive({pathname: 'Tournament'})
 								? 'active'
 								: ''}>
-								<Link to="Tournament">Tournament</Link>
+								<Link to="/checkers/Tournament">Tournament</Link>
 							</li>
 						</nav>
 						<div className="tab-content">
