@@ -21526,11 +21526,11 @@
 						{ history: this.props.history },
 						_react2.default.createElement(
 							_reactRouter.Route,
-							{ path: '/', component: _home2.default },
-							_react2.default.createElement(_reactRouter.Route, { name: 'Live', path: '/Live', component: _live2.default }),
-							_react2.default.createElement(_reactRouter.Route, { path: '/NewGame', component: _newgame2.default }),
-							_react2.default.createElement(_reactRouter.Route, { path: '/Tournament', component: _tournament2.default }),
-							_react2.default.createElement(_reactRouter.Route, { path: '/match/:firstPlayer-:secondPlayer', component: _match2.default })
+							{ path: '/checkers/', component: _home2.default },
+							_react2.default.createElement(_reactRouter.Route, { name: 'Live', path: '/checkers/Live', component: _live2.default }),
+							_react2.default.createElement(_reactRouter.Route, { path: '/checkers/NewGame', component: _newgame2.default }),
+							_react2.default.createElement(_reactRouter.Route, { path: '/checkers/Tournament', component: _tournament2.default }),
+							_react2.default.createElement(_reactRouter.Route, { path: '/checkers/match/:firstPlayer-:secondPlayer', component: _match2.default })
 						)
 					)
 				);
@@ -29093,7 +29093,7 @@
 									{ className: this.router.isActive({ pathname: 'Live' }) ? 'active' : '' },
 									_react2.default.createElement(
 										_reactRouter.Link,
-										{ to: 'Live' },
+										{ to: '/checkers/Live' },
 										'Live'
 									)
 								),
@@ -29102,7 +29102,7 @@
 									{ className: this.router.isActive({ pathname: 'NewGame' }) ? 'active' : '' },
 									_react2.default.createElement(
 										_reactRouter.Link,
-										{ to: 'NewGame' },
+										{ to: '/checkers/NewGame' },
 										'Newgame'
 									)
 								),
@@ -29111,7 +29111,7 @@
 									{ className: this.router.isActive({ pathname: 'Tournament' }) ? 'active' : '' },
 									_react2.default.createElement(
 										_reactRouter.Link,
-										{ to: 'Tournament' },
+										{ to: '/checkers/Tournament' },
 										'Tournament'
 									)
 								)
@@ -29594,7 +29594,7 @@
 					{ className: 'list-group-item' },
 					_react2.default.createElement(
 						_reactRouter.Link,
-						{ to: '/match/' + this.props.first + '-' + this.props.second },
+						{ to: '/checkers/match/' + this.props.first + '-' + this.props.second },
 						this.props.first,
 						'-',
 						this.props.second,
