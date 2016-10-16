@@ -5,9 +5,11 @@ import Checker from './Checker'
 class CheckersTable extends React.Component {
 	showMoves(id) {
 		let piece = this.props.table[id];
-		if (piece.checker * this.props.turn > 0)
+		if (piece.checker * this.props.turn > 0 && piece.paths.length > 0) {
+			console.log('Show move', piece.paths, id);
 			this.props.showMoves(piece.paths, id);
 		}
+	}
 	move(id) {
 		const {turn, lastChecker} = this.props;
 		let pieceTo = this.props.table[id];
@@ -15,9 +17,10 @@ class CheckersTable extends React.Component {
 		let consume;
 		if (piece.checker * turn > 0) {
 			console.log('Moved', id, piece, pieceTo, piece.paths);
-			let path = piece.paths.filter(path => {
+			let paths = piece.paths.filter(path => {
 				return path.points[0].id == pieceTo.id;
-			})[0];
+			});
+			let path = paths[0];
 			if (path.vectors.length > 0) {
 				consume = path.vectors.shift().id;
 			}
@@ -28,7 +31,10 @@ class CheckersTable extends React.Component {
 			this.props.move(piece, pieceTo, consume, nextTurn);
 			console.log('Turnings', nextTurn, turn);
 			if (nextTurn == turn) {
-				this.props.showMoves([path], pieceTo.id);
+				console.log('Show next move', paths, pieceTo.id);
+				this.props.showMoves(paths, pieceTo.id);
+			} else {
+				this.props.hideMoves();
 			}
 			this.props.updateAllPaths();
 		}
@@ -38,13 +44,13 @@ class CheckersTable extends React.Component {
 	}
 	render() {
 		return (
-			<div className="checkers-table center-block" style={{
+			<div className="checkers-table" style={{
 				zoom: this.props.zoom,
 				height: (window.innerHeight) * 3 / 4,
 				width: (window.innerHeight) * 3 / 4
-			}} data-whites={this.props.whites}>
+			}} data-whites={this.props.turn}>
 				{Object.keys(this.props.table).map((a) => {
-					return <Checker id={a} key={a} {...this.props.table[a]} hideMove={this.props.hideMoves} showMove={this.showMoves.bind(this)} move={this.move.bind(this)}/>
+					return <Checker id={a} key={a} {...this.props.table[a]} hideMoves={this.props.hideMoves} showMoves={this.showMoves.bind(this)} move={this.move.bind(this)}/>
 				})}
 			</div>
 		);
