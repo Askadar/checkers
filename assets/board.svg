@@ -9,7 +9,7 @@
 	</style>
 	<rect id="zelleDunkel"	y="5" x="5" height="5" width="5"  class="dunkleFeld"/>
 	<rect id="zelleHell"		y="5" x="5" height="5" width="5"  class="helleFeld"/>
-	
+
 	<g id="linieBlack">
 	 <use xlink:href="#zelleDunkel" transform="translate(0,	35)" id="a1"/>
 	 <use xlink:href="#zelleHell"		transform="translate(5, 35)" id="b1"/>
@@ -20,7 +20,7 @@
 	 <use xlink:href="#zelleDunkel" transform="translate(30, 35)" id="g1"/>
 	 <use xlink:href="#zelleHell"		transform="translate(35, 35)" id="h1"/>
 	</g>
-	
+
 	<g id="linieWhite">
 	 <use xlink:href="#zelleHell"		transform="translate(0, 30)" id="a2"/>
 	 <use xlink:href="#zelleDunkel" transform="translate(5, 30)" id="b2"/>
@@ -32,13 +32,13 @@
 	 <use xlink:href="#zelleDunkel" transform="translate(35, 30)" id="h2"/>
 	</g>
 </defs>
-  
+
    <g>
       <rect id="hg"		x="1" 	y="1"	 rx="1" ry="1"		width="48" height="48" class="hgFeld" />
 			<rect id="hg-1" x="4.5" y="4.5" 								width="41" height="41" class="dunkleFeld" />
    </g>
-	 
-	 
+
+
 	 <use xlink:href="#linieBlack"	transform="translate(0,	0)"		id="L1"/>
 	 <use xlink:href="#linieWhite"	transform="translate(0, 0)"		id="L2"/>
 	 <use xlink:href="#linieBlack"	transform="translate(0,	-10)" id="L3"/>
@@ -47,18 +47,9 @@
 	 <use xlink:href="#linieWhite"	transform="translate(0, -20)" id="L6"/>
 	 <use xlink:href="#linieBlack"	transform="translate(0,	-30)" id="L7"/>
 	 <use xlink:href="#linieWhite"	transform="translate(0, -30)" id="L8"/>
-	 
-	 <g>
-		<text x="6.5" y="48"  class="schachText">A</text>
-		<text x="11.7" y="48" class="schachText">B</text>
-		<text x="16.7" y="48" class="schachText">C</text>
-		<text x="21.9" y="48" class="schachText">D</text>
-		<text x="27.0" y="48" class="schachText">E</text>
-		<text x="32.2" y="48" class="schachText">F</text>
-		<text x="36.9" y="48" class="schachText">G</text>
-		<text x="41.9" y="48" class="schachText">H</text>
-	 </g>
-	 
+
+	
+
 	 <g>
 		<text x="2.2" y="43.5" class="schachText">1</text>
 		<text x="2.2" y="38.5" class="schachText">2</text>
