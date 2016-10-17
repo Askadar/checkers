@@ -29538,7 +29538,7 @@
 					_react2.default.createElement(
 						'ul',
 						{ className: 'list-group' },
-						_react2.default.createElement(_Match2.default, { first: 'Kunde', second: 'Pirken', timePlayed: '12:22' })
+						_react2.default.createElement(_Match2.default, { first: '\u0427\u0435\u043B\u043E\u0432\u0435\u043A', second: '\u0427\u0435\u043B\u043E\u0432\u0435\u043A', timePlayed: '12:22' })
 					)
 				);
 			}
