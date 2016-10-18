@@ -108,7 +108,7 @@ export default {
 	},
 	"4-B" : {
 		"id": '4-B',
-		"checker": 0,
+		"checker": -1,
 		connected: {
 			1: '5-A',
 			2: '5-C',

@@ -29366,11 +29366,7 @@
 
 				return _react2.default.createElement(
 					'div',
-					{ className: 'checkers-table', style: {
-							zoom: this.props.zoom,
-							height: window.innerHeight * 3 / 4,
-							width: window.innerHeight * 3 / 4
-						}, 'data-whites': this.props.turn },
+					{ className: 'checkers-table', 'data-whites': this.props.turn },
 					Object.keys(this.props.table).map(function (a) {
 						return _react2.default.createElement(_Checker2.default, _extends({ id: a, key: a }, _this2.props.table[a], { hideMoves: _this2.props.hideMoves, showMoves: _this2.showMoves.bind(_this2), move: _this2.move.bind(_this2) }));
 					})
@@ -29726,7 +29722,7 @@
 
 	var _redux = __webpack_require__(180);
 
-	var _reducers = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./reducers\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	var _reducers = __webpack_require__(268);
 
 	var _reducers2 = _interopRequireDefault(_reducers);
 
@@ -29745,7 +29741,295 @@
 	exports.default = (0, _redux.createStore)(_reducers2.default, state, window.devToolsExtension && window.devToolsExtension());
 
 /***/ },
-/* 268 */,
+/* 268 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	exports.default = logic;
+
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+	var getLeft = function getLeft(color, indecis) {
+		if (color === -1) return parseInt(indecis[0]) - 1 + '-' + String.fromCharCode(indecis[1].charCodeAt() - 1);else return parseInt(indecis[0]) + 1 + '-' + String.fromCharCode(indecis[1].charCodeAt() + 1);
+	};
+	var getRight = function getRight(color, indecis) {
+		if (color === -1) parseInt(indecis[0]) - 1 + '-' + String.fromCharCode(indecis[1].charCodeAt() + 1);else return parseInt(indecis[0]) + 1 + '-' + String.fromCharCode(indecis[1].charCodeAt() - 1);
+	};
+
+	/*notes
+	Checker.connected = [..where < 0 are down and > 0 are up (for whites)]
+	Checker.color = -2,-1,0,1,2 where number declare color and whether it's a king, positive are white, negative are black and 0 is none
+
+	Path.points - array of points [pieces] where we can end up
+	Path.vectors - array of point that we 'fly' over, like enemy piece
+	*/
+	if (!Array.prototype.last) {
+		Array.prototype.last = function () {
+			return this[this.length - 1];
+		};
+	};
+	function shouldBecomeDamsel(piece, pieceTo) {
+		/*
+	 Bool-like (pieceFrom, pieceTo), return multiplier if got to enemy territory, otherwise 1
+	 */
+		var hash = {
+			'8': -1,
+			'1': 1
+		}; //hash10 = {10:-1, 1:1}
+		return hash[pieceTo.id.split('-')[0]] * piece.checker < 0 ? 2 : 1;
+	}
+	function findAllPaths(table, turn) {
+		var newTable = {};
+		var t0 = performance.now();
+		var bWhiteMovesOnly = true;
+
+		var _loop = function _loop(pieceKey) {
+			//do repath only for those pieces, that either connected to enemy pieces or connected to white spots
+			if (table[pieceKey].checker * turn > 0 && Object.keys(table[pieceKey].connected).some(function (d) {
+				return table[table[pieceKey].connected[d]].checker * table[pieceKey].checker < 0 || d * table[pieceKey].checker > 0 && table[table[pieceKey].connected[d]].checker == 0;
+			})) {
+				if (table[pieceKey].checker % 2 != 0) {
+					newTable[pieceKey] = _extends({}, table[pieceKey], {
+						paths: findPaths(table, table[pieceKey]),
+						className: table[pieceKey].className != 'active' ? 'can-move' : 'active'
+					});
+				} else if (table[pieceKey].checker % 2 == 0) {
+					newTable[pieceKey] = _extends({}, table[pieceKey], {
+						paths: checkDirections(table, table[pieceKey]),
+						className: table[pieceKey].className != 'active' ? 'can-move' : 'active'
+					});
+				}
+				// bWhiteMovesOnly = bWhiteMovesOnly
+				// 	? newTable[pieceKey].paths.some(a => a.weight > 0)
+				// 	: 'false';
+			} else {
+				newTable[pieceKey] = table[pieceKey];
+			}
+		};
+
+		for (var pieceKey in table) {
+			_loop(pieceKey);
+		}
+		var t1 = performance.now();
+		if (t1 - t0 > 5) {
+			console.log("Pathing took " + (t1 - t0) + " milliseconds.");
+			debugger;
+		} //log pathing time only on really slow occasions
+		return newTable;
+	}
+
+	function findPaths(table, piece) {
+		var path = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {
+			weight: 0,
+			points: [],
+			vectors: []
+		};
+
+		var paths = [];
+
+		var _loop2 = function _loop2(direction) {
+			//console.log(piece.id, `We're seekers of truth going to ${direction} while standing at ${piece.id}, and we have: `, path.vectors, table[piece.connected[direction]].id, path.vectors.filter(p => p.id == table[piece.connected[direction]].id).length == 0);
+			if (path.vectors.filter(function (p) {
+				return p.id == table[piece.connected[direction]].id;
+			}).length == 0) paths = paths.concat(findPath(table, piece, direction, path));
+		};
+
+		for (var direction in piece.connected) {
+			_loop2(direction);
+		}
+		path.weight > 0 && paths.push(path);
+		//console.log(piece.id, `we've found our way to glory and death`, paths);
+		var maxR = 0;
+
+		function max(b) {
+			maxR = b;
+		}
+		var bestPaths = paths.filter(function (a) {
+			a && a.weight > maxR && max(a.weight);
+			return a;
+		}).filter(function (a) {
+			return a.weight == maxR;
+		});
+		//console.log('And the king is', bestPaths);
+		return bestPaths;
+	}
+
+	function checkDirections(table, piece) {
+		var directions = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [-2, -1, 1, 2];
+		var path = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {
+			weight: 0,
+			points: [],
+			vectors: [],
+			emptyVectors: []
+		};
+
+		var directionHash = {
+			'-1': [-2, 1, 2],
+			'-2': [2, -1, 1],
+			'1': [2, -1, -2],
+			'2': [-2, 1, -1]
+		};
+		var paths = [];
+		for (var i in directions) {
+			var direction = directions[i];
+			var nextPiece = table[piece.connected[direction]];
+			var emptyMovesOnly = true;
+			var currentPath = _extends({}, path);
+			while (nextPiece) {
+				var nextConnectedPiece = table[next.piece.connected[direction]];
+				if (nextPiece.checker == 0) {
+					//we got empty spot
+					if (emptyMovesOnly) {
+						currentPath.emptyVectors.push(nextPiece);
+					} else {
+						//send em flyin', kidding, go to right and left
+						paths.concat(checkDirections(table, nextPiece, directionHash[direction], _extends({}, currentPath, {
+							points: [].concat(_toConsumableArray(currentPath.points), [nextPiece])
+						})));
+					}
+				} else if (nextPiece.checker * piece.checker < 0 && nextConnectedPiece.checker === 0) {
+					//we got enemy and there's empty spot behind it
+					if (emptyMovesOnly) {
+						currentPath.vectors.push(nextPiece);
+						emptyMovesOnly = false;
+					} else {
+						//stumbled across another enemy piece
+						break; //stop path finding and let other instance of this function take care of it
+					}
+				}
+				nextPiece = table[nextPiece.connected[direction]];
+			}
+			console.log('Got paths for direction', paths);
+			return paths;
+			// if (emptyMovesOnly){ //we haven't found anyone, so spuff all points in 0-weighted paths
+			// 	paths.concat(currentPath.emptyVectors.map(a=>{return {weight:0, points:[a]}}));
+			// }
+		}
+	}
+	function findPath(table, piece, direction) {
+		var path = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {
+			weight: 0,
+			points: [],
+			vectors: []
+		};
+
+		//for(let direction in piece.connected){
+		var connectedPiece = table[piece.connected[direction]];
+		if (!connectedPiece) return;
+
+		//console.log(piece.id, `We've gone to solice at ${connectedPiece.id}, and got ourselves a nice pieces `, connectedPiece, piece);
+		if (piece.checker != 0 && piece.checker % 2 == 0) {
+			// we're damsel
+			//console.log(piece.id, 'All hail our mightyness!');
+			path.emptyVectors = path.emptyVectors || [];
+
+			return _extends({}, path);
+		} else {
+			//we're peasant
+			//console.log(piece.id, `We're just a peasant, but we are still stand strong, `, connectedPiece, piece, path);
+			if (connectedPiece.checker * piece.checker < 0 || path.vectors[0] && path.vectors[0].checker * connectedPiece.checker > 0) {
+				//got enemy checker
+				var nextConnectedPiece = table[connectedPiece.connected[direction]];
+				//console.log(piece.id, `We've faced an enemy, but we'll never give up until we hit a wall of them or other`, nextConnectedPiece);
+				if (nextConnectedPiece && nextConnectedPiece.checker == 0) {
+					//we got enemy with space behind them, strike!
+					return findPaths(table, nextConnectedPiece, {
+						weight: path.weight + 1,
+						points: path.points.concat(nextConnectedPiece),
+						vectors: path.vectors.concat(connectedPiece)
+					});
+				}
+			} else if (connectedPiece.checker * piece.checker > 0 || direction * piece.checker < 0 && connectedPiece.checker == 0) {
+				//got our checker or heading back and got empty spot
+				//console.log(piece.id, `We haven't found our enemy today, but we'll try another time`);
+				return {
+					weight: path.weight - 1,
+					points: [].concat(_toConsumableArray(path.points), [connectedPiece]),
+					vectors: path.vectors
+				};
+			} else if (direction * piece.checker > 0 && connectedPiece.checker == 0) {
+				//heading forth and got empty spot
+				//console.log(piece.id, `At last some place to rest our flaty surface.`, path.weight, [...path.points, connectedPiece], path.vectors);
+				return {
+					weight: path.weight + 0,
+					points: [].concat(_toConsumableArray(path.points), [connectedPiece]),
+					vectors: path.vectors
+				};
+			} else ; //return console.log(piece.id, `We've stuck in field and can't move forth`, piece.id, path) //, path;
+		}
+		//we're going from empty ground and there's no enemy pieces nearby
+	}
+	function logic(state, action) {
+		var game = _extends({}, state.game);
+		var table = _extends({}, state.game.table);
+		switch (action.type) {
+			case 'hideMoves':
+				Object.keys(table).map(function (pos) {
+					table[pos] = _extends({}, table[pos], {
+						className: table[pos].paths && table[pos].paths.length > 0 && game.turn * table[pos].checker > 0 ? 'can-move' : '',
+						consume: undefined
+					});
+				});
+				return _extends({}, state, {
+					game: _extends({}, state.game, {
+						table: _extends({}, table)
+					})
+				});
+			case 'showMoves':
+				var paths = [].concat(_toConsumableArray(action.paths));
+				paths.map(function (path) {
+					//path.points.map(point=>{
+					table[path.points[0].id].className = 'possible-move';
+					//})
+				});
+				table[action.id].className = 'active';
+				return _extends({}, state, {
+					game: _extends({}, state.game, {
+						table: _extends({}, state.game.table, table),
+						lastChecker: action.id
+					})
+				});
+			case 'move':
+				var piece = action.piece;
+				var pieceTo = action.pieceTo;
+				var consume = action.consume;
+				var turn = action.turn;
+
+				console.log('Moving debug', piece, pieceTo, consume, turn);
+				if (consume) {
+					table[consume].checker = 0;
+				}
+				table[pieceTo.id].checker = piece.checker * shouldBecomeDamsel(piece, pieceTo);
+				table[pieceTo.id].className = turn != state.game.turn ? '' : 'active';
+				table[piece.id].checker = 0;
+				table[piece.id].className = '';
+				return _extends({}, state, {
+					game: _extends({}, game, {
+						table: _extends({}, game.table, table),
+						turn: turn
+					})
+				});
+			case 'updateAllPaths':
+				game.table = findAllPaths(game.table, game.turn);
+				//console.log('new table: ', game.table);
+				return _extends({}, state, {
+					game: _extends({}, game, {
+						table: _extends({}, game.table)
+					})
+				});
+			default:
+				return state;
+		}
+	}
+
+/***/ },
 /* 269 */
 /***/ function(module, exports) {
 
@@ -29864,7 +30148,7 @@
 		},
 		"4-B": {
 			"id": '4-B',
-			"checker": 0,
+			"checker": -1,
 			connected: {
 				1: '5-A',
 				2: '5-C',

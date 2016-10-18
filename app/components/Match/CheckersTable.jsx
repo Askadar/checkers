@@ -44,11 +44,7 @@ class CheckersTable extends React.Component {
 	}
 	render() {
 		return (
-			<div className="checkers-table" style={{
-				zoom: this.props.zoom,
-				height: (window.innerHeight) * 3 / 4,
-				width: (window.innerHeight) * 3 / 4
-			}} data-whites={this.props.turn}>
+			<div className="checkers-table" data-whites={this.props.turn}>
 				{Object.keys(this.props.table).map((a) => {
 					return <Checker id={a} key={a} {...this.props.table[a]} hideMoves={this.props.hideMoves} showMoves={this.showMoves.bind(this)} move={this.move.bind(this)}/>
 				})}

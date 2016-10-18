@@ -62,9 +62,9 @@ function findAllPaths(table, turn) {
 						: 'active'
 				}
 			}
-			bWhiteMovesOnly = bWhiteMovesOnly
-				? newTable[pieceKey].paths.some(a => a.weight > 0)
-				: 'false';
+			// bWhiteMovesOnly = bWhiteMovesOnly
+			// 	? newTable[pieceKey].paths.some(a => a.weight > 0)
+			// 	: 'false';
 		} else {
 			newTable[pieceKey] = table[pieceKey];
 		}
@@ -110,10 +110,10 @@ function checkDirections(table, piece, directions = [-2,-1,1,2], path = {
 	emptyVectors: []
 }) {
 	const directionHash = {
-		'-1': [	-2, 1],
-		'-2': [	2, -1],
-		'1': [2, -1],
-		'2': [-2, 1]
+		'-1': [	-2, 1,2],
+		'-2': [	2, -1,1],
+		'1': [2, -1,-2],
+		'2': [-2, 1,-1]
 	}
 	var paths = [];
 	for (let i in directions) {
@@ -124,28 +124,36 @@ function checkDirections(table, piece, directions = [-2,-1,1,2], path = {
 			...path
 		};
 		while (nextPiece) {
+			let nextConnectedPiece = table[next.piece.connected[direction]];
 			if (nextPiece.checker == 0) { //we got empty spot
 				if (emptyMovesOnly) {
 					currentPath.emptyVectors.push(nextPiece);
 				} else { //send em flyin', kidding, go to right and left
 					paths.concat(checkDirections(table, nextPiece, directionHash[direction], {
 						...currentPath,
-						vectors: [
+						points: [
 							...currentPath.points,
 							nextPiece
 						]
 					}))
 				}
 			}
-			else if (nextPiece.checker * piece.checker < 0){ //we got enemy
-				;
+			else if (nextPiece.checker * piece.checker < 0 && nextConnectedPiece.checker === 0){ //we got enemy and there's empty spot behind it
+				if(emptyMovesOnly){
+					currentPath.vectors.push(nextPiece);
+					emptyMovesOnly = false;
+				}
+				else{ //stumbled across another enemy piece
+					break; //stop path finding and let other instance of this function take care of it
+				}
 			}
-
 			nextPiece = table[nextPiece.connected[direction]]
 		}
-		if (emptyMovesOnly){ //we haven't found anyone, so spuff all points in 0-weighted paths
-			paths.concat(currentPath.emptyVectors.map(a=>{weight:0, points:[a]}));
-		}
+		console.log('Got paths for direction', paths);
+		return paths;
+		// if (emptyMovesOnly){ //we haven't found anyone, so spuff all points in 0-weighted paths
+		// 	paths.concat(currentPath.emptyVectors.map(a=>{return {weight:0, points:[a]}}));
+		// }
 	}
 }
 function findPath(table, piece, direction, path = {

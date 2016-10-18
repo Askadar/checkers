@@ -37,8 +37,8 @@
 }
 .checkers-table {
 	background: rgba(250, 235, 180, 0.8);
-	min-width: 512px;
-	min-height: 512px;
+	width: 100%;
+	height: 100%;
 	font-size: 0;
 	cursor: default;
 	position: relative;
@@ -46,7 +46,7 @@
 .checkers-table-container{
 	transform: rotateX(180deg);
     user-select: none;
-    border: 32px solid rgb(193, 163, 119);
+    border: 3rem solid rgba(200, 165, 120,0.8);
     border-radius: 1rem;
     position: relative;
     transition: 1s all;
@@ -56,16 +56,15 @@
 }
 .checkers-table-container:before{
 	content: '';
-    background: url(/assets/numbers.svg);
+    background: url(/checkers/assets/numbers.svg);
     position: absolute;
-    left: -5%;
-    top: -5%;
-    width: 110%;
-    z-index: 0;
-    height: 110%;
+	 left: -7.5%;
+    top: -7.5%;
+    width: 115%;
+    height: 115%;
     /*transform: rotateX(180deg);*/
-    background-position: 0 0;
-    background-size: 100% 100%;
+    background-position: 0 32px;
+    background-size: 95%;
 }
 /*.checkers-table:before {
 	content: "";
