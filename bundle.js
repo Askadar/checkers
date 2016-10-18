@@ -29721,12 +29721,12 @@
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
-	    value: true
+		value: true
 	});
 
 	var _redux = __webpack_require__(180);
 
-	var _reducers = __webpack_require__(268);
+	var _reducers = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./reducers\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
 
 	var _reducers2 = _interopRequireDefault(_reducers);
 
@@ -29737,242 +29737,15 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var state = {
-	    game: {
-	        table: _temp2.default,
-	        turn: 1
-	    }
+		game: {
+			table: _temp2.default,
+			turn: 1
+		}
 	};
 	exports.default = (0, _redux.createStore)(_reducers2.default, state, window.devToolsExtension && window.devToolsExtension());
 
 /***/ },
-/* 268 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-	exports.default = logic;
-
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-	var getLeft = function getLeft(color, indecis) {
-		if (color === -1) return parseInt(indecis[0]) - 1 + '-' + String.fromCharCode(indecis[1].charCodeAt() - 1);else return parseInt(indecis[0]) + 1 + '-' + String.fromCharCode(indecis[1].charCodeAt() + 1);
-	};
-	var getRight = function getRight(color, indecis) {
-		if (color === -1) parseInt(indecis[0]) - 1 + '-' + String.fromCharCode(indecis[1].charCodeAt() + 1);else return parseInt(indecis[0]) + 1 + '-' + String.fromCharCode(indecis[1].charCodeAt() - 1);
-	};
-
-	/*notes
-	Checker.connected = [..where < 0 are down and > 0 are up (for whites)]
-	Checker.color = -2,-1,0,1,2 where number declare color and whether it's a king, positive are white, negative are black and 0 is none
-
-	Path.points - array of points [pieces] where we can end up
-	Path.vectors - array of point that we 'fly' over, like enemy piece
-	*/
-	if (!Array.prototype.last) {
-		Array.prototype.last = function () {
-			return this[this.length - 1];
-		};
-	};
-	function shouldBecomeDamsel(piece, pieceTo) {
-		/*
-	 Bool-like (pieceFrom, pieceTo), return multiplier if got to enemy territory, otherwise 1
-	 */
-		var hash = {
-			'8': -1,
-			'1': 1
-		}; //hash10 = {10:-1, 1:1}
-		return hash[pieceTo.id.split('-')[0]] * piece.checker < 0 ? 2 : 1;
-	}
-	function findAllPaths(table, turn) {
-		var newTable = {};
-		var t0 = performance.now();
-		var bWhiteMovesOnly = true;
-
-		var _loop = function _loop(pieceKey) {
-			//do repath only for those pieces, that either connected to enemy pieces or connected to white spots
-			if (table[pieceKey].checker * turn > 0 && Object.keys(table[pieceKey].connected).some(function (d) {
-				return table[table[pieceKey].connected[d]].checker * table[pieceKey].checker < 0 || d * table[pieceKey].checker > 0 && table[table[pieceKey].connected[d]].checker == 0;
-			})) {
-				newTable[pieceKey] = _extends({}, table[pieceKey], {
-					paths: findPaths(table, table[pieceKey]),
-					className: table[pieceKey].className != 'active' ? 'can-move' : 'active'
-				});
-				bWhiteMovesOnly = bWhiteMovesOnly ? newTable[pieceKey].paths.some(function (a) {
-					return a.weight > 0;
-				}) : 'false';
-			} else {
-				newTable[pieceKey] = table[pieceKey];
-			}
-		};
-
-		for (var pieceKey in table) {
-			_loop(pieceKey);
-		}
-		var t1 = performance.now();
-		if (t1 - t0 > 5) {
-			console.log("Pathing took " + (t1 - t0) + " milliseconds.");
-			debugger;
-		} //log pathing time only on really slow occasions
-		return newTable;
-	}
-
-	function findPaths(table, piece) {
-		var path = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {
-			weight: 0,
-			points: [],
-			vectors: []
-		};
-
-		var paths = [];
-
-		var _loop2 = function _loop2(direction) {
-			//console.log(piece.id, `We're seekers of truth going to ${direction} while standing at ${piece.id}, and we have: `, path.vectors, table[piece.connected[direction]].id, path.vectors.filter(p => p.id == table[piece.connected[direction]].id).length == 0);
-			if (path.vectors.filter(function (p) {
-				return p.id == table[piece.connected[direction]].id;
-			}).length == 0) paths = paths.concat(findPath(table, piece, direction, path));
-		};
-
-		for (var direction in piece.connected) {
-			_loop2(direction);
-		}
-		path.weight > 0 && paths.push(path);
-		//console.log(piece.id, `we've found our way to glory and death`, paths);
-		var maxR = 0;
-
-		function max(b) {
-			maxR = b;
-		}
-		var bestPaths = paths.filter(function (a) {
-			a && a.weight > maxR && max(a.weight);
-			return a;
-		}).filter(function (a) {
-			return a.weight == maxR;
-		});
-		//console.log('And the king is', bestPaths);
-		return bestPaths;
-	}
-
-	function findPath(table, piece, direction) {
-		var path = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {
-			weight: 0,
-			points: [],
-			vectors: []
-		};
-
-		//for(let direction in piece.connected){
-		var connectedPiece = table[piece.connected[direction]];
-		if (!connectedPiece) return;
-
-		//console.log(piece.id, `We've gone to solice at ${connectedPiece.id}, and got ourselves a nice pieces `, connectedPiece, piece);
-		if (piece.checker != 0 && piece.checker % 2 == 0) {
-			// we're damsel
-			//console.log(piece.id, 'All hail our mightyness!');
-			return _extends({}, path);
-		} else {
-			//we're peasant
-			//console.log(piece.id, `We're just a peasant, but we are still stand strong, `, connectedPiece, piece, path);
-			if (connectedPiece.checker * piece.checker < 0 || path.vectors[0] && path.vectors[0].checker * connectedPiece.checker > 0) {
-				//got enemy checker
-				var nextConnectedPiece = table[connectedPiece.connected[direction]];
-				//console.log(piece.id, `We've faced an enemy, but we'll never give up until we hit a wall of them or other`, nextConnectedPiece);
-				if (nextConnectedPiece && nextConnectedPiece.checker == 0) {
-					//we got enemy with space behind them, strike!
-					return findPaths(table, nextConnectedPiece, {
-						weight: path.weight + 1,
-						points: path.points.concat(nextConnectedPiece),
-						vectors: path.vectors.concat(connectedPiece)
-					});
-				}
-			} else if (connectedPiece.checker * piece.checker > 0 || direction * piece.checker < 0 && connectedPiece.checker == 0) {
-				//got our checker or heading back and got empty spot
-				//console.log(piece.id, `We haven't found our enemy today, but we'll try another time`);
-				return {
-					weight: path.weight - 1,
-					points: [].concat(_toConsumableArray(path.points), [connectedPiece]),
-					vectors: path.vectors
-				};
-			} else if (direction * piece.checker > 0 && connectedPiece.checker == 0) {
-				//heading forth and got empty spot
-				//console.log(piece.id, `At last some place to rest our flaty surface.`, path.weight, [...path.points, connectedPiece], path.vectors);
-				return {
-					weight: path.weight + 0,
-					points: [].concat(_toConsumableArray(path.points), [connectedPiece]),
-					vectors: path.vectors
-				};
-			} else ; //return console.log(piece.id, `We've stuck in field and can't move forth`, piece.id, path) //, path;
-		}
-		//we're going from empty ground and there's no enemy pieces nearby
-	}
-	function logic(state, action) {
-		var game = _extends({}, state.game);
-		var table = _extends({}, state.game.table);
-		switch (action.type) {
-			case 'hideMoves':
-				Object.keys(table).map(function (pos) {
-					table[pos] = _extends({}, table[pos], {
-						className: table[pos].paths && table[pos].paths.length > 0 && game.turn * table[pos].checker > 0 ? 'can-move' : '',
-						consume: undefined
-					});
-				});
-				return _extends({}, state, {
-					game: _extends({}, state.game, {
-						table: _extends({}, table)
-					})
-				});
-			case 'showMoves':
-				var paths = [].concat(_toConsumableArray(action.paths));
-				paths.map(function (path) {
-					//path.points.map(point=>{
-					table[path.points[0].id].className = 'possible-move';
-					//})
-				});
-				table[action.id].className = 'active';
-				return _extends({}, state, {
-					game: _extends({}, state.game, {
-						table: _extends({}, state.game.table, table),
-						lastChecker: action.id
-					})
-				});
-			case 'move':
-				var piece = action.piece;
-				var pieceTo = action.pieceTo;
-				var consume = action.consume;
-				var turn = action.turn;
-
-				console.log('Moving debug', piece, pieceTo, consume, turn);
-				if (consume) {
-					table[consume].checker = 0;
-				}
-				table[pieceTo.id].checker = piece.checker * shouldBecomeDamsel(piece, pieceTo);
-				table[pieceTo.id].className = turn != state.game.turn ? '' : 'active';
-				table[piece.id].checker = 0;
-				table[piece.id].className = '';
-				return _extends({}, state, {
-					game: _extends({}, game, {
-						table: _extends({}, game.table, table),
-						turn: turn
-					})
-				});
-			case 'updateAllPaths':
-				game.table = findAllPaths(game.table, game.turn);
-				//console.log('new table: ', game.table);
-				return _extends({}, state, {
-					game: _extends({}, game, {
-						table: _extends({}, game.table)
-					})
-				});
-			default:
-				return state;
-		}
-	}
-
-/***/ },
+/* 268 */,
 /* 269 */
 /***/ function(module, exports) {
 
@@ -29984,14 +29757,14 @@
 	exports.default = {
 		"1-A": {
 			"id": '1-A',
-			"checker": 1,
+			"checker": 2,
 			connected: {
 				'2': '2-B'
 			}
 		},
 		"1-C": {
 			"id": '1-C',
-			"checker": 1,
+			"checker": 2,
 			connected: {
 				'1': '2-B',
 				'2': '2-D'
@@ -29999,7 +29772,7 @@
 		},
 		"1-E": {
 			"id": '1-E',
-			"checker": 1,
+			"checker": 2,
 			connected: {
 				'1': '2-D',
 				'2': '2-F'
@@ -30007,7 +29780,7 @@
 		},
 		"1-G": {
 			"id": '1-G',
-			"checker": 1,
+			"checker": 2,
 			connected: {
 				2: '2-H',
 				1: '2-F'
@@ -30015,7 +29788,7 @@
 		},
 		"2-B": {
 			"id": '2-B',
-			"checker": 1,
+			"checker": 0,
 			connected: {
 				1: '3-A',
 				2: '3-C',
@@ -30025,7 +29798,7 @@
 		},
 		"2-D": {
 			"id": '2-D',
-			"checker": 1,
+			"checker": 0,
 			connected: {
 				2: '3-E',
 				1: '3-C',
@@ -30035,7 +29808,7 @@
 		},
 		"2-F": {
 			"id": '2-F',
-			"checker": 1,
+			"checker": 0,
 			connected: {
 				1: '3-E',
 				2: '3-G',
@@ -30045,7 +29818,7 @@
 		},
 		"2-H": {
 			"id": '2-H',
-			"checker": 1,
+			"checker": 0,
 			connected: {
 				1: '3-G',
 				'-1': '1-G'
@@ -30053,7 +29826,7 @@
 		},
 		"3-A": {
 			"id": '3-A',
-			"checker": 1,
+			"checker": 0,
 			connected: {
 				'-2': '2-B',
 				'2': '4-B'
@@ -30061,7 +29834,7 @@
 		},
 		"3-C": {
 			"id": '3-C',
-			"checker": 1,
+			"checker": 0,
 			connected: {
 				'-1': '2-B',
 				1: '4-B',
@@ -30071,7 +29844,7 @@
 		},
 		"3-E": {
 			"id": '3-E',
-			"checker": 1,
+			"checker": -1,
 			connected: {
 				'-2': '2-F',
 				2: '4-F',
@@ -30081,7 +29854,7 @@
 		},
 		"3-G": {
 			"id": '3-G',
-			"checker": 1,
+			"checker": 0,
 			connected: {
 				'-1': '2-F',
 				1: '4-F',
@@ -30177,7 +29950,7 @@
 		},
 		"6-D": {
 			"id": '6-D',
-			"checker": -1,
+			"checker": 0,
 			connected: {
 				'1': '7-C',
 				'2': '7-E',
@@ -30187,7 +29960,7 @@
 		},
 		"6-F": {
 			"id": '6-F',
-			"checker": -1,
+			"checker": 0,
 			connected: {
 				'1': '7-E',
 				'2': '7-G',
@@ -30197,7 +29970,7 @@
 		},
 		"6-H": {
 			"id": '6-H',
-			"checker": -1,
+			"checker": 0,
 			connected: {
 				'1': '7-G',
 				'-1': '5-G'
@@ -30205,7 +29978,7 @@
 		},
 		"7-A": {
 			"id": '7-A',
-			"checker": -1,
+			"checker": 0,
 			connected: {
 				'2': '8-B',
 				'-2': '6-B'
@@ -30213,7 +29986,7 @@
 		},
 		"7-C": {
 			"id": '7-C',
-			"checker": -1,
+			"checker": 0,
 			connected: {
 				'1': '8-B',
 				'2': '8-D',
@@ -30243,7 +30016,7 @@
 		},
 		"8-B": {
 			"id": '8-B',
-			"checker": -1,
+			"checker": -2,
 			connected: {
 				'-1': '7-A',
 				'-2': '7-C'
@@ -30251,7 +30024,7 @@
 		},
 		"8-D": {
 			"id": '8-D',
-			"checker": -1,
+			"checker": 0,
 			connected: {
 				'-2': '7-E',
 				'-1': '7-C'
@@ -30259,7 +30032,7 @@
 		},
 		"8-F": {
 			"id": '8-F',
-			"checker": -1,
+			"checker": 0,
 			connected: {
 				'-1': '7-E',
 				'-2': '7-G'
@@ -30267,12 +30040,305 @@
 		},
 		"8-H": {
 			"id": '8-H',
-			"checker": -1,
+			"checker": -2,
 			connected: {
 				'-1': '7-G'
 			}
 		}
 	};
+
+	/*export default {
+		"1-A":{
+			"id":'1-A',
+			"checker": 0,
+			connected: {
+				'2': '2-B'
+			}
+		},
+		"1-C":{
+			"id":'1-C',
+			"checker": 0,
+			connected: {
+				'1': '2-B',
+				'2': '2-D'
+			}
+		},
+		"1-E":{
+			"id":'1-E',
+			"checker": 0,
+			connected: {
+				'1': '2-D',
+				'2': '2-F'
+			}
+		},
+		"1-G":{
+			"id":'1-G',
+			"checker": 0,
+			connected: {
+				2: '2-H',
+				1: '2-F'
+			}
+		},
+		"2-B":{
+			"id":'2-B',
+			"checker": 0,
+			connected: {
+				1: '3-A',
+				2: '3-C',
+				'-1': '1-A',
+				'-2': '1-C'
+			}
+		},
+		"2-D":{
+			"id":'2-D',
+			"checker": 0,
+			connected: {
+				2: '3-E',
+				1: '3-C',
+				'-2': '1-E',
+				'-1': '1-C'
+			}
+		},
+		"2-F":{
+			"id":'2-F',
+			"checker": 0,
+			connected: {
+				1: '3-E',
+				2: '3-G',
+				'-1': '1-E',
+				'-2': '1-G'
+			}
+		},
+		"2-H":{
+			"id":'2-H',
+			"checker": 0,
+			connected: {
+				1: '3-G',
+				'-1': '1-G'
+			}
+		},
+		"3-A":{
+			"id":'3-A',
+			"checker": 0,
+			connected: {
+				'-2': '2-B',
+				'2': '4-B'
+			}
+		},
+		"3-C":{
+			"id":'3-C',
+			"checker": 0,
+			connected: {
+				'-1': '2-B',
+				1: '4-B',
+				2: '4-D',
+				'-2': '2-D'
+			}
+		},
+		"3-E":{
+			"id":'3-E',
+			"checker": 0,
+			connected: {
+				'-2': '2-F',
+				2: '4-F',
+				1: '4-D',
+				'-1': '2-D'
+			}
+		},
+		"3-G":{
+			"id":'3-G',
+			"checker": 0,
+			connected: {
+				'-1': '2-F',
+				1: '4-F',
+				2: '4-H',
+				'-2': '2-H'
+			}
+		},
+		"4-B":{
+			"id":'4-B',
+			"checker": 0,
+			connected: {
+				1: '5-A',
+				2: '5-C',
+				'-1': '3-A',
+				'-2': '3-C'
+			}
+		},
+		"4-D":{
+			"id":'4-D',
+			"checker": 0,
+			connected: {
+				2: '5-E',
+				1: '5-C',
+				'-2': '3-E',
+				'-1': '3-C'
+			}
+		},
+		"4-F":{
+			"id":'4-F',
+			"checker": 0,
+			connected: {
+				1: '5-E',
+				2: '5-G',
+				'-1': '3-E',
+				'-2': '3-G'
+			}
+		},
+		"4-H":{
+			"id":'4-H',
+			"checker": 0,
+			connected: {
+				1: '5-G',
+				'-1': '3-G'
+			}
+		},
+		"5-A":{
+			"id":'5-A',
+			"checker": 0,
+			connected: {
+				2: '6-B',
+				'-2': '4-B'
+			}
+		},
+		"5-C":{
+			"id":'5-C',
+			"checker": 0,
+			connected: {
+				'1': '6-B',
+				'2': '6-D',
+				'-1': '4-B',
+				'-2': '4-D'
+			}
+		},
+		"5-E":{
+			"id":'5-E',
+			"checker": 0,
+			connected: {
+				'2': '6-F',
+				'1': '6-D',
+				'-2': '4-F',
+				'-1': '4-D'
+			}
+		},
+		"5-G":{
+			"id":'5-G',
+			"checker": 0,
+			connected: {
+				'1': '6-F',
+				'2': '6-H',
+				'-1': '4-F',
+				'-2': '4-H'
+			}
+		},
+		"6-B":{
+			"id":'6-B',
+			"checker": 0,
+			connected: {
+				'1': '7-A',
+				'2': '7-C',
+				'-1': '5-A',
+				'-2': '5-C'
+			}
+		},
+		"6-D":{
+			"id":'6-D',
+			"checker": 0,
+			connected: {
+				'1': '7-C',
+				'2': '7-E',
+				'-1': '5-C',
+				'-2': '5-E'
+			}
+		},
+		"6-F":{
+			"id":'6-F',
+			"checker": 0,
+			connected: {
+				'1': '7-E',
+				'2': '7-G',
+				'-1': '5-E',
+				'-2': '5-G'
+			}
+		},
+		"6-H":{
+			"id":'6-H',
+			"checker": 0,
+			connected: {
+				'1': '7-G',
+				'-1': '5-G'
+			}
+		},
+		"7-A":{
+			"id":'7-A',
+			"checker": 0,
+			connected: {
+				'2': '8-B',
+				'-2': '6-B'
+			}
+		},
+		"7-C":{
+			"id":'7-C',
+			"checker": 0,
+			connected: {
+				'1': '8-B',
+				'2': '8-D',
+				'-1': '6-B',
+				'-2': '6-D'
+			}
+		},
+		"7-E":{
+			"id":'7-E',
+			"checker": 0,
+			connected: {
+				'2': '8-F',
+				'1': '8-D',
+				'-2': '6-F',
+				'-1': '6-D'
+			}
+		},
+		"7-G":{
+			"id":'7-G',
+			"checker": 0,
+			connected: {
+				'1': '8-F',
+				'2': '8-H',
+				'-1': '6-F',
+				'-2': '6-H'
+			}
+		},
+		"8-B":{
+			"id":'8-B',
+			"checker": 0,
+			connected: {
+				'-1': '7-A',
+				'-2': '7-C'
+			}
+		},
+		"8-D":{
+			"id":'8-D',
+			"checker": 0,
+			connected: {
+				'-2': '7-E',
+				'-1': '7-C'
+			}
+		},
+		"8-F":{
+			"id":'8-F',
+			"checker": 0,
+			connected: {
+				'-1': '7-E',
+				'-2': '7-G'
+			}
+		},
+		"8-H":{
+			"id":'8-H',
+			"checker": 0,
+			connected: {
+				'-1': '7-G'
+			}
+		}
+	}*/
 
 /***/ }
 /******/ ]);
