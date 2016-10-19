@@ -43,31 +43,24 @@ function findAllPaths(table, turn) {
 	var bWhiteMovesOnly = true;
 	for (let pieceKey in table) {
 		//do repath only for those pieces, that either connected to enemy pieces or connected to white spots
-		if (table[pieceKey].checker * turn > 0 && Object.keys(table[pieceKey].connected).some(d => {
+		if (table[pieceKey].checker * turn > 0/* && Object.keys(table[pieceKey].connected).some(d => {
 			return table[table[pieceKey].connected[d]].checker * table[pieceKey].checker < 0 || (d * table[pieceKey].checker > 0 && table[table[pieceKey].connected[d]].checker == 0) || (table[pieceKey].checker !== 0 && table[pieceKey].checker % 2 == 0)
-		})) {
+		})*/) {
 			if (table[pieceKey].checker % 2 != 0){
 				newTable[pieceKey] = {
 					...table[pieceKey],
-					paths: findPaths(table, table[pieceKey]),
-					className: table[pieceKey].className != 'active'
-						? 'can-move'
-						: 'active'
+					paths: findPaths(table, table[pieceKey])
 				}
 			}
 			else if (table[pieceKey].checker % 2 == 0){
 				//console.log('going to lookup paths for', table[pieceKey]);
-				//if(pieceKey == '8-D')
-					debugger;
 				newTable[pieceKey] = {
 					...table[pieceKey],
-					paths: checkDirections(table, table[pieceKey], table[pieceKey]).filter(p=>p.weight >= 0 && p.points.length >= p.vectors.length),
-					className: table[pieceKey].className != 'active'
-						? 'can-move'
-						: 'active'
+					paths: checkDirections(table, table[pieceKey], table[pieceKey]).filter(p=>p.points.length > 0 && p.points.length >= p.vectors.length)
 				}
 				console.log('Paths for '+pieceKey, newTable[pieceKey].paths);
 			}
+			newTable[pieceKey].className = newTable[pieceKey].paths.length > 0 ? (newTable[pieceKey].className == 'active' ? 'active' : 'can-move') : ''
 			// bWhiteMovesOnly = bWhiteMovesOnly
 			// 	? newTable[pieceKey].paths.some(a => a.weight > 0)
 			// 	: 'false';
@@ -128,9 +121,12 @@ function checkDirections(table, piece, pieceFrom, directions = [-2,-1,1,2], path
 			else if (nextPiece.checker * piece.checker < 0 && nextConnectedPiece && nextConnectedPiece.checker === 0 && !currentPath.vectors.some(v=>v.id == nextPiece.id)){ //we got enemy and there's empty spot behind it
 				if(whiteMovesOnly){
 					currentPath.vectors = currentPath.vectors.concat(nextPiece);
-					//currentPath.points = currentPath.points.concat(nextConnectedPiece);
+					currentPath.points = currentPath.points.concat(nextConnectedPiece);
 					currentPath.weight += 1;
-					whiteMovesOnly = false;
+					whiteMovesOnly = false; //somewhat a solition, just don't forget (yeah, sure) about strange doubled points in some cases
+					paths = paths.concat(checkDirections(table, piece, nextConnectedPiece, directionHash[direction], {
+						...currentPath
+					}))
 				}
 				else{ //stumbled across another enemy piece
 					break; //stop path finding and let other instance of this function take care of it
@@ -148,9 +144,7 @@ function checkDirections(table, piece, pieceFrom, directions = [-2,-1,1,2], path
 		if (whiteMovesOnly && piece == pieceFrom){ //we haven't found anyone, so spuff all points in 0-weighted paths
 			paths = paths.concat(currentPath.emptyVectors.map(a=>{return {weight:0, points:[a], vectors: []}}));
 		}
-		else {
-			paths = paths.concat(currentPath);
-		}
+		paths = paths.concat(currentPath);
 	}
 	//console.log('Got paths for direction', paths);
 	return paths;

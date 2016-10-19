@@ -1,4 +1,4 @@
-const damselTest = {
+const test = {
 	"1-A" : {
 		"id": '1-A',
 		"checker": 2,
