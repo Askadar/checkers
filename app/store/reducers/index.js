@@ -31,6 +31,8 @@ function shouldBecomeDamsel(piece, pieceTo) {
 		'8': -1,
 		'1': 1
 	}; //hash10 = {10:-1, 1:1}
+	if (piece.checker % 2 == 0 && piece.checker !== 0)
+		return 1;
 	return hash[pieceTo.id.split('-')[0]] * piece.checker < 0
 		? 2
 		: 1
@@ -42,7 +44,7 @@ function findAllPaths(table, turn) {
 	for (let pieceKey in table) {
 		//do repath only for those pieces, that either connected to enemy pieces or connected to white spots
 		if (table[pieceKey].checker * turn > 0 && Object.keys(table[pieceKey].connected).some(d => {
-			return table[table[pieceKey].connected[d]].checker * table[pieceKey].checker < 0 || (d * table[pieceKey].checker > 0 && table[table[pieceKey].connected[d]].checker == 0)
+			return table[table[pieceKey].connected[d]].checker * table[pieceKey].checker < 0 || (d * table[pieceKey].checker > 0 && table[table[pieceKey].connected[d]].checker == 0) || (table[pieceKey].checker !== 0 && table[pieceKey].checker % 2 == 0)
 		})) {
 			if (table[pieceKey].checker % 2 != 0){
 				newTable[pieceKey] = {
@@ -55,9 +57,11 @@ function findAllPaths(table, turn) {
 			}
 			else if (table[pieceKey].checker % 2 == 0){
 				//console.log('going to lookup paths for', table[pieceKey]);
+				//if(pieceKey == '8-D')
+					debugger;
 				newTable[pieceKey] = {
 					...table[pieceKey],
-					paths: checkDirections(table, table[pieceKey], table[pieceKey]),
+					paths: checkDirections(table, table[pieceKey], table[pieceKey]).filter(p=>p.weight >= 0 && p.points.length >= p.vectors.length),
 					className: table[pieceKey].className != 'active'
 						? 'can-move'
 						: 'active'
@@ -78,7 +82,82 @@ function findAllPaths(table, turn) {
 	} //log pathing time only on really slow occasions
 	return newTable
 }
+function checkDirections(table, piece, pieceFrom, directions = [-2,-1,1,2], path = {
+	weight: 0,
+	points: [],
+	vectors: [],
+	emptyVectors: []
+}) {
+	//console.log('Checking directions', path, pieceFrom);
+	const directionHash = {
+		'-1': [	-2, 1,-1],
+		'-2': [	2, -1,-2],
+		'1': [2, -1,1],
+		'2': [-2, 1,2]
+	}
+	var paths = [];
+	for (let i in directions) {
+		let direction = directions[i];
+		var nextPiece = table[pieceFrom.connected[direction]];
+		let whiteMovesOnly = true;
+		let currentPath = {
+			...path
+		};
+		if (nextPiece == undefined || nextPiece.checker * piece.checker > 0)
+			continue;
+		while (nextPiece) {
+			let nextConnectedPiece = table[nextPiece.connected[direction]];
+			if (nextPiece.checker == 0 || currentPath.vectors.some(v=>v.id == nextPiece.id)) { //we got empty spot or eaten checker
+				if (whiteMovesOnly) {
+					currentPath.emptyVectors = currentPath.emptyVectors.concat(nextPiece);
+				} else { //send em flyin', kidding, go to directions
+					if (!currentPath.emptyVectors.some(p=>nextPiece.id == p.id) /*&& !currentPath.points.some(p=>nextPiece.id == p.id)*/){
+						paths = paths.concat(checkDirections(table, piece, nextPiece, directionHash[direction], {
+							...currentPath,
+							points: [
+								...currentPath.points,
+								nextPiece
+							]
+						}));
+					}
+					// else {
+					// 	currentPath.points = currentPath.points.concat(nextPiece);
+					// }
+				}
+			}
+			else if (nextPiece.checker * piece.checker < 0 && nextConnectedPiece && nextConnectedPiece.checker === 0 && !currentPath.vectors.some(v=>v.id == nextPiece.id)){ //we got enemy and there's empty spot behind it
+				if(whiteMovesOnly){
+					currentPath.vectors = currentPath.vectors.concat(nextPiece);
+					//currentPath.points = currentPath.points.concat(nextConnectedPiece);
+					currentPath.weight += 1;
+					whiteMovesOnly = false;
+				}
+				else{ //stumbled across another enemy piece
+					break; //stop path finding and let other instance of this function take care of it
+				}
+			}
+			else if (nextPiece.checker * piece.checker > 0 && whiteMovesOnly && currentPath.vectors.length == 0){
+				currentPath.weight = -1;
+				break; //stumbled across our piece, and we haven't got any enemy, and all is bad, we should go just die (other direction, actually, or really die)
+			}
+			else {
+				break;
+			}
+			nextPiece = table[nextPiece.connected[direction]]
+		}
+		if (whiteMovesOnly && piece == pieceFrom){ //we haven't found anyone, so spuff all points in 0-weighted paths
+			paths = paths.concat(currentPath.emptyVectors.map(a=>{return {weight:0, points:[a], vectors: []}}));
+		}
+		else {
+			paths = paths.concat(currentPath);
+		}
+	}
+	//console.log('Got paths for direction', paths);
+	return paths;
+}
+function checkDirection(table, piece, pieceFrom, direction, path){
 
+}
 function findPaths(table, piece, path = {
 	weight: 0,
 	points: [],
@@ -105,71 +184,6 @@ function findPaths(table, piece, path = {
 	return bestPaths;
 }
 
-function checkDirections(table, piece, pieceFrom, directions = [-2,-1,1,2], path = {
-	weight: 0,
-	points: [],
-	vectors: [],
-	emptyVectors: []
-}) {
-	//console.log('Checking directions', path, pieceFrom);
-	const directionHash = {
-		'-1': [	-2, 1,-1],
-		'-2': [	2, -1,-2],
-		'1': [2, -1,1],
-		'2': [-2, 1,2]
-	}
-	var paths = [];
-	for (let i in directions) {
-		let direction = directions[i];
-		var nextPiece = table[pieceFrom.connected[direction]];
-		let whiteMovesOnly = true;
-		let currentPath = {
-			...path
-		};
-		while (nextPiece) {
-			let nextConnectedPiece = table[nextPiece.connected[direction]];
-			if (nextPiece.checker == 0) { //we got empty spot
-				if (whiteMovesOnly) {
-					currentPath.emptyVectors = currentPath.emptyVectors.concat(nextPiece);
-				} else { //send em flyin', kidding, go to directions
-					if (!currentPath.emptyVectors.some(p=>nextPiece.id == p.id) && !currentPath.points.some(p=>nextPiece.id == p.id)){
-						paths = paths.concat(checkDirections(table, piece, nextPiece, directionHash[direction], {
-							...currentPath,
-							points: [
-								...currentPath.points,
-								nextPiece
-							]
-						}));
-					}
-					else {
-						currentPath.points = currentPath.points.concat(nextPiece);
-					}
-				}
-			}
-			else if (nextPiece.checker * piece.checker < 0 && nextConnectedPiece && nextConnectedPiece.checker === 0 && !currentPath.vectors.some(v=>v.id == nextPiece.id)){ //we got enemy and there's empty spot behind it
-				if(whiteMovesOnly){
-					currentPath.vectors = currentPath.vectors.concat(nextPiece);
-					currentPath.weight += 1;
-					whiteMovesOnly = false;
-				}
-				else{ //stumbled across another enemy piece
-					break; //stop path finding and let other instance of this function take care of it
-				}
-			}
-			else if (nextPiece.checker * piece.checker > 0 && whiteMovesOnly && currentPath.vectors.length == 0){
-				currentPath.weight = -1;
-				break; //stumbled across our piece, and we haven't got any enemy, and all is bad, we should go just die (other direction, actually, or really die)
-			}
-			nextPiece = table[nextPiece.connected[direction]]
-		}
-		paths = paths.concat(currentPath);
-		// if (emptyMovesOnly){ //we haven't found anyone, so spuff all points in 0-weighted paths
-		// 	paths.concat(currentPath.emptyVectors.map(a=>{return {weight:0, points:[a]}}));
-		// }
-	}
-	//console.log('Got paths for direction', paths);
-	return paths;
-}
 function findPath(table, piece, direction, path = {
 	weight: 0,
 	points: [],
@@ -253,6 +267,7 @@ export default function logic(state, action) {
 			};
 		case 'showMoves':
 			let paths = [...action.paths];
+			//debugger;
 			paths.map(path => {
 				//path.points.map(point=>{
 				table[path.points[0].id].className = 'possible-move';
@@ -294,14 +309,14 @@ export default function logic(state, action) {
 				}
 			}
 		case 'updateAllPaths':
-			game.table = findAllPaths(game.table, game.turn);
+			table = findAllPaths(table, game.turn);
 			//console.log('new table: ', game.table);
 			return {
 				...state,
 				game: {
 					...game,
 					table: {
-						...game.table
+						...table
 					}
 				}
 			}

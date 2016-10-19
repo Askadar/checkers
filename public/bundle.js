@@ -29332,6 +29332,7 @@
 				var pieceTo = this.props.table[id];
 				var piece = this.props.table[lastChecker];
 				var consume = void 0;
+				//debugger;
 				if (piece.checker * turn > 0) {
 					console.log('Moved', id, piece, pieceTo, piece.paths);
 					var paths = piece.paths.filter(function (path) {
@@ -29339,14 +29340,22 @@
 					});
 					var path = paths[0];
 					if (path.vectors.length > 0) {
-						consume = path.vectors.shift().id;
+						consume = path.vectors[0].id;
 					}
-					var nextTurn = path.points.length - 1 > 0 ? turn : -turn;
-					path.points.shift();
+					paths = paths.map(function (p) {
+						return _extends({}, p, {
+							points: p.points.slice(1),
+							vectors: p.vectors.slice(1) });
+					}).filter(function (p) {
+						return p.points.length > 0;
+					});
+					path = paths[0];
+					var nextTurn = path && path.points.length > 0 ? turn : -turn;
 					this.props.move(piece, pieceTo, consume, nextTurn);
 					console.log('Turnings', nextTurn, turn);
 					if (nextTurn == turn) {
 						console.log('Show next move', paths, pieceTo.id);
+						this.props.hideMoves();
 						this.props.showMoves(paths, pieceTo.id);
 					} else {
 						this.props.hideMoves();
@@ -29783,6 +29792,7 @@
 			'8': -1,
 			'1': 1
 		}; //hash10 = {10:-1, 1:1}
+		if (piece.checker % 2 == 0 && piece.checker !== 0) return 1;
 		return hash[pieceTo.id.split('-')[0]] * piece.checker < 0 ? 2 : 1;
 	}
 	function findAllPaths(table, turn) {
@@ -29793,7 +29803,7 @@
 		var _loop = function _loop(pieceKey) {
 			//do repath only for those pieces, that either connected to enemy pieces or connected to white spots
 			if (table[pieceKey].checker * turn > 0 && Object.keys(table[pieceKey].connected).some(function (d) {
-				return table[table[pieceKey].connected[d]].checker * table[pieceKey].checker < 0 || d * table[pieceKey].checker > 0 && table[table[pieceKey].connected[d]].checker == 0;
+				return table[table[pieceKey].connected[d]].checker * table[pieceKey].checker < 0 || d * table[pieceKey].checker > 0 && table[table[pieceKey].connected[d]].checker == 0 || table[pieceKey].checker !== 0 && table[pieceKey].checker % 2 == 0;
 			})) {
 				if (table[pieceKey].checker % 2 != 0) {
 					newTable[pieceKey] = _extends({}, table[pieceKey], {
@@ -29802,8 +29812,12 @@
 					});
 				} else if (table[pieceKey].checker % 2 == 0) {
 					//console.log('going to lookup paths for', table[pieceKey]);
+					//if(pieceKey == '8-D')
+					debugger;
 					newTable[pieceKey] = _extends({}, table[pieceKey], {
-						paths: checkDirections(table, table[pieceKey], table[pieceKey]),
+						paths: checkDirections(table, table[pieceKey], table[pieceKey]).filter(function (p) {
+							return p.weight >= 0 && p.points.length >= p.vectors.length;
+						}),
 						className: table[pieceKey].className != 'active' ? 'can-move' : 'active'
 					});
 					console.log('Paths for ' + pieceKey, newTable[pieceKey].paths);
@@ -29826,7 +29840,84 @@
 		} //log pathing time only on really slow occasions
 		return newTable;
 	}
+	function checkDirections(table, piece, pieceFrom) {
+		var directions = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : [-2, -1, 1, 2];
+		var path = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : {
+			weight: 0,
+			points: [],
+			vectors: [],
+			emptyVectors: []
+		};
 
+		//console.log('Checking directions', path, pieceFrom);
+		var directionHash = {
+			'-1': [-2, 1, -1],
+			'-2': [2, -1, -2],
+			'1': [2, -1, 1],
+			'2': [-2, 1, 2]
+		};
+		var paths = [];
+		for (var i in directions) {
+			var direction = directions[i];
+			var nextPiece = table[pieceFrom.connected[direction]];
+			var whiteMovesOnly = true;
+			var currentPath = _extends({}, path);
+			if (nextPiece == undefined || nextPiece.checker * piece.checker > 0) continue;
+			while (nextPiece) {
+				var nextConnectedPiece = table[nextPiece.connected[direction]];
+				if (nextPiece.checker == 0 || currentPath.vectors.some(function (v) {
+					return v.id == nextPiece.id;
+				})) {
+					//we got empty spot or eaten checker
+					if (whiteMovesOnly) {
+						currentPath.emptyVectors = currentPath.emptyVectors.concat(nextPiece);
+					} else {
+						//send em flyin', kidding, go to directions
+						if (!currentPath.emptyVectors.some(function (p) {
+							return nextPiece.id == p.id;
+						}) /*&& !currentPath.points.some(p=>nextPiece.id == p.id)*/) {
+								paths = paths.concat(checkDirections(table, piece, nextPiece, directionHash[direction], _extends({}, currentPath, {
+									points: [].concat(_toConsumableArray(currentPath.points), [nextPiece])
+								})));
+							}
+						// else {
+						// 	currentPath.points = currentPath.points.concat(nextPiece);
+						// }
+					}
+				} else if (nextPiece.checker * piece.checker < 0 && nextConnectedPiece && nextConnectedPiece.checker === 0 && !currentPath.vectors.some(function (v) {
+					return v.id == nextPiece.id;
+				})) {
+					//we got enemy and there's empty spot behind it
+					if (whiteMovesOnly) {
+						currentPath.vectors = currentPath.vectors.concat(nextPiece);
+						//currentPath.points = currentPath.points.concat(nextConnectedPiece);
+						currentPath.weight += 1;
+						whiteMovesOnly = false;
+					} else {
+						//stumbled across another enemy piece
+						break; //stop path finding and let other instance of this function take care of it
+					}
+				} else if (nextPiece.checker * piece.checker > 0 && whiteMovesOnly && currentPath.vectors.length == 0) {
+					currentPath.weight = -1;
+					break; //stumbled across our piece, and we haven't got any enemy, and all is bad, we should go just die (other direction, actually, or really die)
+				} else {
+					break;
+				}
+				nextPiece = table[nextPiece.connected[direction]];
+			}
+			if (whiteMovesOnly && piece == pieceFrom) {
+				//we haven't found anyone, so spuff all points in 0-weighted paths
+				paths = paths.concat(currentPath.emptyVectors.map(function (a) {
+					return { weight: 0, points: [a], vectors: [] };
+				}));
+			} else {
+				paths = paths.concat(currentPath);
+			}
+		}
+		//console.log('Got paths for direction', paths);
+		return paths;
+	}
+	function checkDirection(table, piece, pieceFrom, direction, path) {}
 	function findPaths(table, piece) {
 		var path = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {
 			weight: 0,
@@ -29863,74 +29954,6 @@
 		return bestPaths;
 	}
 
-	function checkDirections(table, piece, pieceFrom) {
-		var directions = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : [-2, -1, 1, 2];
-		var path = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : {
-			weight: 0,
-			points: [],
-			vectors: [],
-			emptyVectors: []
-		};
-
-		//console.log('Checking directions', path, pieceFrom);
-		var directionHash = {
-			'-1': [-2, 1, -1],
-			'-2': [2, -1, -2],
-			'1': [2, -1, 1],
-			'2': [-2, 1, 2]
-		};
-		var paths = [];
-		for (var i in directions) {
-			var direction = directions[i];
-			var nextPiece = table[pieceFrom.connected[direction]];
-			var whiteMovesOnly = true;
-			var currentPath = _extends({}, path);
-			while (nextPiece) {
-				var nextConnectedPiece = table[nextPiece.connected[direction]];
-				if (nextPiece.checker == 0) {
-					//we got empty spot
-					if (whiteMovesOnly) {
-						currentPath.emptyVectors = currentPath.emptyVectors.concat(nextPiece);
-					} else {
-						//send em flyin', kidding, go to directions
-						if (!currentPath.emptyVectors.some(function (p) {
-							return nextPiece.id == p.id;
-						}) && !currentPath.points.some(function (p) {
-							return nextPiece.id == p.id;
-						})) {
-							paths = paths.concat(checkDirections(table, piece, nextPiece, directionHash[direction], _extends({}, currentPath, {
-								points: [].concat(_toConsumableArray(currentPath.points), [nextPiece])
-							})));
-						} else {
-							currentPath.points = currentPath.points.concat(nextPiece);
-						}
-					}
-				} else if (nextPiece.checker * piece.checker < 0 && nextConnectedPiece && nextConnectedPiece.checker === 0 && !currentPath.vectors.some(function (v) {
-					return v.id == nextPiece.id;
-				})) {
-					//we got enemy and there's empty spot behind it
-					if (whiteMovesOnly) {
-						currentPath.vectors = currentPath.vectors.concat(nextPiece);
-						currentPath.weight += 1;
-						whiteMovesOnly = false;
-					} else {
-						//stumbled across another enemy piece
-						break; //stop path finding and let other instance of this function take care of it
-					}
-				} else if (nextPiece.checker * piece.checker > 0 && whiteMovesOnly && currentPath.vectors.length == 0) {
-					currentPath.weight = -1;
-					break; //stumbled across our piece, and we haven't got any enemy, and all is bad, we should go just die (other direction, actually, or really die)
-				}
-				nextPiece = table[nextPiece.connected[direction]];
-			}
-			paths = paths.concat(currentPath);
-			// if (emptyMovesOnly){ //we haven't found anyone, so spuff all points in 0-weighted paths
-			// 	paths.concat(currentPath.emptyVectors.map(a=>{return {weight:0, points:[a]}}));
-			// }
-		}
-		//console.log('Got paths for direction', paths);
-		return paths;
-	}
 	function findPath(table, piece, direction) {
 		var path = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {
 			weight: 0,
@@ -30002,6 +30025,7 @@
 				});
 			case 'showMoves':
 				var paths = [].concat(_toConsumableArray(action.paths));
+				//debugger;
 				paths.map(function (path) {
 					//path.points.map(point=>{
 					table[path.points[0].id].className = 'possible-move';
@@ -30035,11 +30059,11 @@
 					})
 				});
 			case 'updateAllPaths':
-				game.table = findAllPaths(game.table, game.turn);
+				table = findAllPaths(table, game.turn);
 				//console.log('new table: ', game.table);
 				return _extends({}, state, {
 					game: _extends({}, game, {
-						table: _extends({}, game.table)
+						table: _extends({}, table)
 					})
 				});
 			default:
@@ -30056,7 +30080,7 @@
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
-	exports.default = {
+	var damselTest = {
 		"1-A": {
 			"id": '1-A',
 			"checker": 2,
@@ -30349,41 +30373,41 @@
 		}
 	};
 
-	/*export default {
-		"1-A":{
-			"id":'1-A',
-			"checker": 0,
+	exports.default = {
+		"1-A": {
+			"id": '1-A',
+			"checker": 1,
 			connected: {
 				'2': '2-B'
 			}
 		},
-		"1-C":{
-			"id":'1-C',
-			"checker": 0,
+		"1-C": {
+			"id": '1-C',
+			"checker": 1,
 			connected: {
 				'1': '2-B',
 				'2': '2-D'
 			}
 		},
-		"1-E":{
-			"id":'1-E',
-			"checker": 0,
+		"1-E": {
+			"id": '1-E',
+			"checker": 1,
 			connected: {
 				'1': '2-D',
 				'2': '2-F'
 			}
 		},
-		"1-G":{
-			"id":'1-G',
-			"checker": 0,
+		"1-G": {
+			"id": '1-G',
+			"checker": 1,
 			connected: {
 				2: '2-H',
 				1: '2-F'
 			}
 		},
-		"2-B":{
-			"id":'2-B',
-			"checker": 0,
+		"2-B": {
+			"id": '2-B',
+			"checker": 1,
 			connected: {
 				1: '3-A',
 				2: '3-C',
@@ -30391,9 +30415,9 @@
 				'-2': '1-C'
 			}
 		},
-		"2-D":{
-			"id":'2-D',
-			"checker": 0,
+		"2-D": {
+			"id": '2-D',
+			"checker": 1,
 			connected: {
 				2: '3-E',
 				1: '3-C',
@@ -30401,9 +30425,9 @@
 				'-1': '1-C'
 			}
 		},
-		"2-F":{
-			"id":'2-F',
-			"checker": 0,
+		"2-F": {
+			"id": '2-F',
+			"checker": 1,
 			connected: {
 				1: '3-E',
 				2: '3-G',
@@ -30411,25 +30435,25 @@
 				'-2': '1-G'
 			}
 		},
-		"2-H":{
-			"id":'2-H',
-			"checker": 0,
+		"2-H": {
+			"id": '2-H',
+			"checker": 1,
 			connected: {
 				1: '3-G',
 				'-1': '1-G'
 			}
 		},
-		"3-A":{
-			"id":'3-A',
-			"checker": 0,
+		"3-A": {
+			"id": '3-A',
+			"checker": 1,
 			connected: {
 				'-2': '2-B',
 				'2': '4-B'
 			}
 		},
-		"3-C":{
-			"id":'3-C',
-			"checker": 0,
+		"3-C": {
+			"id": '3-C',
+			"checker": 1,
 			connected: {
 				'-1': '2-B',
 				1: '4-B',
@@ -30437,9 +30461,9 @@
 				'-2': '2-D'
 			}
 		},
-		"3-E":{
-			"id":'3-E',
-			"checker": 0,
+		"3-E": {
+			"id": '3-E',
+			"checker": 1,
 			connected: {
 				'-2': '2-F',
 				2: '4-F',
@@ -30447,9 +30471,9 @@
 				'-1': '2-D'
 			}
 		},
-		"3-G":{
-			"id":'3-G',
-			"checker": 0,
+		"3-G": {
+			"id": '3-G',
+			"checker": 1,
 			connected: {
 				'-1': '2-F',
 				1: '4-F',
@@ -30457,8 +30481,8 @@
 				'-2': '2-H'
 			}
 		},
-		"4-B":{
-			"id":'4-B',
+		"4-B": {
+			"id": '4-B',
 			"checker": 0,
 			connected: {
 				1: '5-A',
@@ -30467,8 +30491,8 @@
 				'-2': '3-C'
 			}
 		},
-		"4-D":{
-			"id":'4-D',
+		"4-D": {
+			"id": '4-D',
 			"checker": 0,
 			connected: {
 				2: '5-E',
@@ -30477,8 +30501,8 @@
 				'-1': '3-C'
 			}
 		},
-		"4-F":{
-			"id":'4-F',
+		"4-F": {
+			"id": '4-F',
 			"checker": 0,
 			connected: {
 				1: '5-E',
@@ -30487,24 +30511,24 @@
 				'-2': '3-G'
 			}
 		},
-		"4-H":{
-			"id":'4-H',
+		"4-H": {
+			"id": '4-H',
 			"checker": 0,
 			connected: {
 				1: '5-G',
 				'-1': '3-G'
 			}
 		},
-		"5-A":{
-			"id":'5-A',
+		"5-A": {
+			"id": '5-A',
 			"checker": 0,
 			connected: {
 				2: '6-B',
 				'-2': '4-B'
 			}
 		},
-		"5-C":{
-			"id":'5-C',
+		"5-C": {
+			"id": '5-C',
 			"checker": 0,
 			connected: {
 				'1': '6-B',
@@ -30513,8 +30537,8 @@
 				'-2': '4-D'
 			}
 		},
-		"5-E":{
-			"id":'5-E',
+		"5-E": {
+			"id": '5-E',
 			"checker": 0,
 			connected: {
 				'2': '6-F',
@@ -30523,8 +30547,8 @@
 				'-1': '4-D'
 			}
 		},
-		"5-G":{
-			"id":'5-G',
+		"5-G": {
+			"id": '5-G',
 			"checker": 0,
 			connected: {
 				'1': '6-F',
@@ -30533,9 +30557,9 @@
 				'-2': '4-H'
 			}
 		},
-		"6-B":{
-			"id":'6-B',
-			"checker": 0,
+		"6-B": {
+			"id": '6-B',
+			"checker": -1,
 			connected: {
 				'1': '7-A',
 				'2': '7-C',
@@ -30543,9 +30567,9 @@
 				'-2': '5-C'
 			}
 		},
-		"6-D":{
-			"id":'6-D',
-			"checker": 0,
+		"6-D": {
+			"id": '6-D',
+			"checker": -1,
 			connected: {
 				'1': '7-C',
 				'2': '7-E',
@@ -30553,9 +30577,9 @@
 				'-2': '5-E'
 			}
 		},
-		"6-F":{
-			"id":'6-F',
-			"checker": 0,
+		"6-F": {
+			"id": '6-F',
+			"checker": -1,
 			connected: {
 				'1': '7-E',
 				'2': '7-G',
@@ -30563,25 +30587,25 @@
 				'-2': '5-G'
 			}
 		},
-		"6-H":{
-			"id":'6-H',
-			"checker": 0,
+		"6-H": {
+			"id": '6-H',
+			"checker": -1,
 			connected: {
 				'1': '7-G',
 				'-1': '5-G'
 			}
 		},
-		"7-A":{
-			"id":'7-A',
-			"checker": 0,
+		"7-A": {
+			"id": '7-A',
+			"checker": -1,
 			connected: {
 				'2': '8-B',
 				'-2': '6-B'
 			}
 		},
-		"7-C":{
-			"id":'7-C',
-			"checker": 0,
+		"7-C": {
+			"id": '7-C',
+			"checker": -1,
 			connected: {
 				'1': '8-B',
 				'2': '8-D',
@@ -30589,9 +30613,9 @@
 				'-2': '6-D'
 			}
 		},
-		"7-E":{
-			"id":'7-E',
-			"checker": 0,
+		"7-E": {
+			"id": '7-E',
+			"checker": -1,
 			connected: {
 				'2': '8-F',
 				'1': '8-D',
@@ -30599,9 +30623,9 @@
 				'-1': '6-D'
 			}
 		},
-		"7-G":{
-			"id":'7-G',
-			"checker": 0,
+		"7-G": {
+			"id": '7-G',
+			"checker": -1,
 			connected: {
 				'1': '8-F',
 				'2': '8-H',
@@ -30609,38 +30633,38 @@
 				'-2': '6-H'
 			}
 		},
-		"8-B":{
-			"id":'8-B',
-			"checker": 0,
+		"8-B": {
+			"id": '8-B',
+			"checker": -1,
 			connected: {
 				'-1': '7-A',
 				'-2': '7-C'
 			}
 		},
-		"8-D":{
-			"id":'8-D',
-			"checker": 0,
+		"8-D": {
+			"id": '8-D',
+			"checker": -1,
 			connected: {
 				'-2': '7-E',
 				'-1': '7-C'
 			}
 		},
-		"8-F":{
-			"id":'8-F',
-			"checker": 0,
+		"8-F": {
+			"id": '8-F',
+			"checker": -1,
 			connected: {
 				'-1': '7-E',
 				'-2': '7-G'
 			}
 		},
-		"8-H":{
-			"id":'8-H',
-			"checker": 0,
+		"8-H": {
+			"id": '8-H',
+			"checker": -1,
 			connected: {
 				'-1': '7-G'
 			}
 		}
-	}*/
+	};
 
 /***/ }
 /******/ ]);
