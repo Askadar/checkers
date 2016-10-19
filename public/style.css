@@ -113,7 +113,7 @@
 	margin-left: 0 !important;
 }
 .checkers-table .checker:after {
-	content: attr(id);
+	/*content: attr(id);*/
 	color: #a57d19;
 	position: absolute;
 	bottom: 2%;

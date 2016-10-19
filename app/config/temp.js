@@ -1,4 +1,4 @@
-export default {
+var x = {
 	"1-A":{
 		"id":'1-A',
 		"checker": 1,
@@ -291,8 +291,7 @@ export default {
 	}
 }
 
-//export default
-var x = {
+export default {
 	"1-A":{
 		"id":'1-A',
 		"checker": 1,

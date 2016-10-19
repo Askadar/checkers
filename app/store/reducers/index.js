@@ -41,6 +41,8 @@ function findAllPaths(table, turn) {
 	var newTable = {};
 	var t0 = performance.now();
 	var bWhiteMovesOnly = true;
+	let ruledVal = true;
+	let sidesHash = {'1':0, '-1':0};
 	for (let pieceKey in table) {
 		//do repath only for those pieces, that either connected to enemy pieces or connected to white spots
 		if (table[pieceKey].checker * turn > 0/* && Object.keys(table[pieceKey].connected).some(d => {
@@ -58,7 +60,7 @@ function findAllPaths(table, turn) {
 					...table[pieceKey],
 					paths: checkDirections(table, table[pieceKey], table[pieceKey]).filter(p=>p.points.length > 0 && p.points.length >= p.vectors.length)
 				}
-				console.log('Paths for '+pieceKey, newTable[pieceKey].paths);
+				//console.log('Paths for '+pieceKey, newTable[pieceKey].paths);
 			}
 			newTable[pieceKey].className = newTable[pieceKey].paths.length > 0 ? (newTable[pieceKey].className == 'active' ? 'active' : 'can-move') : ''
 			// bWhiteMovesOnly = bWhiteMovesOnly
@@ -67,7 +69,16 @@ function findAllPaths(table, turn) {
 		} else {
 			newTable[pieceKey] = table[pieceKey];
 		}
+		// if (ruledVal
+		// 	&& sidesHash[newTable[pieceKey].checker > 0 ? 1 : (newTable[pieceKey].checker < 0 ? -1 : 0 )] === 0
+		// 	&& newTable[pieceKey].paths.some(p=>p.weight > 0))
+		// 	sidesHash[newTable[pieceKey].checker] = 1;
 	}
+	// if (sidesHash[-1] == 1 || sidesHash[1] == 1){
+	// 	for (let pieceKey in newTable){
+	// 		newTable[pieceKey].paths = newTable[pieceKey].paths ? newTable[pieceKey].paths.filter(p=>p.weight >= sidesHash[(newTable[pieceKey].checker > 0 ? 1 : -1)]) : newTable[pieceKey].paths;
+	// 	}
+	// }
 	var t1 = performance.now();
 	if (t1 - t0 > 5) {
 		console.log("Pathing took " + (t1 - t0) + " milliseconds.");
@@ -106,7 +117,7 @@ function checkDirections(table, piece, pieceFrom, directions = [-2,-1,1,2], path
 			continue;
 		while (nextPiece) {
 			let nextConnectedPiece = table[nextPiece.connected[direction]];
-			if (nextPiece.checker == 0 || currentPath.vectors.some(v=>v.id == nextPiece.id) || (nextPiece.id == piece.id && currentPath.vectors.length > 0)) { //we got empty spot or eaten checker
+			if (nextPiece.checker == 0 || currentPath.vectors.some(v=>v.id == nextPiece.id) /*|| (nextPiece.id == piece.id && currentPath.vectors.length > 0)*/) { //we got empty spot or eaten checker
 				if (whiteMovesOnly) {
 					currentPath.emptyVectors = currentPath.emptyVectors.concat(nextPiece);
 				} else { //send em flyin', kidding, go to directions
@@ -288,7 +299,7 @@ export default function logic(state, action) {
 			}
 		case 'move':
 			const {piece, pieceTo, consume, turn} = action;
-			console.log('Moving debug', piece, pieceTo, consume, turn);
+			//console.log('Moving debug', piece, pieceTo, consume, turn);
 			if (consume) {
 				table[consume].checker = 0;
 			}

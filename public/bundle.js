@@ -29332,9 +29332,9 @@
 				var pieceTo = this.props.table[id];
 				var piece = this.props.table[lastChecker];
 				var consume = void 0;
-				debugger;
+				//debugger;
 				if (piece.checker * turn > 0) {
-					console.log('Moved', id, piece, pieceTo, piece.paths);
+					//console.log('Moved', id, piece, pieceTo, piece.paths);
 					var paths = piece.paths.filter(function (path) {
 						return path.points[0].id == pieceTo.id;
 					});
@@ -29352,9 +29352,9 @@
 					path = paths[0];
 					var nextTurn = path && path.points.length > 0 ? turn : -turn;
 					this.props.move(piece, pieceTo, consume, nextTurn);
-					console.log('Turnings', nextTurn, turn);
+					//console.log('Turnings', nextTurn, turn);
 					if (nextTurn == turn) {
-						console.log('Show next move', paths, pieceTo.id);
+						//console.log('Show next move', paths, pieceTo.id);
 						this.props.hideMoves();
 						this.props.showMoves(paths, pieceTo.id);
 					} else {
@@ -29799,6 +29799,8 @@
 		var newTable = {};
 		var t0 = performance.now();
 		var bWhiteMovesOnly = true;
+		var ruledVal = true;
+		var sidesHash = { '1': 0, '-1': 0 };
 		for (var pieceKey in table) {
 			//do repath only for those pieces, that either connected to enemy pieces or connected to white spots
 			if (table[pieceKey].checker * turn > 0 /* && Object.keys(table[pieceKey].connected).some(d => {
@@ -29815,7 +29817,7 @@
 								return p.points.length > 0 && p.points.length >= p.vectors.length;
 							})
 						});
-						console.log('Paths for ' + pieceKey, newTable[pieceKey].paths);
+						//console.log('Paths for '+pieceKey, newTable[pieceKey].paths);
 					}
 					newTable[pieceKey].className = newTable[pieceKey].paths.length > 0 ? newTable[pieceKey].className == 'active' ? 'active' : 'can-move' : '';
 					// bWhiteMovesOnly = bWhiteMovesOnly
@@ -29824,7 +29826,16 @@
 				} else {
 				newTable[pieceKey] = table[pieceKey];
 			}
+			// if (ruledVal
+			// 	&& sidesHash[newTable[pieceKey].checker > 0 ? 1 : (newTable[pieceKey].checker < 0 ? -1 : 0 )] === 0
+			// 	&& newTable[pieceKey].paths.some(p=>p.weight > 0))
+			// 	sidesHash[newTable[pieceKey].checker] = 1;
 		}
+		// if (sidesHash[-1] == 1 || sidesHash[1] == 1){
+		// 	for (let pieceKey in newTable){
+		// 		newTable[pieceKey].paths = newTable[pieceKey].paths ? newTable[pieceKey].paths.filter(p=>p.weight >= sidesHash[(newTable[pieceKey].checker > 0 ? 1 : -1)]) : newTable[pieceKey].paths;
+		// 	}
+		// }
 		var t1 = performance.now();
 		if (t1 - t0 > 5) {
 			console.log("Pathing took " + (t1 - t0) + " milliseconds.");
@@ -29865,24 +29876,24 @@
 				var nextConnectedPiece = table[nextPiece.connected[direction]];
 				if (nextPiece.checker == 0 || currentPath.vectors.some(function (v) {
 					return v.id == nextPiece.id;
-				}) || nextPiece.id == piece.id && currentPath.vectors.length > 0) {
-					//we got empty spot or eaten checker
-					if (whiteMovesOnly) {
-						currentPath.emptyVectors = currentPath.emptyVectors.concat(nextPiece);
-					} else {
-						//send em flyin', kidding, go to directions
-						if (!currentPath.emptyVectors.some(function (p) {
-							return nextPiece.id == p.id;
-						}) /*&& !currentPath.points.some(p=>nextPiece.id == p.id)*/) {
-								paths = paths.concat(checkDirections(table, piece, nextPiece, directionHash[direction], _extends({}, currentPath, {
-									points: [].concat(_toConsumableArray(currentPath.points), [nextPiece])
-								})));
-							}
-						// else {
-						// 	currentPath.points = currentPath.points.concat(nextPiece);
-						// }
-					}
-				} else if (nextPiece.checker * piece.checker < 0 && nextConnectedPiece && nextConnectedPiece.checker === 0 /*&& !currentPath.vectors.some(v=>v.id == nextPiece.id)*/) {
+				}) /*|| (nextPiece.id == piece.id && currentPath.vectors.length > 0)*/) {
+						//we got empty spot or eaten checker
+						if (whiteMovesOnly) {
+							currentPath.emptyVectors = currentPath.emptyVectors.concat(nextPiece);
+						} else {
+							//send em flyin', kidding, go to directions
+							if (!currentPath.emptyVectors.some(function (p) {
+								return nextPiece.id == p.id;
+							}) /*&& !currentPath.points.some(p=>nextPiece.id == p.id)*/) {
+									paths = paths.concat(checkDirections(table, piece, nextPiece, directionHash[direction], _extends({}, currentPath, {
+										points: [].concat(_toConsumableArray(currentPath.points), [nextPiece])
+									})));
+								}
+							// else {
+							// 	currentPath.points = currentPath.points.concat(nextPiece);
+							// }
+						}
+					} else if (nextPiece.checker * piece.checker < 0 && nextConnectedPiece && nextConnectedPiece.checker === 0 /*&& !currentPath.vectors.some(v=>v.id == nextPiece.id)*/) {
 						//we got enemy and there's empty spot behind it
 						if (whiteMovesOnly) {
 							currentPath.vectors = currentPath.vectors.concat(nextPiece);
@@ -30042,8 +30053,8 @@
 				var pieceTo = action.pieceTo;
 				var consume = action.consume;
 				var turn = action.turn;
+				//console.log('Moving debug', piece, pieceTo, consume, turn);
 
-				console.log('Moving debug', piece, pieceTo, consume, turn);
 				if (consume) {
 					table[consume].checker = 0;
 				}
@@ -30079,7 +30090,7 @@
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
-	exports.default = {
+	var x = {
 		"1-A": {
 			"id": '1-A',
 			"checker": 1,
@@ -30372,9 +30383,7 @@
 		}
 	};
 
-	//export default
-
-	var x = {
+	exports.default = {
 		"1-A": {
 			"id": '1-A',
 			"checker": 1,
