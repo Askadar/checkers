@@ -1,4 +1,4 @@
-var x = {
+export default {
 	"1-A":{
 		"id":'1-A',
 		"checker": 1,
@@ -78,7 +78,7 @@ var x = {
 	},
 	"3-C":{
 		"id":'3-C',
-		"checker": 1,
+		"checker": 0,
 		connected: {
 			'-1': '2-B',
 			1: '4-B',
@@ -108,7 +108,7 @@ var x = {
 	},
 	"4-B":{
 		"id":'4-B',
-		"checker": 0,
+		"checker": 1,
 		connected: {
 			1: '5-A',
 			2: '5-C',
@@ -118,7 +118,7 @@ var x = {
 	},
 	"4-D":{
 		"id":'4-D',
-		"checker": 0,
+		"checker": 1,
 		connected: {
 			2: '5-E',
 			1: '5-C',
@@ -164,7 +164,7 @@ var x = {
 	},
 	"5-E":{
 		"id":'5-E',
-		"checker": 0,
+		"checker": -1,
 		connected: {
 			'2': '6-F',
 			'1': '6-D',
@@ -204,7 +204,7 @@ var x = {
 	},
 	"6-F":{
 		"id":'6-F',
-		"checker": 2,
+		"checker": 1,
 		connected: {
 			'1': '7-E',
 			'2': '7-G',
@@ -250,7 +250,7 @@ var x = {
 	},
 	"7-G":{
 		"id":'7-G',
-		"checker": -1,
+		"checker": 0,
 		connected: {
 			'1': '8-F',
 			'2': '8-H',
@@ -291,7 +291,8 @@ var x = {
 	}
 }
 
-export default {
+//export default
+var x = {
 	"1-A":{
 		"id":'1-A',
 		"checker": 1,

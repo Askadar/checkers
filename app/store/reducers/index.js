@@ -173,14 +173,14 @@ function findPaths(table, piece, path = {
 	path.weight > 0 && paths.push(path);
 	//console.log(piece.id, `we've found our way to glory and death`, paths);
 	var maxR = 0;
-
+	var ruledVal = true;
 	function max(b) {
 		maxR = b
 	}
 	var bestPaths = paths.filter(a => {
-		a && a.weight > maxR && max(a.weight);
+		a && a.weight > maxR && (ruledVal ? max(1) : max(a.weight));
 		return a
-	}).filter(a => a.weight == maxR);
+	}).filter(a => a.weight >= maxR);
 	//console.log('And the king is', bestPaths);
 	return bestPaths;
 }

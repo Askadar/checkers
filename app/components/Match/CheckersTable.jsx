@@ -15,7 +15,7 @@ class CheckersTable extends React.Component {
 		let pieceTo = this.props.table[id];
 		let piece = this.props.table[lastChecker];
 		let consume;
-		//debugger;
+		debugger;
 		if (piece.checker * turn > 0) {
 			console.log('Moved', id, piece, pieceTo, piece.paths);
 			let paths = piece.paths.filter(path => {
