@@ -29332,7 +29332,7 @@
 				var pieceTo = this.props.table[id];
 				var piece = this.props.table[lastChecker];
 				var consume = void 0;
-				//debugger;
+				debugger;
 				if (piece.checker * turn > 0) {
 					console.log('Moved', id, piece, pieceTo, piece.paths);
 					var paths = piece.paths.filter(function (path) {
@@ -29939,15 +29939,15 @@
 		path.weight > 0 && paths.push(path);
 		//console.log(piece.id, `we've found our way to glory and death`, paths);
 		var maxR = 0;
-
+		var ruledVal = true;
 		function max(b) {
 			maxR = b;
 		}
 		var bestPaths = paths.filter(function (a) {
-			a && a.weight > maxR && max(a.weight);
+			a && a.weight > maxR && (ruledVal ? max(1) : max(a.weight));
 			return a;
 		}).filter(function (a) {
-			return a.weight == maxR;
+			return a.weight >= maxR;
 		});
 		//console.log('And the king is', bestPaths);
 		return bestPaths;
@@ -30079,7 +30079,7 @@
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
-	var x = {
+	exports.default = {
 		"1-A": {
 			"id": '1-A',
 			"checker": 1,
@@ -30159,7 +30159,7 @@
 		},
 		"3-C": {
 			"id": '3-C',
-			"checker": 1,
+			"checker": 0,
 			connected: {
 				'-1': '2-B',
 				1: '4-B',
@@ -30189,7 +30189,7 @@
 		},
 		"4-B": {
 			"id": '4-B',
-			"checker": 0,
+			"checker": 1,
 			connected: {
 				1: '5-A',
 				2: '5-C',
@@ -30199,7 +30199,7 @@
 		},
 		"4-D": {
 			"id": '4-D',
-			"checker": 0,
+			"checker": 1,
 			connected: {
 				2: '5-E',
 				1: '5-C',
@@ -30245,7 +30245,7 @@
 		},
 		"5-E": {
 			"id": '5-E',
-			"checker": 0,
+			"checker": -1,
 			connected: {
 				'2': '6-F',
 				'1': '6-D',
@@ -30285,7 +30285,7 @@
 		},
 		"6-F": {
 			"id": '6-F',
-			"checker": 2,
+			"checker": 1,
 			connected: {
 				'1': '7-E',
 				'2': '7-G',
@@ -30331,7 +30331,7 @@
 		},
 		"7-G": {
 			"id": '7-G',
-			"checker": -1,
+			"checker": 0,
 			connected: {
 				'1': '8-F',
 				'2': '8-H',
@@ -30372,7 +30372,9 @@
 		}
 	};
 
-	exports.default = {
+	//export default
+
+	var x = {
 		"1-A": {
 			"id": '1-A',
 			"checker": 1,
