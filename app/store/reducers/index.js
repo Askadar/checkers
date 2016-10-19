@@ -82,13 +82,19 @@ function checkDirections(table, piece, pieceFrom, directions = [-2,-1,1,2], path
 	emptyVectors: []
 }) {
 	//console.log('Checking directions', path, pieceFrom);
+	// const directionHash = {
+	// 	'-1': [	-2, 1,-1],
+	// 	'-2': [	2, -1,-2],
+	// 	'1': [2, -1,1],
+	// 	'2': [-2, 1,2]
+	// }
 	const directionHash = {
-		'-1': [	-2, 1,-1],
-		'-2': [	2, -1,-2],
-		'1': [2, -1,1],
-		'2': [-2, 1,2]
+		'-1': [-2,-1,1,2],
+		'-2':[-2,-1,1,2],
+		'1': [-2,-1,1,2],
+		'2':[-2,-1,1,2]
 	}
-	var paths = [];
+	var paths = [path];
 	for (let i in directions) {
 		let direction = directions[i];
 		var nextPiece = table[pieceFrom.connected[direction]];
@@ -100,7 +106,7 @@ function checkDirections(table, piece, pieceFrom, directions = [-2,-1,1,2], path
 			continue;
 		while (nextPiece) {
 			let nextConnectedPiece = table[nextPiece.connected[direction]];
-			if (nextPiece.checker == 0 || currentPath.vectors.some(v=>v.id == nextPiece.id)) { //we got empty spot or eaten checker
+			if (nextPiece.checker == 0 || currentPath.vectors.some(v=>v.id == nextPiece.id) || (nextPiece.id == piece.id && currentPath.vectors.length > 0)) { //we got empty spot or eaten checker
 				if (whiteMovesOnly) {
 					currentPath.emptyVectors = currentPath.emptyVectors.concat(nextPiece);
 				} else { //send em flyin', kidding, go to directions
@@ -118,15 +124,16 @@ function checkDirections(table, piece, pieceFrom, directions = [-2,-1,1,2], path
 					// }
 				}
 			}
-			else if (nextPiece.checker * piece.checker < 0 && nextConnectedPiece && nextConnectedPiece.checker === 0 && !currentPath.vectors.some(v=>v.id == nextPiece.id)){ //we got enemy and there's empty spot behind it
+			else if (nextPiece.checker * piece.checker < 0 && nextConnectedPiece && nextConnectedPiece.checker === 0 /*&& !currentPath.vectors.some(v=>v.id == nextPiece.id)*/){ //we got enemy and there's empty spot behind it
 				if(whiteMovesOnly){
 					currentPath.vectors = currentPath.vectors.concat(nextPiece);
-					currentPath.points = currentPath.points.concat(nextConnectedPiece);
+					// currentPath.points = currentPath.points.concat(nextConnectedPiece);
 					currentPath.weight += 1;
 					whiteMovesOnly = false; //somewhat a solition, just don't forget (yeah, sure) about strange doubled points in some cases
-					paths = paths.concat(checkDirections(table, piece, nextConnectedPiece, directionHash[direction], {
-						...currentPath
-					}))
+					//break;
+					// paths = paths.concat(checkDirections(table, piece, nextConnectedPiece, directionHash[direction], {
+						// ...currentPath
+					// }))
 				}
 				else{ //stumbled across another enemy piece
 					break; //stop path finding and let other instance of this function take care of it
