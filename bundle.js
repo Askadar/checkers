@@ -29799,39 +29799,31 @@
 		var newTable = {};
 		var t0 = performance.now();
 		var bWhiteMovesOnly = true;
-
-		var _loop = function _loop(pieceKey) {
+		for (var pieceKey in table) {
 			//do repath only for those pieces, that either connected to enemy pieces or connected to white spots
-			if (table[pieceKey].checker * turn > 0 && Object.keys(table[pieceKey].connected).some(function (d) {
-				return table[table[pieceKey].connected[d]].checker * table[pieceKey].checker < 0 || d * table[pieceKey].checker > 0 && table[table[pieceKey].connected[d]].checker == 0 || table[pieceKey].checker !== 0 && table[pieceKey].checker % 2 == 0;
-			})) {
-				if (table[pieceKey].checker % 2 != 0) {
-					newTable[pieceKey] = _extends({}, table[pieceKey], {
-						paths: findPaths(table, table[pieceKey]),
-						className: table[pieceKey].className != 'active' ? 'can-move' : 'active'
-					});
-				} else if (table[pieceKey].checker % 2 == 0) {
-					//console.log('going to lookup paths for', table[pieceKey]);
-					//if(pieceKey == '8-D')
-					debugger;
-					newTable[pieceKey] = _extends({}, table[pieceKey], {
-						paths: checkDirections(table, table[pieceKey], table[pieceKey]).filter(function (p) {
-							return p.weight >= 0 && p.points.length >= p.vectors.length;
-						}),
-						className: table[pieceKey].className != 'active' ? 'can-move' : 'active'
-					});
-					console.log('Paths for ' + pieceKey, newTable[pieceKey].paths);
-				}
-				// bWhiteMovesOnly = bWhiteMovesOnly
-				// 	? newTable[pieceKey].paths.some(a => a.weight > 0)
-				// 	: 'false';
-			} else {
+			if (table[pieceKey].checker * turn > 0 /* && Object.keys(table[pieceKey].connected).some(d => {
+	                                         return table[table[pieceKey].connected[d]].checker * table[pieceKey].checker < 0 || (d * table[pieceKey].checker > 0 && table[table[pieceKey].connected[d]].checker == 0) || (table[pieceKey].checker !== 0 && table[pieceKey].checker % 2 == 0)
+	                                         })*/) {
+					if (table[pieceKey].checker % 2 != 0) {
+						newTable[pieceKey] = _extends({}, table[pieceKey], {
+							paths: findPaths(table, table[pieceKey])
+						});
+					} else if (table[pieceKey].checker % 2 == 0) {
+						//console.log('going to lookup paths for', table[pieceKey]);
+						newTable[pieceKey] = _extends({}, table[pieceKey], {
+							paths: checkDirections(table, table[pieceKey], table[pieceKey]).filter(function (p) {
+								return p.points.length > 0 && p.points.length >= p.vectors.length;
+							})
+						});
+						console.log('Paths for ' + pieceKey, newTable[pieceKey].paths);
+					}
+					newTable[pieceKey].className = newTable[pieceKey].paths.length > 0 ? newTable[pieceKey].className == 'active' ? 'active' : 'can-move' : '';
+					// bWhiteMovesOnly = bWhiteMovesOnly
+					// 	? newTable[pieceKey].paths.some(a => a.weight > 0)
+					// 	: 'false';
+				} else {
 				newTable[pieceKey] = table[pieceKey];
 			}
-		};
-
-		for (var pieceKey in table) {
-			_loop(pieceKey);
 		}
 		var t1 = performance.now();
 		if (t1 - t0 > 5) {
@@ -29890,9 +29882,10 @@
 					//we got enemy and there's empty spot behind it
 					if (whiteMovesOnly) {
 						currentPath.vectors = currentPath.vectors.concat(nextPiece);
-						//currentPath.points = currentPath.points.concat(nextConnectedPiece);
+						currentPath.points = currentPath.points.concat(nextConnectedPiece);
 						currentPath.weight += 1;
-						whiteMovesOnly = false;
+						whiteMovesOnly = false; //somewhat a solition, just don't forget (yeah, sure) about strange doubled points in some cases
+						paths = paths.concat(checkDirections(table, piece, nextConnectedPiece, directionHash[direction], _extends({}, currentPath)));
 					} else {
 						//stumbled across another enemy piece
 						break; //stop path finding and let other instance of this function take care of it
@@ -29910,9 +29903,8 @@
 				paths = paths.concat(currentPath.emptyVectors.map(function (a) {
 					return { weight: 0, points: [a], vectors: [] };
 				}));
-			} else {
-				paths = paths.concat(currentPath);
 			}
+			paths = paths.concat(currentPath);
 		}
 		//console.log('Got paths for direction', paths);
 		return paths;
@@ -29927,7 +29919,7 @@
 
 		var paths = [];
 
-		var _loop2 = function _loop2(direction) {
+		var _loop = function _loop(direction) {
 			//console.log(piece.id, `We're seekers of truth going to ${direction} while standing at ${piece.id}, and we have: `, path.vectors, table[piece.connected[direction]].id, path.vectors.filter(p => p.id == table[piece.connected[direction]].id).length == 0);
 			if (path.vectors.filter(function (p) {
 				return p.id == table[piece.connected[direction]].id;
@@ -29935,7 +29927,7 @@
 		};
 
 		for (var direction in piece.connected) {
-			_loop2(direction);
+			_loop(direction);
 		}
 		path.weight > 0 && paths.push(path);
 		//console.log(piece.id, `we've found our way to glory and death`, paths);
@@ -30080,7 +30072,7 @@
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
-	var damselTest = {
+	var test = {
 		"1-A": {
 			"id": '1-A',
 			"checker": 2,
