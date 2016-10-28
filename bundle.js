@@ -29318,7 +29318,9 @@
 
 			var _this = _possibleConstructorReturn(this, (CheckersTable.__proto__ || Object.getPrototypeOf(CheckersTable)).call(this, p));
 
-			_this.state = { messagesRow: '' };
+			_this.state = {
+				messagesRow: '',
+				socketPath: 'https://zarahion-tests.herokuapp.com/' };
 			return _this;
 		}
 
@@ -29380,7 +29382,7 @@
 
 				this.props.updateAllPaths();
 				console.log('Checkers table mounted', this.state);
-				this.socket = (0, _socket2.default)('http://localhost:3000');
+				this.socket = (0, _socket2.default)(this.state.socketPath);
 				var $moves = _rxjs.Observable.fromEvent(this.socket, 'move'); //demobug, $ = strem
 				var $demo = _rxjs.Observable.fromEvent(this.socket, 'demo'); //demobug, $ = strem
 				var $won = _rxjs.Observable.fromEvent(this.socket, 'won');
