@@ -5,11 +5,12 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-		"start": "node ."
+    "start": "node ."
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cors-anywhere": "^0.4.0",
     "socket.io": "^1.5.1",
     "uid-safe": "^2.1.2",
     "uuid": "^2.0.3"
