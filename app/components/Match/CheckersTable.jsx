@@ -1,8 +1,14 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import Checker from './Checker'
+import io from 'socket.io-client';
+import {Rx, Observable} from 'rxjs';
 
 class CheckersTable extends React.Component {
+	constructor(p){
+		super(p);
+		this.state = {messagesRow: ''};
+	}
 	showMoves(id) {
 		let piece = this.props.table[id];
 		if (piece.checker * this.props.turn > 0 && piece.paths.length > 0) {
@@ -34,6 +40,7 @@ class CheckersTable extends React.Component {
 			let nextTurn = path && path.points.length > 0
 				? turn
 				: -turn;
+			this.socket.emit('move',{piece, pieceTo, consume, nextTurn, turn, paths});
 			this.props.move(piece, pieceTo, consume, nextTurn);
 			//console.log('Turnings', nextTurn, turn);
 			if (nextTurn == turn) {
@@ -47,14 +54,40 @@ class CheckersTable extends React.Component {
 		}
 	}
 	componentDidMount() {
-		this.props.updateAllPaths()
+		this.props.updateAllPaths();
+		console.log('Checkers table mounted', this.state);
+		this.socket = io('http://localhost:3000');
+		const $moves = Observable.fromEvent(this.socket, 'move'); //demobug, $ = strem
+		const $demo = Observable.fromEvent(this.socket, 'demo'); //demobug, $ = strem
+		const $won = Observable.fromEvent(this.socket, 'won');
+		$demo.subscribe(data=> console.log(data));
+		const $stop = Observable.merge($won);
+		this.subscription = $moves
+												.takeUntil($stop)
+												.subscribe(a=>{
+													const {piece, pieceTo, consume, nextTurn, turn, paths} = a;
+													this.props.move(piece, pieceTo, consume, nextTurn)
+													if (nextTurn == turn) {
+														//console.log('Show next move', paths, pieceTo.id);
+															this.props.hideMoves();
+														this.props.showMoves(paths, pieceTo.id);
+													} else {
+														this.props.hideMoves();
+													}
+													this.props.updateAllPaths();
+												});
+		//socket.on('move', data=>this.setState({messagesRow:messagesRow+'$$'+data}));
+		//setInterval(a=>socket.emit('move', 123), 1000)
 	}
 	render() {
 		return (
-			<div className="checkers-table" data-whites={this.props.turn}>
-				{Object.keys(this.props.table).map((a) => {
+			<div className="checkers-table">
+				<div style={{position:'fixed', right:0, top: 0}}>
+					<pre>{this.state.messagesRow}</pre>
+				</div>
+				<div className="checkers-table" data-whites={this.props.turn}>{Object.keys(this.props.table).map((a) => {
 					return <Checker id={a} key={a} {...this.props.table[a]} hideMoves={this.props.hideMoves} showMoves={this.showMoves.bind(this)} move={this.move.bind(this)}/>
-				})}
+				})}</div>
 			</div>
 		);
 	}
