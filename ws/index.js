@@ -4,7 +4,18 @@
 // var server = require('http').createServer(app);
 'use strict';
 
-var io = require('socket.io')();
+
+
+
+var cors_proxy = require('cors-anywhere');
+let proxy = cors_proxy.createServer({
+    originWhitelist: [], // Allow all origins
+    requireHeader: ['origin', 'x-requested-with'],
+    removeHeaders: ['cookie', 'cookie2']
+})
+
+var host = process.env.PORT ? '0.0.0.0' : '127.0.0.1';
+var io = require('socket.io')(proxy);
 var port = process.env.PORT || 3000;
 var uid = require('uid-safe');
 var uuid = require('uuid');
@@ -35,3 +46,4 @@ io.on('connection', function (socket) {
 });
 
 io.listen(port);
+console.log('listening on port', port);

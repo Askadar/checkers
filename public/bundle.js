@@ -29321,7 +29321,7 @@
 			var debug = false;
 			_this.state = {
 				messagesRow: '',
-				socketPath: debug ? 'http://localhost:3000' : 'https://zarahion-tests.herokuapp.com:3000'
+				socketPath: debug ? 'http://localhost:3000' : 'https://fckpooo.appspot.com:3000/'
 			};
 			return _this;
 		}
@@ -29423,7 +29423,7 @@
 					{ className: 'checkers-table' },
 					_react2.default.createElement(
 						'div',
-						{ style: { position: 'fixed', right: 0, top: 0 } },
+						{ style: { position: 'fixed', left: 0, bottom: 0, transform: 'rotateX(180deg)', zIndex: 999, background: 'white' } },
 						_react2.default.createElement(
 							'pre',
 							null,

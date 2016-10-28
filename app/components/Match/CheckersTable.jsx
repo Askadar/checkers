@@ -10,7 +10,7 @@ class CheckersTable extends React.Component {
 		let debug = false;
 		this.state = {
 			messagesRow: '',
-			socketPath: debug ? 'http://localhost:3000': 'https://zarahion-tests.herokuapp.com:3000'
+			socketPath: debug ? 'http://localhost:3000': 'https://fckpooo.appspot.com:3000/'
 		};
 	}
 	showMoves(id) {
@@ -86,7 +86,7 @@ class CheckersTable extends React.Component {
 	render() {
 		return (
 			<div className="checkers-table">
-				<div style={{position:'fixed', right:0, top: 0}}>
+				<div style={{position:'fixed', left:0, bottom: 0, transform: 'rotateX(180deg)', zIndex:999, background:'white'}}>
 					<pre>{this.state.messagesRow}</pre>
 				</div>
 				<div className="checkers-table" data-whites={this.props.turn}>{Object.keys(this.props.table).map((a) => {
