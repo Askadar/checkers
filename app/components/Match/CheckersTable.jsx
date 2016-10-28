@@ -7,9 +7,11 @@ import {Rx, Observable} from 'rxjs';
 class CheckersTable extends React.Component {
 	constructor(p){
 		super(p);
+		let debug = false;
 		this.state = {
 			messagesRow: '',
-			socketPath:'https://zarahion-tests.herokuapp.com/'};
+			socketPath: debug ? 'http://localhost:3000': 'https://zarahion-tests.herokuapp.com:3000'
+		};
 	}
 	showMoves(id) {
 		let piece = this.props.table[id];

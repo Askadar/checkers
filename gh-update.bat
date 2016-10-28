@@ -5,6 +5,6 @@ git subtree split --prefix public -b gh-pages
 git push -f origin gh-pages:gh-pages
 git branch -D gh-pages
 REM websockets deploy
-git subtree split --prefix public -b websocket
+git subtree split --prefix ws -b websocket
 git push -f origin websocket:websocket
 git branch -D websocket

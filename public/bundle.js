@@ -29318,9 +29318,11 @@
 
 			var _this = _possibleConstructorReturn(this, (CheckersTable.__proto__ || Object.getPrototypeOf(CheckersTable)).call(this, p));
 
+			var debug = false;
 			_this.state = {
 				messagesRow: '',
-				socketPath: 'https://zarahion-tests.herokuapp.com/' };
+				socketPath: debug ? 'http://localhost:3000' : 'https://zarahion-tests.herokuapp.com:3000'
+			};
 			return _this;
 		}
 

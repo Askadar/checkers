@@ -2,6 +2,8 @@
 // var express = require('express');
 // var app = express();
 // var server = require('http').createServer(app);
+'use strict';
+
 var io = require('socket.io')();
 var port = process.env.PORT || 3000;
 var uid = require('uid-safe');
