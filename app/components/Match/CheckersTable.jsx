@@ -7,7 +7,9 @@ import {Rx, Observable} from 'rxjs';
 class CheckersTable extends React.Component {
 	constructor(p){
 		super(p);
-		this.state = {messagesRow: ''};
+		this.state = {
+			messagesRow: '',
+			socketPath:'https://zarahion-tests.herokuapp.com/'};
 	}
 	showMoves(id) {
 		let piece = this.props.table[id];
@@ -56,7 +58,7 @@ class CheckersTable extends React.Component {
 	componentDidMount() {
 		this.props.updateAllPaths();
 		console.log('Checkers table mounted', this.state);
-		this.socket = io('http://localhost:3000');
+		this.socket = io(this.state.socketPath);
 		const $moves = Observable.fromEvent(this.socket, 'move'); //demobug, $ = strem
 		const $demo = Observable.fromEvent(this.socket, 'demo'); //demobug, $ = strem
 		const $won = Observable.fromEvent(this.socket, 'won');
