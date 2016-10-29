@@ -44,12 +44,12 @@
 	position: relative;
 }
 .checkers-table-container{
-	transform: rotateX(180deg);
-    user-select: none;
-    border: 3rem solid rgba(200, 165, 120,0.8);
-    border-radius: 1rem;
-    position: relative;
-    transition: 1s all;
+	/*transform: rotateX(180deg);*/
+  user-select: none;
+  border: 3rem solid rgba(200, 165, 120,0.8);
+  border-radius: 1rem;
+  position: relative;
+  transition: 1s all;
 }
 .checkers-table-container .checker:after{
 	transform: rotateX(180deg);
@@ -109,7 +109,7 @@
 	/*transform: scale(1.1);*/
 	animation: can-move 4s linear infinite;
 }
-.checkers-table .checker:nth-child(8n+1) {
+.checkers-table .checker:nth-child(8n+5) {
 	margin-left: 0 !important;
 }
 .checkers-table .checker:after {

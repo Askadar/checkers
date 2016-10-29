@@ -1,27 +1,31 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import Checker from './Checker'
-import io from 'socket.io-client';
-import {Rx, Observable} from 'rxjs';
+import Rx from 'rxjs/Rx';
 
 class CheckersTable extends React.Component {
 	constructor(p){
 		super(p);
-		let debug = false;
+		let debug = true;
 		this.state = {
 			messagesRow: '',
-			socketPath: debug ? 'http://localhost:3000': 'https://fckpooo.appspot.com:3000/'
-		};
+			keysMap: Object.keys(this.props.table).sort((a,b) => {
+				const aKeys = a.split('-');
+				const bKeys = b.split('-');
+				return (bKeys[0] - aKeys[0])*11 + (aKeys[1].charCodeAt(0) - bKeys[1].charCodeAt(0))
+			})
+		}
 	}
 	showMoves(id) {
 		let piece = this.props.table[id];
 		if (piece.checker * this.props.turn > 0 && piece.paths.length > 0) {
-			console.log('Show move', piece.paths, id);
+			//console.log('Show move', piece.paths, id);
 			this.props.showMoves(piece.paths, id);
 		}
 	}
-	move(id) {
-		const {turn, lastChecker} = this.props;
+	move(id, lastChecker = this.props.lastChecker) {
+		const {turn, socket} = this.props;
+		lastChecker == this.props.lastChecker && socket.emit('move',{id, lastChecker});
 		let pieceTo = this.props.table[id];
 		let piece = this.props.table[lastChecker];
 		let consume;
@@ -44,7 +48,6 @@ class CheckersTable extends React.Component {
 			let nextTurn = path && path.points.length > 0
 				? turn
 				: -turn;
-			this.socket.emit('move',{piece, pieceTo, consume, nextTurn, turn, paths});
 			this.props.move(piece, pieceTo, consume, nextTurn);
 			//console.log('Turnings', nextTurn, turn);
 			if (nextTurn == turn) {
@@ -58,30 +61,22 @@ class CheckersTable extends React.Component {
 		}
 	}
 	componentDidMount() {
-		this.props.updateAllPaths();
-		console.log('Checkers table mounted', this.state);
-		this.socket = io(this.state.socketPath);
-		const $moves = Observable.fromEvent(this.socket, 'move'); //demobug, $ = strem
-		const $demo = Observable.fromEvent(this.socket, 'demo'); //demobug, $ = strem
-		const $won = Observable.fromEvent(this.socket, 'won');
-		$demo.subscribe(data=> console.log(data));
-		const $stop = Observable.merge($won);
+		const {updateAllPaths, socket, moves} = this.props;
+		updateAllPaths();
+		const $movesFromViewerArray = moves// Observable.fromEvent(socket, 'moves');
+		const $movesNormal = Rx.Observable.fromEvent(socket, 'move');
+		const $moves = Rx.Observable.concat($movesFromViewerArray, $movesNormal);
+		const $meta = Rx.Observable.fromEvent(socket, 'meta');
+		const $chatMessages = Rx.Observable.fromEvent(socket, 'chatMessages');
+		const $won = Rx.Observable.fromEvent(socket, 'won');
+		const $stop = Rx.Observable.merge($won);
 		this.subscription = $moves
 												.takeUntil($stop)
-												.subscribe(a=>{
-													const {piece, pieceTo, consume, nextTurn, turn, paths} = a;
-													this.props.move(piece, pieceTo, consume, nextTurn)
-													if (nextTurn == turn) {
-														//console.log('Show next move', paths, pieceTo.id);
-															this.props.hideMoves();
-														this.props.showMoves(paths, pieceTo.id);
-													} else {
-														this.props.hideMoves();
-													}
-													this.props.updateAllPaths();
+												.flatMap(a => a)
+												.subscribe(a => {
+													const {id, lastChecker} = a;
+													this.move(id, lastChecker);
 												});
-		//socket.on('move', data=>this.setState({messagesRow:messagesRow+'$$'+data}));
-		//setInterval(a=>socket.emit('move', 123), 1000)
 	}
 	render() {
 		return (
@@ -89,7 +84,7 @@ class CheckersTable extends React.Component {
 				<div style={{position:'fixed', left:0, bottom: 0, transform: 'rotateX(180deg)', zIndex:999, background:'white'}}>
 					<pre>{this.state.messagesRow}</pre>
 				</div>
-				<div className="checkers-table" data-whites={this.props.turn}>{Object.keys(this.props.table).map((a) => {
+				<div className="checkers-table" data-whites={this.props.turn}>{this.state.keysMap.map((a) => {
 					return <Checker id={a} key={a} {...this.props.table[a]} hideMoves={this.props.hideMoves} showMoves={this.showMoves.bind(this)} move={this.move.bind(this)}/>
 				})}</div>
 			</div>
