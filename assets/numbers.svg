@@ -6,14 +6,14 @@
 	</style>
 </defs>
 <g xmlns="http://www.w3.org/2000/svg">
-  <text x="0" y="12.5" class="schachText">1</text>
-  <text x="0" y="25" class="schachText">2</text>
-  <text x="0" y="37.5" class="schachText">3</text>
-  <text x="0" y="50" class="schachText">4</text>
-  <text x="0" y="62.5" class="schachText">5</text>
-  <text x="0" y="75" class="schachText">6</text>
-  <text x="0" y="87.5" class="schachText">7</text>
-  <text x="0" y="100" class="schachText">8</text>
+  <text x="0" y="100" class="schachText">1</text>
+  <text x="0" y="87.5" class="schachText">2</text>
+  <text x="0" y="75" class="schachText">3</text>
+  <text x="0" y="62.5" class="schachText">4</text>
+  <text x="0" y="50" class="schachText">5</text>
+  <text x="0" y="37.5" class="schachText">6</text>
+  <text x="0" y="25" class="schachText">7</text>
+  <text x="0" y="12.5" class="schachText">8</text>
 </g>
 	<g xmlns="http://www.w3.org/2000/svg">
 	   <text x="12.5" y="112.5" class="schachText">A</text>
