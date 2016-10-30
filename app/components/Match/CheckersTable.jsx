@@ -63,17 +63,17 @@ class CheckersTable extends React.Component {
 	componentDidMount() {
 		const {updateAllPaths, socket, moves} = this.props;
 		updateAllPaths();
-		const $movesFromViewerArray = moves// Observable.fromEvent(socket, 'moves');
+		const $movesFromViewerArray = moves.flatMap(a => a); // Observable.fromEvent(socket, 'moves');
 		const $movesNormal = Rx.Observable.fromEvent(socket, 'move');
-		const $moves = Rx.Observable.concat($movesFromViewerArray, $movesNormal);
+		const $moves = Rx.Observable.merge($movesFromViewerArray, $movesNormal);
 		const $meta = Rx.Observable.fromEvent(socket, 'meta');
 		const $chatMessages = Rx.Observable.fromEvent(socket, 'chatMessages');
 		const $won = Rx.Observable.fromEvent(socket, 'won');
 		const $stop = Rx.Observable.merge($won);
 		this.subscription = $moves
 												.takeUntil($stop)
-												.flatMap(a => a)
 												.subscribe(a => {
+													console.log('observer', a);
 													const {id, lastChecker} = a;
 													this.move(id, lastChecker);
 												});

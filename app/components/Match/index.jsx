@@ -7,9 +7,9 @@ import {Rx, Observable} from 'rxjs';
 class Match extends React.Component {
 	constructor(p){
 		super(p);
-		let debug = true;
+		let debug = false;
 		this.state = {
-			socketPath: debug ? 'http://localhost:3000': 'https://fckpooo.appspot.com:3000/',
+			socketPath: debug ? 'http://localhost:3000': 'https://websockety-askadar.c9users.io:8080/',
 			socketOptions: {
 				reconnection: true,
 				reconnectionDelay: 500,
