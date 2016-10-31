@@ -1,53 +1,76 @@
 import React from 'react';
-import CheckersTable from './CheckersTable'
-import {connect} from 'react-redux';
+import CheckersTable from './CheckersTable';
+import Player from './Player';
+import { connect } from 'react-redux';
 import io from 'socket.io-client';
-import {Rx, Observable} from 'rxjs';
+import { Rx, Observable } from 'rxjs';
 
 class Match extends React.Component {
-	constructor(p){
+	constructor(p) {
 		super(p);
-		let debug = false;
+		const debug = true;
+		let player = window.confirm('you\'re fixy?') ? { name: 'Fixy', rating: 2754 } : { name: 'Zixy', rating: 2787 };
 		this.state = {
-			socketPath: debug ? 'http://localhost:3000': 'https://websockety-askadar.c9users.io:8080/',
+			socketPath: debug ? 'http://localhost:3000' : 'https://websockety-askadar.c9users.io:8080/',
 			socketOptions: {
 				reconnection: true,
 				reconnectionDelay: 500,
 				reconnectionAttempts: 10
 			},
-			moves:null
-		}
+			'$moves': null,
+			playerSide: 0,
+			player,
+			otherPlayer: {}
+		};
 	}
-	componentWillMount(){
-		const {socketPath, socketOptions} = this.state;
-		let socket = io(socketPath, socketOptions);
-		const $movesFromViewerArray = Observable.fromEvent(socket,'moves')
-		// socket.on('moves', data => {
-		// 	console.log('onMoves event',this);
-		// 	this.setState({moves: $movesFromViewerArray});
-		// })
-		socket.emit('enterRoom', {id:'56040d8e-c6f2-4780-af11-d42d43a1be42'});
-		this.setState({socket, moves: $movesFromViewerArray})
+	componentWillMount() {
+		const { socketPath, socketOptions, player } = this.state;
+		const socket = io(socketPath, socketOptions);
+		const $movesFromViewerArray = Observable.fromEvent(socket, 'moves');
+		const $metaStream = Observable.fromEvent(socket, 'meta');
+		$metaStream.subscribe(a => {
+			switch(a.type) {
+			case 'side':
+				// const player = a.players.find(pl => pl.side === a.side);
+				this.setState({ playerSide: a.side, player: { ...player, side: a.side } });
+				this.props.setSide(a.side);
+				this.props.updateAllPaths();
+				break;
+			case 'players':
+				const otherPlayer = a.players.find(pl => pl.side !== a.side);
+				this.setState({ otherPlayer });
+				break;
+			}
+		});
+		socket.emit('enterRoom', { id: this.props.routeParams.roomId, player });
+		this.setState({ socket, '$moves': $movesFromViewerArray, '$meta': $metaStream });
 	}
 	render() {
-		let smallerSize = Math.min(window.innerHeight, window.innerWidth)
+		const { socket, $moves, $meta, player, otherPlayer, playerSide } = this.state;
+		const smallerSize = Math.min(window.innerHeight, window.innerWidth);
 		return (
 			<div>
-				<p>{`Играют ${this.props.routeParams.firstPlayer} и ${this.props.routeParams.secondPlayer}`}</p>
-				<p>{`Сейчас ход ${this.props.turn == 1
+				<Player {...otherPlayer}/>
+				<p>{`Сейчас ход ${this.props.turn === 1
 						? 'белых'
 						: 'черных'}.`}</p>
 				<div className="checkers-table-container center-block" style={{
 					height: (smallerSize * 3 / 4) + 64,
 					width: (smallerSize * 3 / 4) + 64
 				}}>
-					<CheckersTable socket={this.state.socket} moves={this.state.moves}/>
+					<CheckersTable socket={socket} moves={$moves} meta={$meta}/>
 				</div>
+				<Player {...player}/>
 			</div>
-		)
+		);
 	}
-};
+}
 
 export default connect((s) => {
-	return {turn: s.game.turn}
-})(Match)
+	return { turn: s.game.turn };
+}, (dispatch) => {
+	return {
+		setSide(side) {	dispatch({ type: 'setSide', side }); },
+		updateAllPaths() { dispatch({ type: 'updateAllPaths' }); }
+	};
+})(Match);
