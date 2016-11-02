@@ -18,7 +18,7 @@ class Room {
 		if (!this.closed) {
 			this.users.push(socket);
 			socket.join(this.id);
-			// socket.room = this;
+			socket.room = this;
 			const side = this.players.length === 0 ? (Math.round(Math.random()) === 0 ? '-1' : '1') : -this.players[0].side;
 			this.players.length < 2 && this.players.push({ ...player, side });
 			socket.emit('meta', { type: 'side', side });

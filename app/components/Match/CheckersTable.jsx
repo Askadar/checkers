@@ -9,6 +9,7 @@ class CheckersTable extends React.Component {
 		const debug = true;
 		this.state = {
 			messagesRow: '',
+			letters: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'],
 			keysMap: Object.keys(this.props.table).sort((a, b) => {
 				const aKeys = a.split('-');
 				const bKeys = b.split('-');
@@ -81,14 +82,24 @@ class CheckersTable extends React.Component {
 		}
 	}
 	render() {
+		const { keysMap, letters } = this.state;
 		return (
 			<div className="checkers-table">
-				<div style={{ position: 'fixed', left: 0, bottom: 0, transform: 'rotateX(180deg)', zIndex: 999, background: 'white' }}>
-					<pre>{this.state.messagesRow}</pre>
+				<div className="numbers">
+					{[...Array(Math.sqrt(keysMap.length * 2)).keys()].map(i => {
+						return <span className={`number-${i + 1}`}>{i + 1}</span>;
+					})}
 				</div>
-				<div className="checkers-table" data-whites={this.props.turn}>{this.state.keysMap.map((a) => {
+				<div className="letters">
+					{[...Array(Math.sqrt(keysMap.length * 2)).keys()].map(i => {
+						return <span className={`letter-${i + 1}`}>{letters[i]}</span>;
+					})}
+				</div>
+				<div className="checkers-table" data-whites={this.props.turn}>
+				{keysMap.map((a) => {
 					return <Checker id={a} key={a} {...this.props.table[a]} hideMoves={this.props.hideMoves} showMoves={this.showMoves.bind(this)} move={this.move.bind(this)}/>;
-				})}</div>
+				})}
+				</div>
 			</div>
 		);
 	}

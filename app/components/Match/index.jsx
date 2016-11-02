@@ -9,18 +9,23 @@ class Match extends React.Component {
 	constructor(p) {
 		super(p);
 		const debug = true;
-		let player = window.confirm('you\'re fixy?') ? { name: 'Fixy', rating: 2754 } : { name: 'Zixy', rating: 2787 };
+		let player = { name: window.prompt('You\'re name?', 'Fixy'), rating: 2754 };
 		this.state = {
+			// socket options
 			socketPath: debug ? 'http://localhost:3000' : 'https://websockety-askadar.c9users.io:8080/',
 			socketOptions: {
 				reconnection: true,
 				reconnectionDelay: 500,
 				reconnectionAttempts: 10
 			},
+			// player options
 			'$moves': null,
 			playerSide: 0,
 			player,
-			otherPlayer: {}
+			otherPlayer: { name: 'Your enemy', rating: '?' },
+			// room and board settings
+			roomId: this.props.routeParams ? this.props.routeParams : '-1',
+			boardSize: (Math.min(window.innerHeight, window.innerWidth) * 8 / 10)
 		};
 	}
 	componentWillMount() {
@@ -28,6 +33,10 @@ class Match extends React.Component {
 		const socket = io(socketPath, socketOptions);
 		const $movesFromViewerArray = Observable.fromEvent(socket, 'moves');
 		const $metaStream = Observable.fromEvent(socket, 'meta');
+
+		const $resizeThrottled = Observable.fromEvent(window, 'resize').auditTime(350);
+		this.resizeSubscriber = $resizeThrottled.subscribe(a => {console.log('resize event', a); this.resizeBoard();});
+
 		$metaStream.subscribe(a => {
 			switch(a.type) {
 			case 'side':
@@ -37,17 +46,23 @@ class Match extends React.Component {
 				this.props.updateAllPaths();
 				break;
 			case 'players':
-				const otherPlayer = a.players.find(pl => pl.side !== a.side);
+				const otherPlayer = a.players.find(pl => pl.side !== this.state.playerSide);
 				this.setState({ otherPlayer });
 				break;
 			}
 		});
-		socket.emit('enterRoom', { id: this.props.routeParams.roomId, player });
+		this.state.roomId !== '-1' && socket.emit('enterRoom', { id: this.state.roomId, player });
 		this.setState({ socket, '$moves': $movesFromViewerArray, '$meta': $metaStream });
 	}
+	componentWillUnount() {
+		this.resizeSubscriber.unsubscribe();
+	}
+	resizeBoard() {
+		const boardSize = (Math.min(window.innerHeight, window.innerWidth) * 8 / 10);
+		this.setState({ boardSize });
+	}
 	render() {
-		const { socket, $moves, $meta, player, otherPlayer, playerSide } = this.state;
-		const smallerSize = Math.min(window.innerHeight, window.innerWidth);
+		const { socket, $moves, $meta, player, otherPlayer, boardSize } = this.state;
 		return (
 			<div>
 				<Player {...otherPlayer}/>
@@ -55,8 +70,8 @@ class Match extends React.Component {
 						? 'белых'
 						: 'черных'}.`}</p>
 				<div className="checkers-table-container center-block" style={{
-					height: (smallerSize * 3 / 4) + 64,
-					width: (smallerSize * 3 / 4) + 64
+					height: boardSize,
+					width: boardSize
 				}}>
 					<CheckersTable socket={socket} moves={$moves} meta={$meta}/>
 				</div>

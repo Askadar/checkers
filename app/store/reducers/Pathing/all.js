@@ -8,9 +8,9 @@ export default function findAllPaths(table, game) {
 	let bWhiteMovesOnly = true;
 	let ruledVal = true;
 	let sidesHash = { '1': 0, '-1': 0 };
-	if (turn * playerSide < 0)		{
-		return table;
-	}
+	// if (turn * playerSide < 0)		{
+	// 	return table;
+	// }
 	for (let pieceKey in table) {
 		// do repath only for those pieces, that either connected to enemy pieces or connected to white spots
 		if (table[pieceKey].checker * turn > 0/* && Object.keys(table[pieceKey].connected).some(d => {
@@ -30,7 +30,7 @@ export default function findAllPaths(table, game) {
 				};
 				// console.log('Paths for '+pieceKey, newTable[pieceKey].paths);
 			}
-			newTable[pieceKey].className = newTable[pieceKey].paths.length > 0 ? (newTable[pieceKey].className === 'active' ? 'active' : 'can-move') : '';
+			newTable[pieceKey].className = newTable[pieceKey].paths.length > 0 ? (newTable[pieceKey].className === 'active' ? 'active' : (turn * playerSide > 0 ? 'can-move' : '')) : '';
 			bWhiteMovesOnly = bWhiteMovesOnly
 				? !newTable[pieceKey].paths.some(path => path.weight > 0)
 				: 'false';
