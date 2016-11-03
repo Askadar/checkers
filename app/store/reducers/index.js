@@ -109,26 +109,26 @@ export default function logic(state, action) {
 		};
 	case 'updateAllPaths':
 		let won = null;
+		let newTable = { ...table };
 		if (game.sequentialWhiteMoves >= 30)
 			won = { side: 0, type: 'force draw', message: '30 sequential moves without taking enemy pieces' };
-
 		else
-			table = findAllPaths(table, game);
-		
+			newTable = findAllPaths(table, game);
 		for (let i in table)
-			if (table[i].checkers * game.turn > 0 && table[i].paths > 0)
-				continue;
-			else{
-				won = { side: -game.turn, type: 'no moves left', message: `${game.turn} side have no more moves` };
-				break;
-			}
+			if (table[i].checkers * game.turn > 0)
+				if (table[i].paths > 0)
+					continue;
+				else{
+					won = { side: -game.turn, type: 'no moves left', message: `${game.turn} side have no more moves` };
+					break;
+				}
 
 		return {
 			...state,
 			game: {
 				...game,
 				table: {
-					...table
+					...newTable
 				},
 				won
 			}

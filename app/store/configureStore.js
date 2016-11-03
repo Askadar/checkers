@@ -13,7 +13,8 @@ const state = {
 			noMovesLeft: true,
 			foceDrawAfterWhiteMoves: 30,
 			forceDrawAfter3vs1Damsels: 15
-		}
+		},
+		won: { side: 1, type: 'debug', message: 'some long debugging victory message just to write some css and stuff' }
 	}
 };
 

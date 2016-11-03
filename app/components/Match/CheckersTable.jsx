@@ -19,7 +19,7 @@ class CheckersTable extends React.Component {
 	}
 	componentDidMount() {
 		const { updateAllPaths, socket, moves, meta } = this.props;
-		// updateAllPaths();
+		updateAllPaths();
 		const $movesFromViewerArray = moves.flatMap(a => a); // Observable.fromEvent(socket, 'moves');
 		const $movesNormal = Rx.Observable.fromEvent(socket, 'move');
 		const $moves = Rx.Observable.merge($movesFromViewerArray, $movesNormal);
@@ -37,14 +37,14 @@ class CheckersTable extends React.Component {
 	}
 	showMoves(id) {
 		const piece = this.props.table[id];
-		if (piece.checker * this.props.turn > 0 && piece.paths.length > 0) {
+		if (piece.checker * this.props.turn > 0 && piece.paths.length > 0)
 			// console.log('Show move', piece.paths, id);
 			this.props.showMoves(piece.paths, id);
-		}
+
 	}
 	move(id, lastChecker = this.props.lastChecker) {
 		const { turn, socket } = this.props;
-		lastChecker == this.props.lastChecker && socket.emit('move', { id, lastChecker });
+		lastChecker === this.props.lastChecker && socket.emit('move', { id, lastChecker });
 		const pieceTo = this.props.table[id];
 		const piece = this.props.table[lastChecker];
 		let consume;
@@ -52,12 +52,12 @@ class CheckersTable extends React.Component {
 		if (piece.checker * turn > 0) {
 			// console.log('Moved', id, piece, pieceTo, piece.paths);
 			let paths = piece.paths.filter(path => {
-				return path.points[0].id == pieceTo.id;
+				return path.points[0].id === pieceTo.id;
 			});
 			let path = paths[0];
-			if (path.vectors.length > 0) {
+			if (path.vectors.length > 0)
 				consume = path.vectors[0].id;
-			}
+
 			paths = paths.map(p => {
 				return { ...p,
 					points: p.points.slice(1),
@@ -70,14 +70,14 @@ class CheckersTable extends React.Component {
 				: -turn;
 			this.props.move(piece, pieceTo, consume, nextTurn);
 			// console.log('Turnings', nextTurn, turn);
-			if (nextTurn == turn) {
+			if (nextTurn === turn) {
 				// console.log('Show next move', paths, pieceTo.id);
 				this.props.hideMoves();
 				this.props.showMoves(paths, pieceTo.id);
 			}
-			else {
+			else
 				this.props.hideMoves();
-			}
+
 			this.props.updateAllPaths();
 		}
 	}
@@ -87,12 +87,12 @@ class CheckersTable extends React.Component {
 			<div className="checkers-table">
 				<div className="numbers">
 					{[...Array(Math.sqrt(keysMap.length * 2)).keys()].map(i => {
-						return <span className={`number-${i + 1}`}>{i + 1}</span>;
+						return <span key={`n-${i}`} className={`number-${i + 1}`}>{i + 1}</span>;
 					})}
 				</div>
 				<div className="letters">
 					{[...Array(Math.sqrt(keysMap.length * 2)).keys()].map(i => {
-						return <span className={`letter-${i + 1}`}>{letters[i]}</span>;
+						return <span key={`l-${i}`} className={`letter-${i + 1}`}>{letters[i]}</span>;
 					})}
 				</div>
 				<div className="checkers-table" data-whites={this.props.turn}>

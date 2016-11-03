@@ -29405,8 +29405,8 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var Match = function (_React$Component) {
-		_inherits(Match, _React$Component);
+	var Match = function (_Component) {
+		_inherits(Match, _Component);
 
 		function Match(p) {
 			_classCallCheck(this, Match);
@@ -29494,6 +29494,7 @@
 				var player = _state2.player;
 				var otherPlayer = _state2.otherPlayer;
 				var boardSize = _state2.boardSize;
+				var won = this.props.won;
 
 				return _react2.default.createElement(
 					'div',
@@ -29510,6 +29511,11 @@
 								height: boardSize,
 								width: boardSize
 							} },
+						_react2.default.createElement(
+							'div',
+							{ className: won ? 'won' : '' },
+							_react2.default.createElement(WinScreen, won)
+						),
 						_react2.default.createElement(_CheckersTable2.default, { socket: socket, moves: $moves, meta: $meta })
 					),
 					_react2.default.createElement(_Player2.default, player)
@@ -29518,10 +29524,10 @@
 		}]);
 
 		return Match;
-	}(_react2.default.Component);
+	}(_react.Component);
 
 	exports.default = (0, _reactRedux.connect)(function (s) {
-		return { turn: s.game.turn };
+		return { turn: s.game.turn, won: s.game.won };
 	}, function (dispatch) {
 		return {
 			setSide: function setSide(side) {
@@ -29532,6 +29538,33 @@
 			}
 		};
 	})(Match);
+
+
+	var WinScreen = function WinScreen(_ref) {
+		var type = _ref.type;
+		var side = _ref.side;
+		var message = _ref.message;
+
+		return _react2.default.createElement(
+			'div',
+			{ className: 'game-result' },
+			_react2.default.createElement(
+				'span',
+				{ className: 'side' },
+				side === 1 ? 'white' : 'black'
+			),
+			_react2.default.createElement(
+				'span',
+				{ className: 'type' },
+				type
+			),
+			_react2.default.createElement(
+				'span',
+				{ className: 'message' },
+				message
+			)
+		);
+	};
 
 /***/ },
 /* 264 */
@@ -29602,8 +29635,8 @@
 				var socket = _props.socket;
 				var moves = _props.moves;
 				var meta = _props.meta;
-				// updateAllPaths();
 
+				updateAllPaths();
 				var $movesFromViewerArray = moves.flatMap(function (a) {
 					return a;
 				}); // Observable.fromEvent(socket, 'moves');
@@ -29625,10 +29658,9 @@
 			key: 'showMoves',
 			value: function showMoves(id) {
 				var piece = this.props.table[id];
-				if (piece.checker * this.props.turn > 0 && piece.paths.length > 0) {
+				if (piece.checker * this.props.turn > 0 && piece.paths.length > 0)
 					// console.log('Show move', piece.paths, id);
 					this.props.showMoves(piece.paths, id);
-				}
 			}
 		}, {
 			key: 'move',
@@ -29638,7 +29670,7 @@
 				var turn = _props2.turn;
 				var socket = _props2.socket;
 
-				lastChecker == this.props.lastChecker && socket.emit('move', { id: id, lastChecker: lastChecker });
+				lastChecker === this.props.lastChecker && socket.emit('move', { id: id, lastChecker: lastChecker });
 				var pieceTo = this.props.table[id];
 				var piece = this.props.table[lastChecker];
 				var consume = void 0;
@@ -29646,12 +29678,11 @@
 				if (piece.checker * turn > 0) {
 					// console.log('Moved', id, piece, pieceTo, piece.paths);
 					var paths = piece.paths.filter(function (path) {
-						return path.points[0].id == pieceTo.id;
+						return path.points[0].id === pieceTo.id;
 					});
 					var path = paths[0];
-					if (path.vectors.length > 0) {
-						consume = path.vectors[0].id;
-					}
+					if (path.vectors.length > 0) consume = path.vectors[0].id;
+
 					paths = paths.map(function (p) {
 						return _extends({}, p, {
 							points: p.points.slice(1),
@@ -29663,13 +29694,12 @@
 					var nextTurn = path && path.points.length > 0 ? turn : -turn;
 					this.props.move(piece, pieceTo, consume, nextTurn);
 					// console.log('Turnings', nextTurn, turn);
-					if (nextTurn == turn) {
+					if (nextTurn === turn) {
 						// console.log('Show next move', paths, pieceTo.id);
 						this.props.hideMoves();
 						this.props.showMoves(paths, pieceTo.id);
-					} else {
-						this.props.hideMoves();
-					}
+					} else this.props.hideMoves();
+
 					this.props.updateAllPaths();
 				}
 			}
@@ -29691,7 +29721,7 @@
 						[].concat(_toConsumableArray(Array(Math.sqrt(keysMap.length * 2)).keys())).map(function (i) {
 							return _react2.default.createElement(
 								'span',
-								{ className: 'number-' + (i + 1) },
+								{ key: 'n-' + i, className: 'number-' + (i + 1) },
 								i + 1
 							);
 						})
@@ -29702,7 +29732,7 @@
 						[].concat(_toConsumableArray(Array(Math.sqrt(keysMap.length * 2)).keys())).map(function (i) {
 							return _react2.default.createElement(
 								'span',
-								{ className: 'letter-' + (i + 1) },
+								{ key: 'l-' + i, className: 'letter-' + (i + 1) },
 								letters[i]
 							);
 						})
@@ -55389,7 +55419,8 @@
 				noMovesLeft: true,
 				foceDrawAfterWhiteMoves: 30,
 				forceDrawAfter3vs1Damsels: 15
-			}
+			},
+			won: { side: 1, type: 'debug', message: 'some long debugging victory message just to write some css and stuff' }
 		}
 	};
 
@@ -55498,16 +55529,16 @@
 				});
 			case 'updateAllPaths':
 				var won = null;
-				if (game.sequentialWhiteMoves >= 30) won = { side: 0, type: 'force draw', message: '30 sequential moves without taking enemy pieces' };else table = (0, _pathing.findAllPaths)(table, game);
-
+				var newTable = _extends({}, table);
+				if (game.sequentialWhiteMoves >= 30) won = { side: 0, type: 'force draw', message: '30 sequential moves without taking enemy pieces' };else newTable = (0, _pathing.findAllPaths)(table, game);
 				for (var i in table) {
-					if (table[i].checkers * game.turn > 0 && table[i].paths > 0) continue;else {
+					if (table[i].checkers * game.turn > 0) if (table[i].paths > 0) continue;else {
 						won = { side: -game.turn, type: 'no moves left', message: game.turn + ' side have no more moves' };
 						break;
 					}
 				}return _extends({}, state, {
 					game: _extends({}, game, {
-						table: _extends({}, table),
+						table: _extends({}, newTable),
 						won: won
 					})
 				});

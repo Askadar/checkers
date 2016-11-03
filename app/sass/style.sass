@@ -1,133 +1,133 @@
 @keyframes possible-move
-  0%
-    transform: scale(1)
+	0%
+		transform: scale(1)
 
-  50%
-    transform: scale(1.2)
+	50%
+		transform: scale(1.2)
 
-  100%
-    transform: scale(1)
+	100%
+		transform: scale(1)
 
 
 @keyframes can-move
-  0%
-    transform: rotate(0deg)
+	0%
+		transform: rotate(0deg)
 
-  100%
-    transform: rotate(360deg)
+	100%
+		transform: rotate(360deg)
 
 
 .checkers-table
-  background: rgba(250, 235, 180, 0.8)
-  width: 100%
-  height: 100%
-  font-size: 0
-  cursor: default
-  position: relative
+	background: rgba(250, 235, 180, 0.8)
+	width: 100%
+	height: 100%
+	font-size: 0
+	cursor: default
+	position: relative
 
 .checkers-table-container
-  /*transform: rotateX(180deg);
-  user-select: none
-  //border: 3rem solid rgba(200, 165, 120, 0.8)
-  border-radius: 0.2rem
-  position: relative
-  transition: 1s all
-  .checker:after
-    transform: rotateX(180deg)
-  &:before
-    //content: ''
-    //background: url(/checkers/assets/numbers.svg)
-    position: absolute
-    left: -7.5%
-    top: -7.5%
-    width: 115%
-    height: 115%
-    /*transform: rotateX(180deg);
-    background-position: 0 32px
-    background-size: 95%
+	/*transform: rotateX(180deg);
+	user-select: none
+	//border: 3rem solid rgba(200, 165, 120, 0.8)
+	border-radius: 0.2rem
+	position: relative
+	transition: 1s all
+	.checker:after
+		transform: rotateX(180deg)
+	&:before
+		//content: ''
+		//background: url(/checkers/assets/numbers.svg)
+		position: absolute
+		left: -7.5%
+		top: -7.5%
+		width: 115%
+		height: 115%
+		/*transform: rotateX(180deg);
+		background-position: 0 32px
+		background-size: 95%
 
 // /*.checkers-table:before {
-//  *	content: "";
-//  *	background-image: url('assets/board.svg');
-//  *	background-repeat: no-repeat;
-//  *	width: 100%;
-//  *	height: 100%;
-//  *	font-size: 0;
-//  *	top: 0;
-//  *	left: 0;
-//  *	position: absolute;;
-//  *	transform: rotateX(180deg);
-//  *	z-index: -5;
-//  *}
+//	*	content: "";
+//	*	background-image: url('assets/board.svg');
+//	*	background-repeat: no-repeat;
+//	*	width: 100%;
+//	*	height: 100%;
+//	*	font-size: 0;
+//	*	top: 0;
+//	*	left: 0;
+//	*	position: absolute;;
+//	*	transform: rotateX(180deg);
+//	*	z-index: -5;
+//	*}
 
 .checkers-table .checker
-  background: rgba(210, 170, 120, 0.8)
-  position: relative
-  height: 12.5%
-  width: 12.5%
-  margin: 0
-  margin-left: 12.5%
-  display: inline-block
-  &.active:before
-    transform: scale(1.2)
-    box-shadow: 1px -1px 2px rgba(120, 40, 10, 0.5)
-  &.possible-move:before
-    content: ""
-    left: 12.5%
-    top: 12.5%
-    border-radius: 50%
-    background: rgba(230, 207, 179, 0.8)
-    border: 4px rgba(115, 78, 60, 0.88) dotted
-    position: absolute
-    animation: possible-move 1s linear infinite
-  &.can-move:before
-    border: 4px rgba(70, 120, 210, 0.8) dotted
-    /*transform: scale(1.1);
-    animation: can-move 4s linear infinite
-  &:nth-child(8n+5)
-    margin-left: 0 !important
-  &:after
-    /*content: attr(id);
-    color: #a57d19
-    position: absolute
-    bottom: 2%
-    right: 2%
-    font-size: 1rem
-    display: inline-block
-  &:before
-    content: ""
-    -webkit-transition: all 1s
-    transition: all 1s
-    width: 75%
-    height: 75%
-    position: absolute
-    left: 12.5%
-    top: 12.5%
-    border-radius: 50%
+	background: rgba(210, 170, 120, 0.8)
+	position: relative
+	height: 12.5%
+	width: 12.5%
+	margin: 0
+	margin-left: 12.5%
+	display: inline-block
+	&.active:before
+		transform: scale(1.2)
+		box-shadow: 1px -1px 2px rgba(120, 40, 10, 0.5)
+	&.possible-move:before
+		content: ""
+		left: 12.5%
+		top: 12.5%
+		border-radius: 50%
+		background: rgba(230, 207, 179, 0.8)
+		border: 4px rgba(115, 78, 60, 0.88) dotted
+		position: absolute
+		animation: possible-move 1s linear infinite
+	&.can-move:before
+		border: 4px rgba(70, 120, 210, 0.8) dotted
+		/*transform: scale(1.1);
+		animation: can-move 4s linear infinite
+	&:nth-child(8n+5)
+		margin-left: 0 !important
+	&:after
+		/*content: attr(id);
+		color: #a57d19
+		position: absolute
+		bottom: 2%
+		right: 2%
+		font-size: 1rem
+		display: inline-block
+	&:before
+		content: ""
+		-webkit-transition: all 1s
+		transition: all 1s
+		width: 75%
+		height: 75%
+		position: absolute
+		left: 12.5%
+		top: 12.5%
+		border-radius: 50%
 
 .checker
-  &[data-checker="-1"]:before
-    background: #1b1202
-    border: 4px #3a2706 dotted
-  &[data-checker="1"]:before
-    background: #fad2b4
-    border: 4px #fafafa dotted
-  &[data-checker="-2"]:before
-    content: '\2605'
-    color: red
-    font-size: 1rem
-    text-align: center
-    background: #1b1202
-    border: 4px #ffa406 dotted
-    padding: 0.7rem
-  &[data-checker="2"]:before
-    content: '\2605'
-    color: blue
-    font-size: 1rem
-    text-align: center
-    padding: 0.7rem
-    background: #fad2b4
-    border: 4px #cc3e3e dotted
+	&[data-checker="-1"]:before
+		background: #1b1202
+		border: 4px #3a2706 dotted
+	&[data-checker="1"]:before
+		background: #fad2b4
+		border: 4px #fafafa dotted
+	&[data-checker="-2"]:before
+		content: '\2605'
+		color: red
+		font-size: 1rem
+		text-align: center
+		background: #1b1202
+		border: 4px #ffa406 dotted
+		padding: 0.7rem
+	&[data-checker="2"]:before
+		content: '\2605'
+		color: blue
+		font-size: 1rem
+		text-align: center
+		padding: 0.7rem
+		background: #fad2b4
+		border: 4px #cc3e3e dotted
 .numbers, .letters
 	span
 		position: absolute
@@ -145,11 +145,39 @@
 	@for $i from 1 through 8
 		.letter-#{$i}
 			right: 101% - ($i * 12.5%)
+.won .game-result
+	width: 70%
+	padding: 1rem
+.game-result
+	transition: all 1s
+	position: absolute
+	overflow: hidden
+	left: 50%
+	top: 40%
+	background: rgba(255, 255, 255, 0.67)
+	z-index: 11
+	margin-left: -35%
+	width: 0
+	padding: 0
+	font-size: 1rem
+	border-radius: 15% 0
+	.type
+		display: block
+		font-size: 1.3em
+		text-align: center
+	.message
+		color: rgb(70,140,220)
+	.side
+		text-align: center
+		display: block
+		font-size: 1.2em
+		&:before
+			content: "Winner is: "
 // .checkers-table[data-whites="-1"] {
-//  	-webkit-transform: rotateX(0);
-//  					transform: rotateX(0);
-//  }
-//  .checkers-table[data-whites="-1"] .checker:after {
-//  	-webkit-transform: rotateX(0);
-//  					transform: rotateX(0);
-//  }
+//		-webkit-transform: rotateX(0);
+//						transform: rotateX(0);
+//	}
+//	.checkers-table[data-whites="-1"] .checker:after {
+//		-webkit-transform: rotateX(0);
+//						transform: rotateX(0);
+//	}

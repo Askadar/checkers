@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { Component } from 'react';
 import CheckersTable from './CheckersTable';
 import Player from './Player';
 import { connect } from 'react-redux';
 import io from 'socket.io-client';
-import { Rx, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 
-class Match extends React.Component {
+class Match extends Component {
 	constructor(p) {
 		super(p);
 		const debug = true;
@@ -63,6 +63,7 @@ class Match extends React.Component {
 	}
 	render() {
 		const { socket, $moves, $meta, player, otherPlayer, boardSize } = this.state;
+		const { won } = this.props;
 		return (
 			<div>
 				<Player {...otherPlayer}/>
@@ -73,6 +74,7 @@ class Match extends React.Component {
 					height: boardSize,
 					width: boardSize
 				}}>
+					<div className={won ? 'won' : ''}><WinScreen {...won}/></div>
 					<CheckersTable socket={socket} moves={$moves} meta={$meta}/>
 				</div>
 				<Player {...player}/>
@@ -82,10 +84,18 @@ class Match extends React.Component {
 }
 
 export default connect((s) => {
-	return { turn: s.game.turn };
+	return { turn: s.game.turn, won: s.game.won };
 }, (dispatch) => {
 	return {
 		setSide(side) {	dispatch({ type: 'setSide', side }); },
 		updateAllPaths() { dispatch({ type: 'updateAllPaths' }); }
 	};
 })(Match);
+
+const WinScreen = ({ type, side, message }) => {
+	return (<div className="game-result">
+		<span className="side">{side === 1 ? 'white' : 'black'}</span>
+		<span className="type">{type}</span>
+		<span className="message">{message}</span>
+	</div>);
+};

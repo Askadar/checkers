@@ -167,3 +167,33 @@
 
 .letters .letter-8 {
   right: 1%; }
+
+.won .game-result {
+  width: 70%;
+  padding: 1rem; }
+
+.game-result {
+  transition: all 1s;
+  position: absolute;
+  overflow: hidden;
+  left: 50%;
+  top: 40%;
+  background: rgba(255, 255, 255, 0.67);
+  z-index: 11;
+  margin-left: -35%;
+  width: 0;
+  padding: 0;
+  font-size: 1rem;
+  border-radius: 15% 0; }
+  .game-result .type {
+    display: block;
+    font-size: 1.3em;
+    text-align: center; }
+  .game-result .message {
+    color: #468cdc; }
+  .game-result .side {
+    text-align: center;
+    display: block;
+    font-size: 1.2em; }
+    .game-result .side:before {
+      content: "Winner is: "; }
