@@ -2,35 +2,28 @@ import React, { Component } from 'react';
 import CheckersTable from './CheckersTable';
 import Player from './Player';
 import { connect } from 'react-redux';
-import io from 'socket.io-client';
 import { Observable } from 'rxjs';
+import io from 'socket.io-client';
 
 class Match extends Component {
 	constructor(p) {
 		super(p);
-		const debug = true;
-		let player = { name: window.prompt('You\'re name?', 'Fixy'), rating: 2754 };
+		let player = { name: 'test' /* window.prompt('You\'re name?', 'Fixy')*/, rating: 2754 };
 		this.state = {
-			// socket options
-			socketPath: debug ? 'http://localhost:3000' : 'https://websockety-askadar.c9users.io:8080/',
-			socketOptions: {
-				reconnection: true,
-				reconnectionDelay: 500,
-				reconnectionAttempts: 10
-			},
 			// player options
 			'$moves': null,
 			playerSide: 0,
 			player,
 			otherPlayer: { name: 'Your enemy', rating: '?' },
 			// room and board settings
-			roomId: this.props.routeParams ? this.props.routeParams : '-1',
 			boardSize: (Math.min(window.innerHeight, window.innerWidth) * 8 / 10)
 		};
 	}
 	componentWillMount() {
-		const { socketPath, socketOptions, player } = this.state;
-		const socket = io(socketPath, socketOptions);
+		console.log('mounting', this.props);
+		const { player } = this.state;
+		const { socket } = this.props;
+		const roomId = this.props.routeParams.roomId ? this.props.routeParams.roomId : '-1';
 		const $movesFromViewerArray = Observable.fromEvent(socket, 'moves');
 		const $metaStream = Observable.fromEvent(socket, 'meta');
 
@@ -51,8 +44,8 @@ class Match extends Component {
 				break;
 			}
 		});
-		this.state.roomId !== '-1' && socket.emit('enterRoom', { id: this.state.roomId, player });
-		this.setState({ socket, '$moves': $movesFromViewerArray, '$meta': $metaStream });
+		roomId !== '-1' && socket.emit('enterRoom', { id: roomId, player });
+		this.setState({ '$moves': $movesFromViewerArray, '$meta': $metaStream });
 	}
 	componentWillUnount() {
 		this.resizeSubscriber.unsubscribe();
@@ -62,12 +55,13 @@ class Match extends Component {
 		this.setState({ boardSize });
 	}
 	render() {
-		const { socket, $moves, $meta, player, otherPlayer, boardSize } = this.state;
-		const { won } = this.props;
+		console.log(this.props);
+		const { $moves, $meta, player, otherPlayer, boardSize } = this.state;
+		const { won, socket, turn } = this.props;
 		return (
 			<div>
 				<Player {...otherPlayer}/>
-				<p>{`Сейчас ход ${this.props.turn === 1
+				<p>{`Сейчас ход ${turn === 1
 						? 'белых'
 						: 'черных'}.`}</p>
 				<div className="checkers-table-container center-block" style={{
@@ -75,7 +69,7 @@ class Match extends Component {
 					width: boardSize
 				}}>
 					<div className={won ? 'won' : ''}><WinScreen {...won}/></div>
-					<CheckersTable socket={socket} moves={$moves} meta={$meta}/>
+					<CheckersTable boardSize={boardSize} socket={socket} moves={$moves} meta={$meta}/>
 				</div>
 				<Player {...player}/>
 			</div>

@@ -19,21 +19,23 @@ class CheckersTable extends React.Component {
 	}
 	componentDidMount() {
 		const { updateAllPaths, socket, moves, meta } = this.props;
-		updateAllPaths();
-		const $movesFromViewerArray = moves.flatMap(a => a); // Observable.fromEvent(socket, 'moves');
-		const $movesNormal = Rx.Observable.fromEvent(socket, 'move');
-		const $moves = Rx.Observable.merge($movesFromViewerArray, $movesNormal);
-		// const $meta = Rx.Observable.fromEvent(socket, 'meta');
-		// const $chatMessages = Rx.Observable.fromEvent(socket, 'chatMessages');
-		const $won = Rx.Observable.fromEvent(socket, 'won');
-		const $stop = Rx.Observable.merge($won);
-		this.subscription = $moves
-												.takeUntil($stop)
-												.subscribe(a => {
-													console.log('observer', a);
-													const { id, lastChecker } = a;
-													this.move(id, lastChecker);
-												});
+		if (socket) {
+			// updateAllPaths();
+			const $movesFromViewerArray = moves.flatMap(a => a); // Observable.fromEvent(socket, 'moves');
+			const $movesNormal = Rx.Observable.fromEvent(socket, 'move');
+			const $moves = Rx.Observable.merge($movesFromViewerArray, $movesNormal);
+			// const $meta = Rx.Observable.fromEvent(socket, 'meta');
+			// const $chatMessages = Rx.Observable.fromEvent(socket, 'chatMessages');
+			const $won = Rx.Observable.fromEvent(socket, 'won');
+			const $stop = Rx.Observable.merge($won);
+			this.subscription =
+			$moves.takeUntil($stop)
+				.subscribe(a => {
+					console.log('observer', a);
+					const { id, lastChecker } = a;
+					this.move(id, lastChecker);
+				});
+		}
 	}
 	showMoves(id) {
 		const piece = this.props.table[id];
@@ -43,8 +45,8 @@ class CheckersTable extends React.Component {
 
 	}
 	move(id, lastChecker = this.props.lastChecker) {
-		const { turn, socket } = this.props;
-		lastChecker === this.props.lastChecker && socket.emit('move', { id, lastChecker });
+		const { turn, socket, singlePlayer, move, updateAllPaths, setSide, hideMoves, showMoves } = this.props;
+		lastChecker === this.props.lastChecker && !singlePlayer && socket.emit('move', { id, lastChecker });
 		const pieceTo = this.props.table[id];
 		const piece = this.props.table[lastChecker];
 		let consume;
@@ -68,29 +70,31 @@ class CheckersTable extends React.Component {
 			const nextTurn = path && path.points.length > 0
 				? turn
 				: -turn;
-			this.props.move(piece, pieceTo, consume, nextTurn);
+			move(piece, pieceTo, consume, nextTurn);
 			// console.log('Turnings', nextTurn, turn);
 			if (nextTurn === turn) {
 				// console.log('Show next move', paths, pieceTo.id);
-				this.props.hideMoves();
-				this.props.showMoves(paths, pieceTo.id);
+				hideMoves();
+				showMoves(paths, pieceTo.id);
 			}
 			else
-				this.props.hideMoves();
-
-			this.props.updateAllPaths();
+				hideMoves();
+			if (singlePlayer === true)
+				setSide(nextTurn);
+			updateAllPaths();
 		}
 	}
 	render() {
 		const { keysMap, letters } = this.state;
+		const { boardSize } = this.props;
 		return (
 			<div className="checkers-table">
-				<div className="numbers">
+				<div className="numbers" style={{ fontSize: boardSize / 50 }}>
 					{[...Array(Math.sqrt(keysMap.length * 2)).keys()].map(i => {
 						return <span key={`n-${i}`} className={`number-${i + 1}`}>{i + 1}</span>;
 					})}
 				</div>
-				<div className="letters">
+				<div className="letters" style={{ fontSize: boardSize / 50 }}>
 					{[...Array(Math.sqrt(keysMap.length * 2)).keys()].map(i => {
 						return <span key={`l-${i}`} className={`letter-${i + 1}`}>{letters[i]}</span>;
 					})}
@@ -122,8 +126,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 		},
 		updateAllPaths() {
 			dispatch({ type: 'updateAllPaths' });
+		},
+		setSide(side) {
+			dispatch({ type: 'setSide', side });
 		}
 	};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps, null, { pure: false })(CheckersTable);
+export default connect(mapStateToProps, mapDispatchToProps)(CheckersTable);

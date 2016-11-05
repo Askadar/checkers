@@ -2,8 +2,8 @@ import React from 'react';
 
 class Checker extends React.Component {
 	handleClick(e) {
-		//console.log(e.target, this);
-		//console.log(this.props.active, this.props.possibleMove, this.props.showMove);
+		// console.log(e.target, this);
+		// console.log(this.props.active, this.props.possibleMove, this.props.showMove);
 		const {
 			className,
 			active,
@@ -13,19 +13,19 @@ class Checker extends React.Component {
 			id
 		} = this.props;
 		switch (className) {
-			case 'can-move':
-				hideMoves();
-				showMoves(id);
-				break;
-			case 'active':
-				hideMoves();
-				break;
-			case 'possible-move':
-				move(id);
-				break;
-			default:
-				//hideMoves();
-				break;
+		case 'can-move':
+			hideMoves();
+			showMoves(id);
+			break;
+		case 'active':
+			hideMoves();
+			break;
+		case 'possible-move':
+			move(id);
+			break;
+		default:
+				// hideMoves();
+			break;
 		}
 
 		// if (this.props.class == 'possible-move')
@@ -39,7 +39,7 @@ class Checker extends React.Component {
 		// }
 	}
 	render() {
-		return <div className={`checker ${this.props.className}`} id={this.props.id} data-checker={this.props.checker} onClick={this.handleClick.bind(this)}/>
+		return <div className={`checker ${this.props.className}`} id={this.props.id} data-checker={this.props.checker} onClick={this.handleClick.bind(this)}/>;
 	}
 }
 

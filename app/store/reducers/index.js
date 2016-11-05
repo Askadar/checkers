@@ -16,7 +16,7 @@ function shouldBecomeDamsel(piece, pieceTo) {
 		'8': -1,
 		'1': 1
 	}; // hash10 = {10:-1, 1:1}
-	if (piece.checker % 2 === 0 && piece.checker !== 0 && piece.paths.length === 0)
+	if (piece.checker % 2 === 0 && piece.checker !== 0/* && piece.paths.length === 0*/)
 		return 1;
 
 	return hash[pieceTo.id.split('-')[0]] * piece.checker < 0
@@ -114,15 +114,25 @@ export default function logic(state, action) {
 			won = { side: 0, type: 'force draw', message: '30 sequential moves without taking enemy pieces' };
 		else
 			newTable = findAllPaths(table, game);
-		for (let i in table)
-			if (table[i].checkers * game.turn > 0)
-				if (table[i].paths > 0)
-					continue;
-				else{
-					won = { side: -game.turn, type: 'no moves left', message: `${game.turn} side have no more moves` };
+		let noPaths = false;
+		let noPieces = true;
+		for (let i in newTable)
+			if (newTable[i].checker * game.turn > 0) {
+				noPieces = false;
+				if (newTable[i].paths.length > 0) {
+					noPaths = false;
 					break;
 				}
+				else{
+					noPaths = true;
+					continue;
+				}
+			}
+			else if (newTable[i].checker === 0 || newTable[i].checker * game.turn < 0)
+				continue;
+		won = noPieces ? { side: -game.turn, type: 'no pieces left', message: `${game.turn} side have no more pieces` } : won;
 
+		if (noPaths) won = { side: -game.turn, type: 'no moves left', message: `${game.turn} side have no more moves` };
 		return {
 			...state,
 			game: {

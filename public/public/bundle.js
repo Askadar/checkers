@@ -29433,12 +29433,12 @@
 
 			var _this = _possibleConstructorReturn(this, (Match.__proto__ || Object.getPrototypeOf(Match)).call(this, p));
 
-			var player = { name: 'You' /* window.prompt('You\'re name?', 'Fixy')*/, rating: '|', side: 1 };
+			var player = { name: 'test' /* window.prompt('You\'re name?', 'Fixy')*/, rating: 2754 };
 			_this.state = {
 				// player options
 				playerSide: 0,
 				player: player,
-				otherPlayer: { name: 'You too', rating: '|', side: -1 },
+				otherPlayer: { name: 'Your enemy', rating: '?' },
 				// room and board settings
 				boardSize: Math.min(window.innerHeight, window.innerWidth) * 8 / 10
 			};
@@ -29450,8 +29450,6 @@
 			value: function componentWillMount() {
 				var _this2 = this;
 
-				this.props.setSide(1);
-				this.props.updateAllPaths();
 				var $resizeThrottled = _rxjs.Observable.fromEvent(window, 'resize').auditTime(350);
 				this.resizeSubscriber = $resizeThrottled.subscribe(function () {
 					return _this2.resizeBoard();
@@ -29473,11 +29471,14 @@
 			value: function render() {
 				console.log(this.props);
 				var _state = this.state;
+				var $moves = _state.$moves;
+				var $meta = _state.$meta;
 				var player = _state.player;
 				var otherPlayer = _state.otherPlayer;
 				var boardSize = _state.boardSize;
 				var _props = this.props;
 				var won = _props.won;
+				var socket = _props.socket;
 				var turn = _props.turn;
 
 				return _react2.default.createElement(
@@ -29500,7 +29501,7 @@
 							{ className: won ? 'won' : '' },
 							_react2.default.createElement(_winscreen2.default, won)
 						),
-						_react2.default.createElement(_CheckersTable2.default, { boardSize: boardSize, turn: turn, singlePlayer: true })
+						_react2.default.createElement(_CheckersTable2.default, { boardSize: boardSize })
 					),
 					_react2.default.createElement(_Player2.default, player)
 				);
@@ -29512,15 +29513,6 @@
 
 	exports.default = (0, _reactRedux.connect)(function (s) {
 		return { turn: s.game.turn, won: s.game.won };
-	}, function (dispatch) {
-		return {
-			updateAllPaths: function updateAllPaths() {
-				dispatch({ type: 'updateAllPaths' });
-			},
-			setSide: function setSide(side) {
-				dispatch({ type: 'setSide', side: side });
-			}
-		};
 	})(Match);
 
 /***/ },
@@ -29628,14 +29620,8 @@
 				var _props2 = this.props;
 				var turn = _props2.turn;
 				var socket = _props2.socket;
-				var singlePlayer = _props2.singlePlayer;
-				var move = _props2.move;
-				var updateAllPaths = _props2.updateAllPaths;
-				var setSide = _props2.setSide;
-				var hideMoves = _props2.hideMoves;
-				var showMoves = _props2.showMoves;
 
-				lastChecker === this.props.lastChecker && !singlePlayer && socket.emit('move', { id: id, lastChecker: lastChecker });
+				lastChecker === this.props.lastChecker && socket.emit('move', { id: id, lastChecker: lastChecker });
 				var pieceTo = this.props.table[id];
 				var piece = this.props.table[lastChecker];
 				var consume = void 0;
@@ -29657,15 +29643,15 @@
 					});
 					path = paths[0];
 					var nextTurn = path && path.points.length > 0 ? turn : -turn;
-					move(piece, pieceTo, consume, nextTurn);
+					this.props.move(piece, pieceTo, consume, nextTurn);
 					// console.log('Turnings', nextTurn, turn);
 					if (nextTurn === turn) {
 						// console.log('Show next move', paths, pieceTo.id);
-						hideMoves();
-						showMoves(paths, pieceTo.id);
-					} else hideMoves();
-					if (singlePlayer === true) setSide(nextTurn);
-					updateAllPaths();
+						this.props.hideMoves();
+						this.props.showMoves(paths, pieceTo.id);
+					} else this.props.hideMoves();
+
+					this.props.updateAllPaths();
 				}
 			}
 		}, {
@@ -29738,14 +29724,11 @@
 			},
 			updateAllPaths: function updateAllPaths() {
 				dispatch({ type: 'updateAllPaths' });
-			},
-			setSide: function setSide(side) {
-				dispatch({ type: 'setSide', side: side });
 			}
 		};
 	};
 
-	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(CheckersTable);
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps, null, { pure: false })(CheckersTable);
 
 /***/ },
 /* 265 */
@@ -29783,8 +29766,8 @@
 		_createClass(Checker, [{
 			key: 'handleClick',
 			value: function handleClick(e) {
-				// console.log(e.target, this);
-				// console.log(this.props.active, this.props.possibleMove, this.props.showMove);
+				//console.log(e.target, this);
+				//console.log(this.props.active, this.props.possibleMove, this.props.showMove);
 				var _props = this.props;
 				var className = _props.className;
 				var active = _props.active;
@@ -29805,7 +29788,7 @@
 						move(id);
 						break;
 					default:
-						// hideMoves();
+						//hideMoves();
 						break;
 				}
 
@@ -55740,10 +55723,8 @@
 				var newTable = _extends({}, table);
 				if (game.sequentialWhiteMoves >= 30) won = { side: 0, type: 'force draw', message: '30 sequential moves without taking enemy pieces' };else newTable = (0, _pathing.findAllPaths)(table, game);
 				var noPaths = false;
-				var noPieces = true;
 				for (var i in newTable) {
 					if (newTable[i].checker * game.turn > 0) {
-						noPieces = false;
 						if (newTable[i].paths.length > 0) {
 							noPaths = false;
 							break;
@@ -55752,8 +55733,9 @@
 							continue;
 						}
 					} else if (newTable[i].checker === 0 || newTable[i].checker * game.turn < 0) continue;
-				}won = noPieces ? { side: -game.turn, type: 'no pieces left', message: game.turn + ' side have no more pieces' } : won;
-
+					won = { side: -game.turn, type: 'no pieces left', message: game.turn + ' side have no more pieces' };
+					break;
+				}
 				if (noPaths) won = { side: -game.turn, type: 'no moves left', message: game.turn + ' side have no more moves' };
 				return _extends({}, state, {
 					game: _extends({}, game, {
