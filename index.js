@@ -3,8 +3,7 @@ const port = process.env.PORT || 3000;
 const uuid = require('uuid');
 class Room {
 	constructor(socket, data) {
-		let debugUid = data.id || uuid.v4();
-		this.id = debugUid;
+		this.id = data.id;
 		this.users = [];
 		this.players = [];
 		this.moves = [];
@@ -19,7 +18,13 @@ class Room {
 			this.users.push(socket);
 			socket.join(this.id);
 			socket.room = this;
-			const side = this.players.length === 0 ? (Math.round(Math.random()) === 0 ? '-1' : '1') : -this.players[0].side;
+			let side;
+			// (Math.round(Math.random()) === 0 ? '-1' : '1'
+			switch (this.players.length) {
+			case 0: side = '1'; break;
+			case 1: side = '-1'; break;
+			default: side = 0;
+			}
 			this.players.length < 2 && this.players.push({ ...player, side });
 			socket.emit('meta', { type: 'side', side });
 			io.to(this.id).emit('meta', { type: 'players', players: this.players });
@@ -32,14 +37,20 @@ class Room {
 			// TODO: wait for them to reconnect and don't throw around users array
 		}
 		this.users = this.users.filter(u => u.id !== socket.id);
-
+		console.log('missin playas', this.users);
+	}
+	close(data) {
+		if (!this.closed) {
+			io.to(this.id).emit('won', data);
+			this.closed = true;
+		}
 	}
 	pushMove(move) {
 		this.moves.push(move);
 	}
 }
 
-const rooms = {}; // holds all active rooms ids or maybe room objects
+let rooms = {}; // holds all active rooms ids or maybe room objects
 
 io.on('connection', socket => {
 	// setInterval(()=>socket.emit('move','testing stuff'), 1000);
@@ -49,7 +60,7 @@ io.on('connection', socket => {
 	});
 	// disconnect event
 	socket.on('disconnect', () => {
-		console.log('disconnected', socket.id, rooms, socket.room);
+		console.log('disconnected', socket.id, socket.room);
 		//	socket.room.leave(socket);
 	});
 	socket.on('enterRoom', data => {
@@ -57,22 +68,27 @@ io.on('connection', socket => {
 		if (socket.room && rooms[socket.room]) { // we have room already, we use just object cause rooms have overwritten toString method
 		}
 		else if(data && data.id) {
-			// let index = -1;
+			console.log('socket have daa.id', data.id);
 			if(rooms[data.id]) {
+				console.log('such room exist', rooms[data.id]);
 				rooms[data.id].join(socket, data.player);
 			}
 			else{
+				console.log('we have to create new room', data.id);
 				rooms[data.id] = new Room(socket, data);
 			}
 		}
-		else{
+		else
 			rooms[data.id] = new Room(socket, data);
-		}
+
 	});
 	socket.on('move', data => {
 		console.log(data);
 		socket.room.pushMove(data);
-		socket.broadcast.emit('move', data);
+		socket.to(socket.room).emit('move', data);
+	});
+	socket.on('won', data => {
+		socket.room.close(data);
 	});
 });
 
