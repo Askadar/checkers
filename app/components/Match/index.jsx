@@ -3,7 +3,6 @@ import CheckersTable from './CheckersTable';
 import Player from './Player';
 import { connect } from 'react-redux';
 import { Observable } from 'rxjs';
-import io from 'socket.io-client';
 
 class Match extends Component {
 	constructor(p) {
@@ -14,7 +13,7 @@ class Match extends Component {
 			'$moves': null,
 			playerSide: 0,
 			player,
-			otherPlayer: { name: 'Your enemy', rating: '?' },
+			otherPlayer: { name: 'Opponent', rating: null },
 			// room and board settings
 			boardSize: (Math.min(window.innerHeight, window.innerWidth) * 8 / 10)
 		};

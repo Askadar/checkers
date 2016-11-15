@@ -8,12 +8,12 @@ import WinScreen from './winscreen';
 class Match extends Component {
 	constructor(p) {
 		super(p);
-		let player = { name: 'You' /* window.prompt('You\'re name?', 'Fixy')*/, rating: '|', side: 1 };
+		let player = { name: 'You' /* window.prompt('You\'re name?', 'Fixy')*/, rating: null, side: 1 };
 		this.state = {
 			// player options
 			playerSide: 0,
 			player,
-			otherPlayer: { name: 'You too', rating: '|', side: -1 },
+			otherPlayer: { name: 'You too', rating: null, side: -1 },
 			// room and board settings
 			boardSize: (Math.min(window.innerHeight, window.innerWidth) * 8 / 10)
 		};

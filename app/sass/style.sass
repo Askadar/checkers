@@ -71,7 +71,7 @@
 	&.active:before
 		transform: scale(1.2)
 		box-shadow: 1px -1px 2px rgba(120, 40, 10, 0.5)
-	&.possible-move:before
+	&.possible-move:hover:before
 		content: ""
 		left: 12.5%
 		top: 12.5%
@@ -80,7 +80,7 @@
 		border: 4px rgba(115, 78, 60, 0.88) dotted
 		position: absolute
 		animation: possible-move 1s linear infinite
-	&.can-move:before
+	&.can-move:hover:before
 		border: 4px rgba(70, 120, 210, 0.8) dotted
 		/*transform: scale(1.1);
 		animation: can-move 4s linear infinite
@@ -175,11 +175,68 @@
 		font-size: 1.2em
 		&:before
 			content: "Winner is: "
-// .checkers-table[data-whites="-1"] {
-//		-webkit-transform: rotateX(0);
-//						transform: rotateX(0);
-//	}
-//	.checkers-table[data-whites="-1"] .checker:after {
-//		-webkit-transform: rotateX(0);
-//						transform: rotateX(0);
-//	}
+
+.nav.nav-justified
+	display: flex
+	flex-direction: row
+	flex-wrap: wrap
+	li
+		flex: 1
+		padding: 0
+
+#NewGame
+	background: none
+	li
+		padding: 0
+		margin: 0.3em 1em
+		border: none
+	#play
+		flex-basis: 100%
+		box-shadow: 0 1px 2px rgba(0, 0, 0, .2)
+		button
+			width: 100%
+	.type-panel, .time-panel
+		position: absolute
+		z-index: 1
+		width: 100%
+		margin-top: -0.5em
+		padding-top: 1em
+
+#Tournament
+	font-size: 1.2em
+	.entry
+		color: #666
+		border-bottom: 1px solid rgba(100,100,100,0.4)
+		padding: 0.3em
+		//margin: 0.2rem 1rem
+		min-height: 2.5em
+		position: relative
+		&:hover
+				background: rgba(47, 138, 206, 0.25)
+				box-shadow: inset 0px -2px 4px -2px rgba(30, 90, 165, 0.5)
+		&:last-child
+			border-bottom: none
+		&:before
+			line-height: 1.5
+			position: absolute
+		&.Test:before
+			content: '\e136'
+			font-family: 'Glyphicons Halflings'
+		span
+			margin: auto 0.5em
+			display: inline-block
+			position: absolute
+			&.timeframe
+				left: 1em
+			&.type-label
+				left: 4.5em
+			&.time-left
+				right: 4em
+				&:after
+					content: ' min'
+				&:before
+					content: 'in '
+			&.players
+				right: 0em
+				&:after
+					content: ' P'

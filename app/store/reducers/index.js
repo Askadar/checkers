@@ -1,5 +1,5 @@
 import { findAllPaths } from './pathing';
-
+import defaultTable from '../../config/temp.js';
 /* notes
 Checker.connected = [..where < 0 are down and > 0 are up (for whites)]
 Checker.color = -2,-1,0,1,2 where number declare color and whether it's a king, positive are white, negative are black and 0 is none
@@ -38,6 +38,14 @@ export default function logic(state, action) {
 			game: {
 				...game,
 				playerSide: action.side
+			}
+		};
+	case 'resetBoard':
+		return {
+			...state,
+			game: {
+				...game,
+				table: defaultTable
 			}
 		};
 	case 'hideMoves':
