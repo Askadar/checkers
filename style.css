@@ -49,7 +49,7 @@
   .checkers-table .checker.active:before {
     transform: scale(1.2);
     box-shadow: 1px -1px 2px rgba(120, 40, 10, 0.5); }
-  .checkers-table .checker.possible-move:before {
+  .checkers-table .checker.possible-move:hover:before {
     content: "";
     left: 12.5%;
     top: 12.5%;
@@ -58,7 +58,7 @@
     border: 4px rgba(115, 78, 60, 0.88) dotted;
     position: absolute;
     animation: possible-move 1s linear infinite; }
-  .checkers-table .checker.can-move:before {
+  .checkers-table .checker.can-move:hover:before {
     border: 4px rgba(70, 120, 210, 0.8) dotted;
     /*transform: scale(1.1); */
     animation: can-move 4s linear infinite; }
@@ -199,3 +199,67 @@
     font-size: 1.2em; }
     .game-result .side:before {
       content: "Winner is: "; }
+
+.nav.nav-justified {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap; }
+  .nav.nav-justified li {
+    flex: 1;
+    padding: 0; }
+
+#NewGame {
+  background: none; }
+  #NewGame li {
+    padding: 0;
+    margin: 0.3em 1em;
+    border: none; }
+  #NewGame #play {
+    flex-basis: 100%;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); }
+    #NewGame #play button {
+      width: 100%; }
+  #NewGame .type-panel, #NewGame .time-panel {
+    position: absolute;
+    z-index: 1;
+    width: 100%;
+    margin-top: -0.5em;
+    padding-top: 1em; }
+
+#Tournament {
+  font-size: 1.2em; }
+  #Tournament .entry {
+    color: #666;
+    border-bottom: 1px solid rgba(100, 100, 100, 0.4);
+    padding: 0.3em;
+    min-height: 2.5em;
+    position: relative; }
+    #Tournament .entry:hover {
+      background: rgba(47, 138, 206, 0.25);
+      box-shadow: inset 0px -2px 4px -2px rgba(30, 90, 165, 0.5); }
+    #Tournament .entry:last-child {
+      border-bottom: none; }
+    #Tournament .entry:before {
+      line-height: 1.5;
+      position: absolute; }
+    #Tournament .entry.Test:before {
+      content: '\e136';
+      font-family: 'Glyphicons Halflings'; }
+    #Tournament .entry span {
+      margin: auto 0.5em;
+      display: inline-block;
+      position: absolute; }
+      #Tournament .entry span.timeframe {
+        left: 1em; }
+      #Tournament .entry span.type-label {
+        left: 4.5em; }
+      #Tournament .entry span.time-left {
+        right: 4em; }
+        #Tournament .entry span.time-left:after {
+          content: ' min'; }
+        #Tournament .entry span.time-left:before {
+          content: 'in '; }
+      #Tournament .entry span.players {
+        right: 0em; }
+        #Tournament .entry span.players:after {
+          content: ' P'; }
