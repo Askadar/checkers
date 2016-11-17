@@ -2,7 +2,7 @@ const io = require('socket.io')();
 const port = process.env.PORT || 3000;
 const uuid = require('uuid');
 const AssocArray = require('./src/assocarray');
-const Room = require('./src/room');
+const { playHandler, enterHandler, moveHandler } = require('./src/handlers');
 
 let rooms = new AssocArray(); // holds all active rooms ids or maybe room objects
 
@@ -19,36 +19,15 @@ io.on('connection', socket => {
 	});
 	socket.on('play', data => {
 		// console.log('play', data);
-		const filteredRooms = rooms.filter(room => {
-			return room.players.length === 1 &&
-				room.type === data.type &&
-				room.time === data.time
-			;
-		});
-		console.log('play after filter', filteredRooms, rooms);
-		if (filteredRooms.length > 0) {
-			const id = Math.random() * (filteredRooms.length - 1);
-			socket.emit('roomCreated', filteredRooms[id].toString());
-		}
-		else
-			// check if this socket (preferably ip) doesn't just spam server and let it create room
-			if (!socket.room) {
-				const id = rooms.create(new Room(socket, data, rooms.counter));
-				socket.emit('roomCreated', id);
-			}
+		playHandler(data, rooms, socket);
 	});
 	socket.on('enterRoom', data => {
 		console.log('onEnterRoom Handler', socket.room, data);
+		enterHandler(data, rooms, socket);
 		// we always have room existing if we try this one (so no assholes could exploit router auto-entering and create countless rooms) ((though they still could try to exploit 'play' event))
-		if (rooms[data.id])
-			rooms[data.id].join(socket, data.player);
-		else
-			socket.emit('err', { type: 'No room with such id' });
 	});
 	socket.on('move', data => {
-		console.log(data);
-		socket.room.pushMove(data);
-		socket.to(socket.room).emit('move', data);
+		moveHandler(data, rooms, socket);
 	});
 	socket.on('won', data => {
 		socket.room.close(data);

@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "tape 'tests/**/*.js'",
-    "start": "nodemon . --exec babel-node"
+    "test": "babel-tape-runner tests/**/*.js | faucet",
+    "start": "babel-node .",
+    "nodemon": "nodemon -x \"cls && npm test && npm start\""
   },
   "author": "",
   "license": "ISC",
@@ -19,6 +20,9 @@
     "babel": "^6.5.2",
     "babel-cli": "^6.18.0",
     "babel-plugin-transform-object-rest-spread": "^6.16.0",
+    "babel-tape-runner": "^2.0.1",
+    "faucet": "0.0.1",
+    "jasmine": "^2.5.2",
     "tape": "^4.6.2"
   }
 }
