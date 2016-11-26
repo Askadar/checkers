@@ -109,6 +109,32 @@
   background: #fad2b4;
   border: 4px #cc3e3e dotted; }
 
+.cookies .checker:before {
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0; }
+
+.cookies .checker[data-checker="-1"]:before {
+  background: url(/checkers/assets/cookies/all.png);
+  background-size: 100%;
+  background-position-y: 0%; }
+
+.cookies .checker[data-checker="1"]:before {
+  background: url(/checkers/assets/cookies/all.png);
+  background-size: 100%;
+  background-position-y: 33%; }
+
+.cookies .checker[data-checker="-2"]:before {
+  background: url(/checkers/assets/cookies/all.png);
+  background-size: 100%;
+  background-position-y: 66%; }
+
+.cookies .checker[data-checker="2"]:before {
+  background: url(/checkers/assets/cookies/all.png);
+  background-size: 100%;
+  background-position-y: 100%; }
+
 .numbers span, .letters span {
   position: absolute;
   font-size: 1em;
