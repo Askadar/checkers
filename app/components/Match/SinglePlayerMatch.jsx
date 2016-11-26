@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { Observable } from 'rxjs';
 import WinScreen from './winscreen';
 
-class Match extends Component {
+class SinglePlayerMatch extends Component {
 	constructor(p) {
 		super(p);
 		let player = { name: 'You' /* window.prompt('You\'re name?', 'Fixy')*/, rating: null, side: 1 };
@@ -67,4 +67,4 @@ export default connect((s) => {
 			dispatch({ type: 'setSide', side });
 		}
 	};
-})(Match);
+})(SinglePlayerMatch);

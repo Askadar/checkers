@@ -9,8 +9,10 @@ export default class Root extends React.Component {
 		return (
 			<Provider store={this.props.store}>
 				<Router history={this.props.history}>
-					<Route path="/checkers/" component={Home}>
-						<Route path="/checkers/match/:roomId" component={Match}/>
+					<Route path="/">
+						<Route path="checkers/" component={Home}>
+							<Route path="match/:roomId" component={Match}/>
+						</Route>
 					</Route>
 				</Router>
 			</Provider>

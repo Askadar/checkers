@@ -15,6 +15,7 @@ class Emitter {
 		this.destination = '42';
 		return this;
 	}
+	get broadcast() { return this;}
 }
 
 class ServerStub {

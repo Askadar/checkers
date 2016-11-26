@@ -25,9 +25,11 @@ module.exports = class Room {
 			case 1: side = '-1'; break;
 			default: side = 0;
 			}
-			this.players.length < 2 && this.players.push({ ...player, side });
+			let { players } = this;
+			players.length < 2 && players.push({ ...player, side });
 			socket.emit('meta', { type: 'side', side });
-			io.to(this.id).emit('meta', { type: 'players', players: this.players });
+			socket.emit('meta', { type: 'players', players });
+			socket.broadcast.to(this.id).emit('meta', { type: 'players', players });
 			this.moves.length > 0 && socket.emit('moves', this.moves);
 			console.log('onJoin log', this);
 		}

@@ -20,7 +20,7 @@ class CheckersTable extends React.Component {
 	componentDidMount() {
 		const { updateAllPaths, socket, moves, meta } = this.props;
 		if (socket) {
-			// updateAllPaths();
+			updateAllPaths();
 			const $movesFromViewerArray = moves.flatMap(a => a); // Observable.fromEvent(socket, 'moves');
 			const $movesNormal = Rx.Observable.fromEvent(socket, 'move');
 			const $moves = Rx.Observable.merge($movesFromViewerArray, $movesNormal);

@@ -7,11 +7,11 @@ import { Observable } from 'rxjs';
 class Match extends Component {
 	constructor(p) {
 		super(p);
-		let player = { name: 'test' /* window.prompt('You\'re name?', 'Fixy')*/, rating: 2754 };
+		let player = { name: window.prompt('You\'re name?', 'Fixy'), rating: 2754 };
 		this.state = {
 			// player options
 			'$moves': null,
-			playerSide: 0,
+			side: 0,
 			player,
 			otherPlayer: { name: 'Opponent', rating: null },
 			// room and board settings
@@ -20,7 +20,6 @@ class Match extends Component {
 	}
 	componentWillMount() {
 		console.log('mounting', this.props);
-		const { player } = this.state;
 		const { socket } = this.props;
 		const roomId = this.props.routeParams.roomId ? this.props.routeParams.roomId : '-1';
 		const $movesFromViewerArray = Observable.fromEvent(socket, 'moves');
@@ -29,21 +28,25 @@ class Match extends Component {
 		const $resizeThrottled = Observable.fromEvent(window, 'resize').auditTime(350);
 		this.resizeSubscriber = $resizeThrottled.subscribe(a => {console.log('resize event', a); this.resizeBoard();});
 
-		$metaStream.subscribe(a => {
+		$metaStream.delay(25).subscribe(a => {
 			switch(a.type) {
 			case 'side':
-				// const player = a.players.find(pl => pl.side === a.side);
-				this.setState({ playerSide: a.side, player: { ...player, side: a.side } });
+				this.setState({ side: a.side });
 				this.props.setSide(a.side);
 				this.props.updateAllPaths();
 				break;
 			case 'players':
-				const otherPlayer = a.players.find(pl => pl.side !== this.state.playerSide);
-				this.setState({ otherPlayer });
+				const { players } = a; let { side } = this.state;
+				let player;
+				if (side === 0)
+					side = 1;
+				player = players.find(pl => pl.side === side);
+				const otherPlayer = players.find(pl => pl.side !== side);
+				this.setState({ player, otherPlayer: otherPlayer ? otherPlayer : this.state.otherPlayer });
 				break;
 			}
 		});
-		roomId !== '-1' && socket.emit('enterRoom', { id: roomId, player });
+		roomId !== '-1' && socket.emit('enterRoom', { id: roomId, player: this.state.player });
 		this.setState({ '$moves': $movesFromViewerArray, '$meta': $metaStream });
 	}
 	componentWillUnount() {
@@ -54,11 +57,12 @@ class Match extends Component {
 		this.setState({ boardSize });
 	}
 	render() {
-		console.log(this.props);
+		// console.log(this.props);
 		const { $moves, $meta, player, otherPlayer, boardSize } = this.state;
 		const { won, socket, turn } = this.props;
 		return (
 			<div>
+			<p>multipleya</p>
 				<Player {...otherPlayer}/>
 				<p>{`Сейчас ход ${turn === 1
 						? 'белых'

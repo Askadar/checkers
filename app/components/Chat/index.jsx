@@ -1,11 +1,12 @@
 import React from 'react';
 
-class Chat extends React.Component {
-	render() {
-		return (
-			<div>Chat block</div>
-		)
-	}
+const Chat = function({ data }) {
+	return (
+		<div>
+			{data.map(({ message, author }) => { return <li><b>{author}</b>: {message}</li>;})}
+		</div>
+	);
 };
 
-export default Chat
+window.RR = { ...window.RR, Chat };
+export default Chat;

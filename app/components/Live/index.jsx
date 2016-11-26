@@ -1,16 +1,14 @@
 import React from 'react';
-import Match from './Match'
+import Match from './Match';
 
-class Live extends React.Component {
-	render() {
-		return (
-			<div id="Live">
-				<ul className="list-group">
-					<Match first="Человек" second="Человек" timePlayed="12:22"/>
-				</ul>
-			</div>
-		)
-	}
+const Live = function({ data }) {
+	return (
+		<div id="Live">
+			<ul className="list-group">
+				{data.map(match => <Match {...match} />)}
+			</ul>
+		</div>
+	);
 };
-
-export default Live
+window.RR = { ...window.RR, Live };
+export default Live;
