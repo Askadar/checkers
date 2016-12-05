@@ -45,7 +45,43 @@
   width: 12.5%;
   margin: 0;
   margin-left: 12.5%;
-  display: inline-block; }
+  display: inline-block;
+  box-shadow: -1px 1px 3px 0px rgba(120, 70, 40, 0.8); }
+  .checkers-table .checker:before {
+    content: "";
+    -webkit-transition: all 1s;
+    transition: all 1s;
+    width: 75%;
+    height: 75%;
+    position: absolute;
+    left: 12.5%;
+    top: 12.5%;
+    box-shadow: -1px 1px 3px -1px #444;
+    border-radius: 50%; }
+  .checkers-table .checker[data-checker="0"]:before {
+    box-shadow: none; }
+  .checkers-table .checker[data-checker="-1"]:before {
+    background: #1b1202;
+    border: 4px #3a2706 dotted; }
+  .checkers-table .checker[data-checker="1"]:before {
+    background: #fad2b4;
+    border: 4px #fafafa dotted; }
+  .checkers-table .checker[data-checker="-2"]:before {
+    content: '\2605';
+    color: red;
+    font-size: 1rem;
+    text-align: center;
+    background: #1b1202;
+    border: 4px #ffa406 dotted;
+    padding: 0.7rem; }
+  .checkers-table .checker[data-checker="2"]:before {
+    content: '\2605';
+    color: blue;
+    font-size: 1rem;
+    text-align: center;
+    padding: 0.7rem;
+    background: #fad2b4;
+    border: 4px #cc3e3e dotted; }
   .checkers-table .checker.active:before {
     transform: scale(1.2);
     box-shadow: 1px -1px 2px rgba(120, 40, 10, 0.5); }
@@ -64,50 +100,6 @@
     animation: can-move 4s linear infinite; }
   .checkers-table .checker:nth-child(8n+5) {
     margin-left: 0 !important; }
-  .checkers-table .checker:after {
-    /*content: attr(id); */
-    color: #a57d19;
-    position: absolute;
-    bottom: 2%;
-    right: 2%;
-    font-size: 1rem;
-    display: inline-block; }
-  .checkers-table .checker:before {
-    content: "";
-    -webkit-transition: all 1s;
-    transition: all 1s;
-    width: 75%;
-    height: 75%;
-    position: absolute;
-    left: 12.5%;
-    top: 12.5%;
-    border-radius: 50%; }
-
-.checker[data-checker="-1"]:before {
-  background: #1b1202;
-  border: 4px #3a2706 dotted; }
-
-.checker[data-checker="1"]:before {
-  background: #fad2b4;
-  border: 4px #fafafa dotted; }
-
-.checker[data-checker="-2"]:before {
-  content: '\2605';
-  color: red;
-  font-size: 1rem;
-  text-align: center;
-  background: #1b1202;
-  border: 4px #ffa406 dotted;
-  padding: 0.7rem; }
-
-.checker[data-checker="2"]:before {
-  content: '\2605';
-  color: blue;
-  font-size: 1rem;
-  text-align: center;
-  padding: 0.7rem;
-  background: #fad2b4;
-  border: 4px #cc3e3e dotted; }
 
 .cookies .checker:before {
   width: 100%;

@@ -20,8 +20,19 @@ class Home extends React.Component {
 		const socketPath = debug ? 'http://localhost:3000' : 'https://websockety-askadar.c9users.io:8080/';
 
 		this.state = {
-			messages: [{ message: 'bla-bla', author: 'foo' }],
-			matches: [{ players: [1, 2] }],
+			messages: [
+				{ message: 'Bacon ipsum dolor amet beef ribs adipisicing picanha prosciutto consequat, pork belly venison leberkas shankle exercitation ex ut frankfurter burgdoggen in. ', author: 'Foo' },
+				{ message: 'Prosciutto t-bone bresaola ex ad mollit. Aliqua venison kielbasa fugiat. Voluptate laborum esse pig veniam rump ullamco leberkas anim. ', author: 'Baz' },
+				{ message: 'Aute biltong commodo bacon id, porchetta beef ribs kielbasa.', author: 'Baz' },
+				{ message: ' Commodo andouille esse officia elit veniam biltong.', author: 'Foo' },
+				{ message: 'Capicola bacon beef ex bresaola, andouille ad tenderloin.', author: 'Foo' }
+			],
+			matches: [
+				{ players: ['Яшко (3085)', 'Ляшко (3627)'], roomId: 375854 },
+				{ players: ['Панко (3125)', 'Ганко (3485)'], roomId: 375855 },
+				{ players: ['Zaggy (8643)', 'Faggy (7953)'], roomId: 375875 },
+				{ players: ['Purplebro (ovah9000)', 'VioletSis (ovah9000)'], roomId: 37567 }
+			],
 			upperTabName: upperLinks[0],
 			upperLinks,
 			lowerTabName: lowerLinks[0],

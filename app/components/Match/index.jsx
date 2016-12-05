@@ -40,8 +40,8 @@ class Match extends Component {
 				let player;
 				if (side === 0)
 					side = 1;
-				player = players.find(pl => pl.side === side);
-				const otherPlayer = players.find(pl => pl.side !== side);
+				player = players.find(pl => +pl.side === +side);
+				const otherPlayer = players.find(pl => +pl.side !== +side);
 				this.setState({ player, otherPlayer: otherPlayer ? otherPlayer : this.state.otherPlayer });
 				break;
 			}

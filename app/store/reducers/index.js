@@ -45,7 +45,9 @@ export default function logic(state, action) {
 			...state,
 			game: {
 				...game,
-				table: defaultTable
+				table: defaultTable,
+				turn: 1,
+				won: null
 			}
 		};
 	case 'hideMoves':

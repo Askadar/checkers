@@ -60,74 +60,77 @@
 //	*	z-index: -5;
 //	*}
 
-.checkers-table .checker
-	background: rgba(210, 170, 120, 0.8)
-	position: relative
-	height: 12.5%
-	width: 12.5%
-	margin: 0
-	margin-left: 12.5%
-	display: inline-block
-	&.active:before
-		transform: scale(1.2)
-		box-shadow: 1px -1px 2px rgba(120, 40, 10, 0.5)
-	&.possible-move:hover:before
-		content: ""
-		left: 12.5%
-		top: 12.5%
-		border-radius: 50%
-		background: rgba(230, 207, 179, 0.8)
-		border: 4px rgba(115, 78, 60, 0.88) dotted
-		position: absolute
-		animation: possible-move 1s linear infinite
-	&.can-move:hover:before
-		border: 4px rgba(70, 120, 210, 0.8) dotted
-		/*transform: scale(1.1);
-		animation: can-move 4s linear infinite
-	&:nth-child(8n+5)
-		margin-left: 0 !important
-	&:after
-		/*content: attr(id);
-		color: #a57d19
-		position: absolute
-		bottom: 2%
-		right: 2%
-		font-size: 1rem
+.checkers-table
+	.checker
+		background: rgba(210, 170, 120, 0.8)
+		position: relative
+		height: 12.5%
+		width: 12.5%
+		margin: 0
+		margin-left: 12.5%
 		display: inline-block
-	&:before
-		content: ""
-		-webkit-transition: all 1s
-		transition: all 1s
-		width: 75%
-		height: 75%
-		position: absolute
-		left: 12.5%
-		top: 12.5%
-		border-radius: 50%
-
-.checker
-	&[data-checker="-1"]:before
-		background: #1b1202
-		border: 4px #3a2706 dotted
-	&[data-checker="1"]:before
-		background: #fad2b4
-		border: 4px #fafafa dotted
-	&[data-checker="-2"]:before
-		content: '\2605'
-		color: red
-		font-size: 1rem
-		text-align: center
-		background: #1b1202
-		border: 4px #ffa406 dotted
-		padding: 0.7rem
-	&[data-checker="2"]:before
-		content: '\2605'
-		color: blue
-		font-size: 1rem
-		text-align: center
-		padding: 0.7rem
-		background: #fad2b4
-		border: 4px #cc3e3e dotted
+		box-shadow: -1px 1px 3px 0px rgba(120, 70, 40, 0.8)
+		// &:after
+		// 	/*content: attr(id);
+		// 	color: #a57d19
+		// 	position: absolute
+		// 	bottom: 2%
+		// 	right: 2%
+		// 	font-size: 1rem
+		// 	display: inline-block
+		&:before
+			content: ""
+			-webkit-transition: all 1s
+			transition: all 1s
+			width: 75%
+			height: 75%
+			position: absolute
+			left: 12.5%
+			top: 12.5%
+			box-shadow: -1px 1px 3px -1px #444;
+			border-radius: 50%
+		&[data-checker="0"]:before
+			box-shadow: none
+		&[data-checker="-1"]:before
+			background: #1b1202
+			border: 4px #3a2706 dotted
+		&[data-checker="1"]:before
+			background: #fad2b4
+			border: 4px #fafafa dotted
+		&[data-checker="-2"]:before
+			content: '\2605'
+			color: red
+			font-size: 1rem
+			text-align: center
+			background: #1b1202
+			border: 4px #ffa406 dotted
+			padding: 0.7rem
+		&[data-checker="2"]:before
+			content: '\2605'
+			color: blue
+			font-size: 1rem
+			text-align: center
+			padding: 0.7rem
+			background: #fad2b4
+			border: 4px #cc3e3e dotted
+		&.active:before
+			transform: scale(1.2)
+			box-shadow: 1px -1px 2px rgba(120, 40, 10, 0.5)
+		&.possible-move:hover:before
+			content: ""
+			left: 12.5%
+			top: 12.5%
+			border-radius: 50%
+			background: rgba(230, 207, 179, 0.8)
+			border: 4px rgba(115, 78, 60, 0.88) dotted
+			position: absolute
+			animation: possible-move 1s linear infinite
+		&.can-move:hover:before
+			border: 4px rgba(70, 120, 210, 0.8) dotted
+			/*transform: scale(1.1);
+			animation: can-move 4s linear infinite
+		&:nth-child(8n+5)
+			margin-left: 0 !important
 .cookies .checker
 	&:before
 		width: 100%
