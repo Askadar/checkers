@@ -3236,44 +3236,102 @@ input[type="button"].btn-block {
 .tab-content {
   border: 1px solid #dddddd;
   padding: 0.9em 0;
+  position: relative;
   display: block; }
 
 .btn {
   border: none;
   border-radius: 0; }
 
+@-webkit-keyframes bounceIn {
+  from, 20%, 40%, 60%, 80%, to {
+    -webkit-animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+            animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1); }
+  0% {
+    opacity: 0;
+    -webkit-transform: translateY(20%);
+            transform: translateY(20%); }
+  20% {
+    opacity: 0.8;
+    visibility: visible; }
+  60% {
+    -webkit-transform: translateY(120%);
+            transform: translateY(120%); }
+  90% {
+    opacity: 1;
+    -webkit-transform: translateY(0%);
+            transform: translateY(0%); } }
+
+@keyframes bounceIn {
+  from, 20%, 40%, 60%, 80%, to {
+    -webkit-animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+            animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1); }
+  0% {
+    opacity: 0;
+    -webkit-transform: translateY(20%);
+            transform: translateY(20%); }
+  20% {
+    opacity: 0.8;
+    visibility: visible; }
+  60% {
+    -webkit-transform: translateY(120%);
+            transform: translateY(120%); }
+  90% {
+    opacity: 1;
+    -webkit-transform: translateY(0%);
+            transform: translateY(0%); } }
+
+@-webkit-keyframes bounceOut {
+  50%, 55% {
+    opacity: 1;
+    -webkit-transform: translateY(20%);
+            transform: translateY(20%); }
+  to {
+    opacity: 0;
+    -webkit-transform: translateY(-100%);
+            transform: translateY(-100%); } }
+
+@keyframes bounceOut {
+  50%, 55% {
+    opacity: 1;
+    -webkit-transform: translateY(20%);
+            transform: translateY(20%); }
+  to {
+    opacity: 0;
+    -webkit-transform: translateY(-100%);
+            transform: translateY(-100%); } }
+
 .tab-switch-enter {
-  -webkit-transform: translateX(-100%);
-          transform: translateX(-100%);
-  opacity: 0.01; }
+  visibility: hidden; }
 
 .tab-switch-enter.tab-switch-enter-active {
-  opacity: 1;
-  -webkit-transform: translateX(0%);
-          transform: translateX(0%);
-  -webkit-transition: all .3s ease-in 0.3s;
-  transition: all .3s ease-in 0.3s; }
+  -webkit-animation-name: bounceIn;
+          animation-name: bounceIn;
+  -webkit-animation-duration: 0.5s;
+          animation-duration: 0.5s;
+  -webkit-animation-delay: 0.3s;
+          animation-delay: 0.3s;
+  -webkit-animation-iteration-count: 1;
+          animation-iteration-count: 1;
+  -webkit-animation-timing-function: linear;
+          animation-timing-function: linear; }
 
 .tab-switch-leave {
   opacity: 1;
-  float: left;
-    float-transform: translate(0%, -100%); }
+  position: absolute;
+  width: 100%;
+  left: 0;
+  top: 0.9em; }
 
 .tab-switch-leave.tab-switch-leave-active {
-  opacity: 0.01;
-  float: left;
-  -webkit-transform: translateX(100%);
-          transform: translateX(100%);
-  -webkit-transition: all .3s ease-in;
-  transition: all .3s ease-in; }
-
-.tab-switch-appear {
-  opacity: 0.01; }
-
-.tab-switch-appear.tab-switch-appear-active {
-  opacity: 1;
-  -webkit-transition: all .3s ease-in;
-  transition: all .3s ease-in; }
+  -webkit-animation-name: bounceOut;
+          animation-name: bounceOut;
+  -webkit-animation-duration: 0.5s;
+          animation-duration: 0.5s;
+  -webkit-animation-iteration-count: 1;
+          animation-iteration-count: 1;
+  -webkit-animation-timing-function: linear;
+          animation-timing-function: linear; }
 
 #NewGame {
   background: none; }

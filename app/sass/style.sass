@@ -61,6 +61,7 @@ $btn-primary-border: darken($primary,10%)
 .tab-content
 	border: 1px solid rgb(221, 221, 221)
 	padding: 0.9em 0
+	position: relative
 	display: block
 .btn
 	border: none
@@ -68,30 +69,49 @@ $btn-primary-border: darken($primary,10%)
 
 
 // ReactCSSTransitionGroup
+@keyframes bounceIn
+	from, 20%, 40%, 60%, 80%, to
+		animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000)
+	0%
+		opacity: 0
+		transform: translateY(20%)
+	20%
+		opacity: 0.8
+		visibility: visible
+	60%
+		transform: translateY(120%)
+	90%
+		opacity: 1
+		transform: translateY(0%)
+
+@keyframes bounceOut
+	50%, 55%
+		opacity: 1
+		transform: translateY(20%)
+	to
+		opacity: 0
+		transform: translateY(-100%)
+
 .tab-switch-enter
-	transform: translateX(-100%)
-	opacity: 0.01
+	visibility: hidden
 .tab-switch-enter.tab-switch-enter-active
-	opacity: 1
-	transform: translateX(0%)
-	transition: all .3s ease-in 0.3s
+	animation-name: bounceIn
+	animation-duration: 0.5s
+	animation-delay: 0.3s
+	animation-iteration-count: 1
+	animation-timing-function: linear
 
 .tab-switch-leave
 	opacity: 1
-	float: left
-		transform: translate(0%, -100%)
+	position: absolute
+	width: 100%
+	left: 0
+	top: 0.9em
 .tab-switch-leave.tab-switch-leave-active
-	opacity: 0.01
-	float: left
-	transform: translateX(100%)
-	transition: all .3s ease-in
-
-.tab-switch-appear
-	opacity: 0.01
-.tab-switch-appear.tab-switch-appear-active
-	opacity: 1
-	transition: all .3s ease-in
-
+	animation-name: bounceOut
+	animation-duration: 0.5s
+	animation-iteration-count: 1
+	animation-timing-function: linear
 
 // end ReactCSSTransitionGroup
 @import newgame

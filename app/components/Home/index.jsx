@@ -32,8 +32,8 @@ export default function Home({ socket, upperLinks, upperTabName, setUpperTabHand
 						<ReactCSSTransitionGroup
 							transitionName="tab-switch"
 							className="tab-content"
-							transitionEnterTimeout={600}
-							transitionLeaveTimeout={300}>
+							transitionEnterTimeout={800}
+							transitionLeaveTimeout={500}>
 							<ArbitraryComponent key={ArbitraryComponent.name} handler={ArbitraryComponent.name === 'NewGame' ? playHandler : null}/>
 						</ReactCSSTransitionGroup>
 				</div>
@@ -46,8 +46,8 @@ export default function Home({ socket, upperLinks, upperTabName, setUpperTabHand
 					<ReactCSSTransitionGroup
 						transitionName="tab-switch"
 						className="tab-content"
-						transitionEnterTimeout={600}
-						transitionLeaveTimeout={300}>
+						transitionEnterTimeout={800}
+						transitionLeaveTimeout={500}>
 						<LowerArbitraryComponent key={LowerArbitraryComponent.name} data={LowerArbitraryComponent.name === 'Chat' ? messages : matches} />
 					</ReactCSSTransitionGroup>
 				</div>
