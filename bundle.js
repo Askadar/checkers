@@ -29212,8 +29212,8 @@
 						{
 							transitionName: 'tab-switch',
 							className: 'tab-content',
-							transitionEnterTimeout: 600,
-							transitionLeaveTimeout: 300 },
+							transitionEnterTimeout: 800,
+							transitionLeaveTimeout: 500 },
 						_react2.default.createElement(ArbitraryComponent, { key: ArbitraryComponent.name, handler: ArbitraryComponent.name === 'NewGame' ? playHandler : null })
 					)
 				)
