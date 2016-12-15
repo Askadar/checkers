@@ -21510,8 +21510,12 @@
 						{ history: this.props.history },
 						_react2.default.createElement(
 							_reactRouter.Route,
-							{ path: '/checkers/', component: _home2.default },
-							_react2.default.createElement(_reactRouter.Route, { path: '/checkers/match/:roomId', component: _match2.default })
+							{ path: '/' },
+							_react2.default.createElement(
+								_reactRouter.Route,
+								{ path: 'checkers/', component: _home2.default },
+								_react2.default.createElement(_reactRouter.Route, { path: 'match/:roomId', component: _match2.default })
+							)
 						)
 					)
 				);
@@ -29008,6 +29012,7 @@
 			var debug = true;
 			_this.router = context.router;
 			var upperLinks = ['Play', 'Tournament'];
+			var lowerLinks = ['Chat', 'Live'];
 
 			var socketOptions = {
 				reconnection: true,
@@ -29017,8 +29022,12 @@
 			var socketPath = debug ? 'http://localhost:3000' : 'https://websockety-askadar.c9users.io:8080/';
 
 			_this.state = {
+				messages: [{ message: 'Bacon ipsum dolor amet beef ribs adipisicing picanha prosciutto consequat, pork belly venison leberkas shankle exercitation ex ut frankfurter burgdoggen in. ', author: 'Foo' }, { message: 'Prosciutto t-bone bresaola ex ad mollit. Aliqua venison kielbasa fugiat. Voluptate laborum esse pig veniam rump ullamco leberkas anim. ', author: 'Baz' }, { message: 'Aute biltong commodo bacon id, porchetta beef ribs kielbasa.', author: 'Baz' }, { message: ' Commodo andouille esse officia elit veniam biltong.', author: 'Foo' }, { message: 'Capicola bacon beef ex bresaola, andouille ad tenderloin.', author: 'Foo' }],
+				matches: [{ players: ['Яшко (3085)', 'Ляшко (3627)'], roomId: 375854 }, { players: ['Панко (3125)', 'Ганко (3485)'], roomId: 375855 }, { players: ['Zaggy (8643)', 'Faggy (7953)'], roomId: 375875 }, { players: ['Purplebro (ovah9000)', 'VioletSis (ovah9000)'], roomId: 37567 }],
 				upperTabName: upperLinks[0],
 				upperLinks: upperLinks,
+				lowerTabName: lowerLinks[0],
+				lowerLinks: lowerLinks,
 				socket: (0, _socket2.default)(socketPath, socketOptions)
 			};
 			return _this;
@@ -29027,14 +29036,23 @@
 		_createClass(Home, [{
 			key: 'componentWillMount',
 			value: function componentWillMount() {
+				var _this2 = this;
+
 				var socket = this.state.socket;
 				var _props = this.props;
 				var router = _props.router;
 				var resetBoard = _props.resetBoard;
 
+				console.log(router);
 				socket.on('roomCreated', function (data) {
 					resetBoard();
 					router.push('/checkers/match/' + data);
+				});
+				socket.on('message', function (data) {
+					console.log(data);
+				});
+				socket.on('matches', function (data) {
+					_this2.setState({ matches: data });
 				});
 			}
 		}, {
@@ -29042,6 +29060,12 @@
 			value: function setUpperTab(event) {
 				// const tabs = { 'Live': <Live />, 'NewGame': <NewGame/>, 'Tournament': <Tournament/> };
 				this.setState({ upperTab: window.RR[event.target.dataset.to], upperTabName: event.target.dataset.to });
+			}
+		}, {
+			key: 'setLowerTab',
+			value: function setLowerTab(event) {
+				// const tabs = { 'Live': <Live />, 'NewGame': <NewGame/>, 'Tournament': <Tournament/> };
+				this.setState({ lowerTabName: event.target.dataset.to });
 			}
 		}, {
 			key: 'playHandler',
@@ -29059,10 +29083,15 @@
 				var socket = _state.socket;
 				var upperLinks = _state.upperLinks;
 				var upperTabName = _state.upperTabName;
+				var lowerLinks = _state.lowerLinks;
+				var lowerTabName = _state.lowerTabName;
+				var messages = _state.messages;
+				var matches = _state.matches;
 				var setUpperTab = this.setUpperTab;
+				var setLowerTab = this.setLowerTab;
 				var playHandler = this.playHandler;
 
-				return _react2.default.createElement(_home2.default, { socket: socket, upperLinks: upperLinks, upperTabName: upperTabName, setUpperTabHandler: setUpperTab.bind(this), playHandler: playHandler.bind(this) });
+				return _react2.default.createElement(_home2.default, { socket: socket, upperLinks: upperLinks, upperTabName: upperTabName, lowerLinks: lowerLinks, lowerTabName: lowerTabName, setUpperTabHandler: setUpperTab.bind(this), setLowerTabHandler: setLowerTab.bind(this), playHandler: playHandler.bind(this), messages: messages, matches: matches, children: this.props.children });
 			}
 		}]);
 
@@ -29116,15 +29145,11 @@
 
 	var _singleplayermatch2 = _interopRequireDefault(_singleplayermatch);
 
-	var _reactRedux = __webpack_require__(173);
-
-	var _reactRouter = __webpack_require__(196);
-
-	var _socket = __webpack_require__(612);
-
-	var _socket2 = _interopRequireDefault(_socket);
-
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	// import { connect } from 'react-redux';
+	// import { withRouter } from 'react-router';
+	// import io from 'socket.io-client';
 
 	var Li = function Li(_ref) {
 		var name = _ref.name;
@@ -29141,59 +29166,22 @@
 		);
 	};
 
-	// class Home extends React.Component {
-	// constructor(p, context) {
-	// 	super(p);
-	// 	let debug = false;
-	// 	this.router = context.router;
-	// 	const upperLinks = ['Play', 'Tournament'];
-	//
-	// 	const socketOptions = {
-	// 		reconnection: true,
-	// 		reconnectionDelay: 500,
-	// 		reconnectionAttempts: 10
-	// 	};
-	// 	const socketPath = debug ? 'http://localhost:3000' : 'https://websockety-askadar.c9users.io:8080/';
-	//
-	// 	this.state = {
-	// 		upperTab: <Live/>,
-	// 		upperTabName: upperLinks[0],
-	// 		upperLinks,
-	// 		socket: io(socketPath, socketOptions)
-	// 	};
-	// }
-	// // componentWillMount() {
-	// // 	const { socketOptions, socketPath } = this.state;
-	// // 	this.setState({ socket: io(socketPath, socketOptions) });
-	// // }
-	// componentWillMount() {
-	// 	const { socket } = this.state;
-	// 	const { router, resetBoard } = this.props;
-	// 	socket.on('roomCreated', data => {
-	// 		resetBoard();
-	// 		router.push('/checkers/match/' + data);
-	// 	});
-	// }
-	// setUpperTab(event) {
-	// 	// const tabs = { 'Live': <Live />, 'NewGame': <NewGame/>, 'Tournament': <Tournament/> };
-	// 	this.setState({ upperTab: window.RR[event.target.dataset.to], upperTabName: event.target.dataset.to });
-	// }
-	// playHandler(data) {
-	// 	const { socket } = this.state;
-	// 	const { selectedType, selectedTime } = data;
-	// 	socket.emit('play', { type: selectedType, time: selectedTime });
-	// }
-
 	function Home(_ref2) {
 		var socket = _ref2.socket;
 		var upperLinks = _ref2.upperLinks;
 		var upperTabName = _ref2.upperTabName;
 		var setUpperTabHandler = _ref2.setUpperTabHandler;
+		var lowerTabName = _ref2.lowerTabName;
+		var lowerLinks = _ref2.lowerLinks;
+		var setLowerTabHandler = _ref2.setLowerTabHandler;
+		var messages = _ref2.messages;
+		var matches = _ref2.matches;
 		var playHandler = _ref2.playHandler;
 		var children = _ref2.children;
 
 		// const { socket, upperLinks, upperTabName, setUpperTabHandler, playHandler } = this.props;
 		var ArbitraryComonent = window.RR[upperTabName];
+		var LowerArbitraryComonent = window.RR[lowerTabName];
 		return _react2.default.createElement(
 			'div',
 			{ className: 'col-md-12' },
@@ -29221,9 +29209,30 @@
 						_react2.default.createElement(ArbitraryComonent, { handler: ArbitraryComonent.name === 'NewGame' ? playHandler : null })
 					)
 				)
+			),
+			_react2.default.createElement(
+				'div',
+				{ className: 'col-md-4' },
+				_react2.default.createElement(
+					'div',
+					{ className: 'panel' },
+					_react2.default.createElement(
+						'nav',
+						{ role: 'nav', className: 'nav nav-tabs nav-justified' },
+						lowerLinks.map(function (link) {
+							return _react2.default.createElement(Li, { key: link, active: lowerTabName === link, name: link, callback: setLowerTabHandler });
+						})
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'tab-content' },
+						_react2.default.createElement(LowerArbitraryComonent, { data: LowerArbitraryComonent.name === 'Chat' ? messages : matches })
+					)
+				)
 			)
 		);
 	}
+
 	// }
 
 	// Home.contextTypes = {
@@ -29247,7 +29256,7 @@
 		value: true
 	});
 
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 	var _react = __webpack_require__(1);
 
@@ -29255,37 +29264,31 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	var Chat = function Chat(_ref) {
+		var data = _ref.data;
 
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var Chat = function (_React$Component) {
-		_inherits(Chat, _React$Component);
-
-		function Chat() {
-			_classCallCheck(this, Chat);
-
-			return _possibleConstructorReturn(this, (Chat.__proto__ || Object.getPrototypeOf(Chat)).apply(this, arguments));
-		}
-
-		_createClass(Chat, [{
-			key: 'render',
-			value: function render() {
+		return _react2.default.createElement(
+			'div',
+			null,
+			data.map(function (_ref2) {
+				var message = _ref2.message;
+				var author = _ref2.author;
 				return _react2.default.createElement(
-					'div',
+					'li',
 					null,
-					'Chat block'
+					_react2.default.createElement(
+						'b',
+						null,
+						author
+					),
+					': ',
+					message
 				);
-			}
-		}]);
+			})
+		);
+	};
 
-		return Chat;
-	}(_react2.default.Component);
-
-	;
-
+	window.RR = _extends({}, window.RR, { Chat: Chat });
 	exports.default = Chat;
 
 /***/ },
@@ -29298,7 +29301,7 @@
 		value: true
 	});
 
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 	var _react = __webpack_require__(1);
 
@@ -29310,103 +29313,52 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	var Live = function Live(_ref) {
+		var data = _ref.data;
 
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var Live = function (_React$Component) {
-		_inherits(Live, _React$Component);
-
-		function Live() {
-			_classCallCheck(this, Live);
-
-			return _possibleConstructorReturn(this, (Live.__proto__ || Object.getPrototypeOf(Live)).apply(this, arguments));
-		}
-
-		_createClass(Live, [{
-			key: 'render',
-			value: function render() {
-				return _react2.default.createElement(
-					'div',
-					{ id: 'Live' },
-					_react2.default.createElement(
-						'ul',
-						{ className: 'list-group' },
-						_react2.default.createElement(_Match2.default, { first: '\u0427\u0435\u043B\u043E\u0432\u0435\u043A', second: '\u0427\u0435\u043B\u043E\u0432\u0435\u043A', timePlayed: '12:22' })
-					)
-				);
-			}
-		}]);
-
-		return Live;
-	}(_react2.default.Component);
-
-	;
-
+		return _react2.default.createElement(
+			'div',
+			{ id: 'Live' },
+			_react2.default.createElement(
+				'ul',
+				{ className: 'list-group' },
+				data.map(function (match) {
+					return _react2.default.createElement(_Match2.default, match);
+				})
+			)
+		);
+	};
+	window.RR = _extends({}, window.RR, { Live: Live });
 	exports.default = Live;
 
 /***/ },
 /* 261 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	exports.default = Match;
 
 	var _react = __webpack_require__(1);
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactRouter = __webpack_require__(196);
-
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	function Match(_ref) {
+		var players = _ref.players;
 
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var Match = function (_React$Component) {
-		_inherits(Match, _React$Component);
-
-		function Match() {
-			_classCallCheck(this, Match);
-
-			return _possibleConstructorReturn(this, (Match.__proto__ || Object.getPrototypeOf(Match)).apply(this, arguments));
-		}
-
-		_createClass(Match, [{
-			key: 'render',
-			value: function render() {
-				return _react2.default.createElement(
-					'li',
-					{ className: 'list-group-item' },
-					_react2.default.createElement(
-						_reactRouter.Link,
-						{ to: '/checkers/match/' + this.props.first + '-' + this.props.second },
-						this.props.first,
-						'-',
-						this.props.second,
-						'-',
-						this.props.timePlayed
-					)
-				);
-			}
-		}]);
-
-		return Match;
-	}(_react2.default.Component);
-
-	;
-
-	exports.default = Match;
+		return _react2.default.createElement(
+			"li",
+			{ className: "list-group-item" },
+			players[0],
+			" - ",
+			players[1]
+		);
+	}
 
 /***/ },
 /* 262 */
@@ -29906,7 +29858,7 @@
 				var meta = _props.meta;
 
 				if (socket) {
-					// updateAllPaths();
+					updateAllPaths();
 					var $movesFromViewerArray = moves.flatMap(function (a) {
 						return a;
 					}); // Observable.fromEvent(socket, 'moves');
@@ -55720,8 +55672,6 @@
 		value: true
 	});
 
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _react = __webpack_require__(1);
@@ -55756,11 +55706,11 @@
 
 			var _this = _possibleConstructorReturn(this, (Match.__proto__ || Object.getPrototypeOf(Match)).call(this, p));
 
-			var player = { name: 'test' /* window.prompt('You\'re name?', 'Fixy')*/, rating: 2754 };
+			var player = { name: window.prompt('You\'re name?', 'Fixy'), rating: 2754 };
 			_this.state = {
 				// player options
 				'$moves': null,
-				playerSide: 0,
+				side: 0,
 				player: player,
 				otherPlayer: { name: 'Opponent', rating: null },
 				// room and board settings
@@ -55775,7 +55725,6 @@
 				var _this2 = this;
 
 				console.log('mounting', this.props);
-				var player = this.state.player;
 				var socket = this.props.socket;
 
 				var roomId = this.props.routeParams.roomId ? this.props.routeParams.roomId : '-1';
@@ -55787,23 +55736,32 @@
 					console.log('resize event', a);_this2.resizeBoard();
 				});
 
-				$metaStream.subscribe(function (a) {
-					switch (a.type) {
-						case 'side':
-							// const player = a.players.find(pl => pl.side === a.side);
-							_this2.setState({ playerSide: a.side, player: _extends({}, player, { side: a.side }) });
-							_this2.props.setSide(a.side);
-							_this2.props.updateAllPaths();
-							break;
-						case 'players':
-							var otherPlayer = a.players.find(function (pl) {
-								return pl.side !== _this2.state.playerSide;
-							});
-							_this2.setState({ otherPlayer: otherPlayer });
-							break;
-					}
+				$metaStream.delay(25).subscribe(function (a) {
+					(function () {
+						switch (a.type) {
+							case 'side':
+								_this2.setState({ side: a.side });
+								_this2.props.setSide(a.side);
+								_this2.props.updateAllPaths();
+								break;
+							case 'players':
+								var players = a.players;
+								var side = _this2.state.side;
+
+								var player = void 0;
+								if (side === 0) side = 1;
+								player = players.find(function (pl) {
+									return +pl.side === +side;
+								});
+								var otherPlayer = players.find(function (pl) {
+									return +pl.side !== +side;
+								});
+								_this2.setState({ player: player, otherPlayer: otherPlayer ? otherPlayer : _this2.state.otherPlayer });
+								break;
+						}
+					})();
 				});
-				roomId !== '-1' && socket.emit('enterRoom', { id: roomId, player: player });
+				roomId !== '-1' && socket.emit('enterRoom', { id: roomId, player: this.state.player });
 				this.setState({ '$moves': $movesFromViewerArray, '$meta': $metaStream });
 			}
 		}, {
@@ -55820,7 +55778,7 @@
 		}, {
 			key: 'render',
 			value: function render() {
-				console.log(this.props);
+				// console.log(this.props);
 				var _state = this.state;
 				var $moves = _state.$moves;
 				var $meta = _state.$meta;
@@ -55835,6 +55793,11 @@
 				return _react2.default.createElement(
 					'div',
 					null,
+					_react2.default.createElement(
+						'p',
+						null,
+						'multipleya'
+					),
 					_react2.default.createElement(_Player2.default, otherPlayer),
 					_react2.default.createElement(
 						'p',
@@ -56000,7 +55963,9 @@
 			case 'resetBoard':
 				return _extends({}, state, {
 					game: _extends({}, game, {
-						table: _temp2.default
+						table: _temp2.default,
+						turn: 1,
+						won: null
 					})
 				});
 			case 'hideMoves':

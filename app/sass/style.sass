@@ -1,3 +1,101 @@
+// Core variables and mixins
+@import "bootstrap/variables"
+@import "bootstrap/mixins"
+
+@import colors
+$btn-primary-bg: $primary
+$btn-primary-border: darken($primary,10%)
+
+// Reset and dependencies
+@import "bootstrap/normalize"
+@import "bootstrap/print"
+@import "bootstrap/glyphicons"
+
+// Core CSS
+// @import "bootstrap/scaffolding"
+// @import "bootstrap/type"
+// @import "bootstrap/code"
+@import "bootstrap/grid"
+// @import "bootstrap/tables"
+@import "bootstrap/forms"
+@import "bootstrap/buttons"
+//
+// // Components
+// @import "bootstrap/component-animations"
+// @import "bootstrap/dropdowns"
+// @import "bootstrap/button-groups"
+// @import "bootstrap/input-groups"
+@import "bootstrap/navs"
+@import "bootstrap/navbar"
+// @import "bootstrap/breadcrumbs"
+// @import "bootstrap/pagination"
+// @import "bootstrap/pager"
+// @import "bootstrap/labels"
+// @import "bootstrap/badges"
+// @import "bootstrap/jumbotron"
+// @import "bootstrap/thumbnails"
+// @import "bootstrap/alerts"
+// @import "bootstrap/progress-bars"
+// @import "bootstrap/media"
+// @import "bootstrap/list-group"
+@import "bootstrap/panels"
+// @import "bootstrap/responsive-embed"
+@import "bootstrap/wells"
+// @import "bootstrap/close"
+//
+// // Components w/ JavaScript
+// @import "bootstrap/modals"
+// @import "bootstrap/tooltip"
+// @import "bootstrap/popovers"
+// @import "bootstrap/carousel"
+//
+// // Utility classes
+@import "bootstrap/utilities"
+// @import "bootstrap/responsive-utilities"
+
+*
+	box-sizing: border-box
+.nav-tabs a
+	border: none
+	border-radius: 0
+.tab-content
+	border: 1px solid rgb(221, 221, 221)
+	padding: 0.9em 0
+	display: block
+.btn
+	border: none
+	border-radius: 0
+
+
+// ReactCSSTransitionGroup
+.tab-switch-enter
+	transform: translateX(-100%)
+	opacity: 0.01
+.tab-switch-enter.tab-switch-enter-active
+	opacity: 1
+	transform: translateX(0%)
+	transition: all .3s ease-in 0.3s
+
+.tab-switch-leave
+	opacity: 1
+	float: left
+		transform: translate(0%, -100%)
+.tab-switch-leave.tab-switch-leave-active
+	opacity: 0.01
+	float: left
+	transform: translateX(100%)
+	transition: all .3s ease-in
+
+.tab-switch-appear
+	opacity: 0.01
+.tab-switch-appear.tab-switch-appear-active
+	opacity: 1
+	transition: all .3s ease-in
+
+
+// end ReactCSSTransitionGroup
+@import newgame
+
 @keyframes possible-move
 	0%
 		transform: scale(1)
@@ -26,7 +124,7 @@
 	position: relative
 
 .checkers-table-container
-	/*transform: rotateX(180deg);
+	/*transform: rotateX(180deg)
 	user-select: none
 	//border: 3rem solid rgba(200, 165, 120, 0.8)
 	border-radius: 0.2rem
@@ -42,22 +140,22 @@
 		top: -7.5%
 		width: 115%
 		height: 115%
-		/*transform: rotateX(180deg);
+		/*transform: rotateX(180deg)
 		background-position: 0 32px
 		background-size: 95%
 
 // /*.checkers-table:before {
-//	*	content: "";
-//	*	background-image: url('assets/board.svg');
-//	*	background-repeat: no-repeat;
-//	*	width: 100%;
-//	*	height: 100%;
-//	*	font-size: 0;
-//	*	top: 0;
-//	*	left: 0;
-//	*	position: absolute;;
-//	*	transform: rotateX(180deg);
-//	*	z-index: -5;
+//	*	content: ""
+//	*	background-image: url('assets/board.svg')
+//	*	background-repeat: no-repeat
+//	*	width: 100%
+//	*	height: 100%
+//	*	font-size: 0
+//	*	top: 0
+//	*	left: 0
+//	*	position: absolute
+//	*	transform: rotateX(180deg)
+//	*	z-index: -5
 //	*}
 
 .checkers-table
@@ -71,7 +169,7 @@
 		display: inline-block
 		box-shadow: -1px 1px 3px 0px rgba(120, 70, 40, 0.8)
 		// &:after
-		// 	/*content: attr(id);
+		// 	/*content: attr(id)
 		// 	color: #a57d19
 		// 	position: absolute
 		// 	bottom: 2%
@@ -87,7 +185,7 @@
 			position: absolute
 			left: 12.5%
 			top: 12.5%
-			box-shadow: -1px 1px 3px -1px #444;
+			box-shadow: -1px 1px 3px -1px #444
 			border-radius: 50%
 		&[data-checker="0"]:before
 			box-shadow: none
@@ -127,7 +225,7 @@
 			animation: possible-move 1s linear infinite
 		&.can-move:hover:before
 			border: 4px rgba(70, 120, 210, 0.8) dotted
-			/*transform: scale(1.1);
+			/*transform: scale(1.1)
 			animation: can-move 4s linear infinite
 		&:nth-child(8n+5)
 			margin-left: 0 !important
@@ -209,23 +307,6 @@
 		flex: 1
 		padding: 0
 
-#NewGame
-	background: none
-	li
-		padding: 0
-		margin: 0.3em 1em
-		border: none
-	#play
-		flex-basis: 100%
-		box-shadow: 0 1px 2px rgba(0, 0, 0, .2)
-		button
-			width: 100%
-	.type-panel, .time-panel
-		position: absolute
-		z-index: 1
-		width: 100%
-		margin-top: -0.5em
-		padding-top: 1em
 
 #Tournament
 	font-size: 1.2em
@@ -265,3 +346,15 @@
 				right: 0em
 				&:after
 					content: ' P'
+
+.chat
+	p
+		margin: 0 1.5em
+		padding: 0.3em 0
+	b
+		display: inline-block
+		&:after
+			content: ': '
+	span
+		margin-left: 1em
+		display: inline-block

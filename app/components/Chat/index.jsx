@@ -2,8 +2,8 @@ import React from 'react';
 
 const Chat = function({ data }) {
 	return (
-		<div>
-			{data.map(({ message, author }) => { return <li><b>{author}</b>: {message}</li>;})}
+		<div className="chat">
+			{data.map(({ message, author }, i) => { return <p key={i}><b>{author}</b><span>{message}</span></p>;})}
 		</div>
 	);
 };

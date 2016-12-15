@@ -4,9 +4,11 @@ const del = require('del');
 // const babel = require('gulp-babel');
 const webpack = require('webpack-stream');
 const nodemon = require('gulp-nodemon');
+const autoprefixer = require('gulp-autoprefixer');
 
 const paths = {
 	sass: './app/sass/**/*.sass',
+	sassMain: './app/sass/style.sass',
 	del: { sass: './public/style.css', js: './public/bundle.js' },
 	webpack: ['./app/App.jsx', './app/**/*.jsx']
 };
@@ -35,8 +37,9 @@ gulp.task('webpack', () => {
 
 gulp.task('sass', () => {
 	del(['public/style.css']).then(() => {
-		gulp.src(paths.sass)
-			.pipe(sass().on('error', sass.logError))
+		gulp.src(paths.sassMain)
+			.pipe(sass({ includePaths: ['./node_modules/bootstrap-sass/assets/stylesheets'] }).on('error', sass.logError))
+			.pipe(autoprefixer())
 			.pipe(gulp.dest('public/'));
 	});
 });
