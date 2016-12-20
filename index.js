@@ -1,7 +1,7 @@
 const io = require('socket.io')();
 const port = process.env.PORT || 3000;
 const uuid = require('uuid');
-const AssocArray = require('./src/assocarray');
+const AssocArray = require('./src/AssocArray');
 const { playHandler, enterHandler, moveHandler } = require('./src/handlers');
 
 let rooms = new AssocArray(); // holds all active rooms ids or maybe room objects
