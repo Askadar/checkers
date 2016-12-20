@@ -24,14 +24,19 @@ class NewGame extends React.Component {
 	}
 	handleClick(e) {
 		e.preventDefault();
-		if (e.target.name in { typePanel: '', timePanel: '' }) {
+		const checking = { panel: ['typePanel', 'timePanel'], variable: ['selectedType', 'selectedTime'] };
+		if (checking.panel.includes(e.target.name)) {
 			let state = {};
 			state.activePanel = this.state.activePanel === e.target.name ? null : e.target.name;
 			this.setState(state);
 		}
+		else if (checking.variable.includes(e.target.dataset.name)) {
+			let state = {};
+			state[e.target.dataset.name] = e.target.textContent;
+			this.setState(state);
+		}
 		else
 			this.setState({ activePanel: false });
-
 	}
 	play() {
 		const { selectedType, selectedTime } = this.state;

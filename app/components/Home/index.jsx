@@ -21,7 +21,7 @@ export default function Home({ socket, upperLinks, upperTabName, setUpperTabHand
 	const LowerArbitraryComponent = window.RR[lowerTabName];
 	return (
 		<div className="col-md-12">
-			<div className="col-md-6">
+			<div className="col-md-8">
 				{children && React.cloneElement(children, { socket }) || <SinglePlayerMatch />}
 			</div>
 			<div className="col-md-4">

@@ -3228,6 +3228,8 @@ input[type="button"].btn-block {
 
 * {
   box-sizing: border-box; }
+  *:before, *:after {
+    box-sizing: inherit; }
 
 .nav-tabs a {
   border: none;
@@ -3345,11 +3347,15 @@ input[type="button"].btn-block {
       -webkit-transform: translateY(0%);
               transform: translateY(0%);
       z-index: 1;
+      width: calc(200% + 2em);
       opacity: 1;
       -webkit-transition-delay: 0s, 0s, 0s;
               transition-delay: 0s, 0s, 0s; }
     #NewGame li a {
       border: none; }
+    #NewGame li:nth-child(2):hover div, #NewGame li:nth-child(2) div.active {
+      margin-left: -117%;
+      margin-left: calc(-100% - 2em); }
   #NewGame #play {
     -ms-flex-preferred-size: 100%;
         flex-basis: 100%;
@@ -3381,6 +3387,7 @@ input[type="button"].btn-block {
       -webkit-transform: translateY(0%);
               transform: translateY(0%);
       z-index: 1;
+      width: calc(200% + 2em);
       opacity: 1;
       -webkit-transition-delay: 0s, 0s, 0s;
               transition-delay: 0s, 0s, 0s; }
