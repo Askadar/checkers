@@ -1,12 +1,11 @@
 import React from 'react';
 
 class Checker extends React.Component {
-	handleClick(e) {
+	handleClick() {
 		// console.log(e.target, this);
 		// console.log(this.props.active, this.props.possibleMove, this.props.showMove);
 		const {
 			className,
-			active,
 			move,
 			hideMoves,
 			showMoves,

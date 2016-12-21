@@ -1,5 +1,5 @@
 import React from 'react';
-import Match from './Match';
+import Match from './SmallViews/Match';
 
 const Live = function({ data }) {
 	return (

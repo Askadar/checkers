@@ -1,7 +1,9 @@
 module.exports = {
 	entry: './app/App.jsx',
 	output: {
-		filename: 'public/bundle.js'
+		path: 'public/',
+		filename: 'bundle.js',
+		publicPath: '//checkers/'
 	},
 	module: {
 		loaders: [{
@@ -13,6 +15,9 @@ module.exports = {
 				plugins: ['transform-object-rest-spread']
 			}
 		}]
+	},
+	devServer: {
+		contentBase: 'public/',
 	},
 	resolve: {
 		extensions: ['', '.js', '.jsx']

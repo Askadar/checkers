@@ -1,5 +1,5 @@
 import React from 'react';
-import NewGameView from '../components/NewGame/';
+import NewGameView from '../components/NewGameView';
 
 class NewGame extends React.Component {
 	constructor(p) {

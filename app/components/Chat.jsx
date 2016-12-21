@@ -1,12 +1,14 @@
 import React from 'react';
+import ChatMessage from './SmallViews/ChatMessage';
 
 const Chat = function({ data }) {
 	return (
 		<div className="chat">
-			{data.map(({ message, author }, i) => { return <p key={i}><b>{author}</b><span>{message}</span></p>;})}
+			{data.map((messageData, i) => <ChatMessage key={i} {...messageData}/>)}
 		</div>
 	);
 };
 
 window.RR = { ...window.RR, Chat };
+
 export default Chat;

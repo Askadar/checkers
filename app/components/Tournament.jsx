@@ -1,5 +1,5 @@
 import React from 'react';
-import Entry from './entry';
+import Entry from './SmallViews/Entry';
 
 class Tournament extends React.Component {
 	constructor(p) {
