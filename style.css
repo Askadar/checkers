@@ -3237,6 +3237,7 @@ input[type="button"].btn-block {
 
 .tab-content {
   border: 1px solid #dddddd;
+  border-top: none;
   padding: 0.9em 0;
   position: relative;
   display: block; }
