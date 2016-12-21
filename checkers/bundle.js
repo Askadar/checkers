@@ -34,7 +34,7 @@
 /******/ 	__webpack_require__.c = installedModules;
 
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "";
+/******/ 	__webpack_require__.p = "http://localhost:8080/checkers/";
 
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(0);
@@ -60,7 +60,7 @@
 
 	var _reactRouter = __webpack_require__(196);
 
-	var _configureStore = __webpack_require__(671);
+	var _configureStore = __webpack_require__(674);
 
 	var _configureStore2 = _interopRequireDefault(_configureStore);
 
@@ -28981,9 +28981,9 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _home = __webpack_require__(258);
+	var _HomeView = __webpack_require__(258);
 
-	var _home2 = _interopRequireDefault(_home);
+	var _HomeView2 = _interopRequireDefault(_HomeView);
 
 	var _reactRedux = __webpack_require__(173);
 
@@ -29019,7 +29019,7 @@
 				reconnectionDelay: 500,
 				reconnectionAttempts: 10
 			};
-			var socketPath = debug ? 'http://localhost:3000' : 'https://websockety-askadar.c9users.io:8080/';
+			var socketPath = debug ? 'http://localhost:3000' : 'http://zarahia.com:3000';
 
 			_this.state = {
 				messages: [{ message: 'Bacon ipsum dolor amet beef ribs adipisicing picanha prosciutto consequat, pork belly venison leberkas shankle exercitation ex ut frankfurter burgdoggen in. ', author: 'Foo' }, { message: 'Prosciutto t-bone bresaola ex ad mollit. Aliqua venison kielbasa fugiat. Voluptate laborum esse pig veniam rump ullamco leberkas anim. ', author: 'Baz' }, { message: 'Aute biltong commodo bacon id, porchetta beef ribs kielbasa.', author: 'Baz' }, { message: ' Commodo andouille esse officia elit veniam biltong.', author: 'Foo' }, { message: 'Capicola bacon beef ex bresaola, andouille ad tenderloin.', author: 'Foo' }],
@@ -29091,7 +29091,7 @@
 				var setLowerTab = this.setLowerTab;
 				var playHandler = this.playHandler;
 
-				return _react2.default.createElement(_home2.default, { socket: socket, upperLinks: upperLinks, upperTabName: upperTabName, lowerLinks: lowerLinks, lowerTabName: lowerTabName, setUpperTabHandler: setUpperTab.bind(this), setLowerTabHandler: setLowerTab.bind(this), playHandler: playHandler.bind(this), messages: messages, matches: matches, children: this.props.children });
+				return _react2.default.createElement(_HomeView2.default, { socket: socket, upperLinks: upperLinks, upperTabName: upperTabName, lowerLinks: lowerLinks, lowerTabName: lowerTabName, setUpperTabHandler: setUpperTab.bind(this), setLowerTabHandler: setLowerTab.bind(this), playHandler: playHandler.bind(this), messages: messages, matches: matches, children: this.props.children });
 			}
 		}]);
 
@@ -29119,7 +29119,7 @@
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
-	exports.default = Home;
+	exports.default = HomeView;
 
 	var _react = __webpack_require__(1);
 
@@ -29129,21 +29129,21 @@
 
 	var _Chat2 = _interopRequireDefault(_Chat);
 
-	var _live = __webpack_require__(260);
+	var _Live = __webpack_require__(261);
 
-	var _live2 = _interopRequireDefault(_live);
+	var _Live2 = _interopRequireDefault(_Live);
 
-	var _Newgame = __webpack_require__(262);
+	var _NewGameView = __webpack_require__(263);
 
-	var _Newgame2 = _interopRequireDefault(_Newgame);
+	var _NewGameView2 = _interopRequireDefault(_NewGameView);
 
-	var _tournament = __webpack_require__(264);
+	var _Tournament = __webpack_require__(264);
 
-	var _tournament2 = _interopRequireDefault(_tournament);
+	var _Tournament2 = _interopRequireDefault(_Tournament);
 
-	var _singleplayermatch = __webpack_require__(266);
+	var _SinglePlayerMatch = __webpack_require__(266);
 
-	var _singleplayermatch2 = _interopRequireDefault(_singleplayermatch);
+	var _SinglePlayerMatch2 = _interopRequireDefault(_SinglePlayerMatch);
 
 	var _reactAddonsCssTransitionGroup = __webpack_require__(613);
 
@@ -29170,7 +29170,7 @@
 		);
 	};
 
-	function Home(_ref2) {
+	function HomeView(_ref2) {
 		var socket = _ref2.socket;
 		var upperLinks = _ref2.upperLinks;
 		var upperTabName = _ref2.upperTabName;
@@ -29192,7 +29192,7 @@
 			_react2.default.createElement(
 				'div',
 				{ className: 'col-md-8' },
-				children && _react2.default.cloneElement(children, { socket: socket }) || _react2.default.createElement(_singleplayermatch2.default, null)
+				children && _react2.default.cloneElement(children, { socket: socket }) || _react2.default.createElement(_SinglePlayerMatch2.default, null)
 			),
 			_react2.default.createElement(
 				'div',
@@ -29262,7 +29262,7 @@
 /* 259 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 		value: true
@@ -29274,40 +29274,67 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
+	var _ChatMessage = __webpack_require__(260);
+
+	var _ChatMessage2 = _interopRequireDefault(_ChatMessage);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var Chat = function Chat(_ref) {
 		var data = _ref.data;
 
 		return _react2.default.createElement(
-			"div",
-			{ className: "chat" },
-			data.map(function (_ref2, i) {
-				var message = _ref2.message;
-				var author = _ref2.author;
-				return _react2.default.createElement(
-					"p",
-					{ key: i },
-					_react2.default.createElement(
-						"b",
-						null,
-						author
-					),
-					_react2.default.createElement(
-						"span",
-						null,
-						message
-					)
-				);
+			'div',
+			{ className: 'chat' },
+			data.map(function (messageData, i) {
+				return _react2.default.createElement(_ChatMessage2.default, _extends({ key: i }, messageData));
 			})
 		);
 	};
 
 	window.RR = _extends({}, window.RR, { Chat: Chat });
+
 	exports.default = Chat;
 
 /***/ },
 /* 260 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	exports.default = ChatMessage;
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function ChatMessage(_ref) {
+		var author = _ref.author;
+		var message = _ref.message;
+
+		return _react2.default.createElement(
+			'p',
+			null,
+			_react2.default.createElement(
+				'b',
+				null,
+				author
+			),
+			_react2.default.createElement(
+				'span',
+				null,
+				message
+			)
+		);
+	}
+
+/***/ },
+/* 261 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -29322,7 +29349,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _Match = __webpack_require__(261);
+	var _Match = __webpack_require__(262);
 
 	var _Match2 = _interopRequireDefault(_Match);
 
@@ -29347,7 +29374,7 @@
 	exports.default = Live;
 
 /***/ },
-/* 261 */
+/* 262 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -29376,105 +29403,6 @@
 	}
 
 /***/ },
-/* 262 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _react = __webpack_require__(1);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _NewGame = __webpack_require__(263);
-
-	var _NewGame2 = _interopRequireDefault(_NewGame);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var NewGame = function (_React$Component) {
-		_inherits(NewGame, _React$Component);
-
-		function NewGame(p) {
-			_classCallCheck(this, NewGame);
-
-			var _this = _possibleConstructorReturn(this, (NewGame.__proto__ || Object.getPrototypeOf(NewGame)).call(this, p));
-
-			var types = ['Russian', 'World'];
-			var times = ['15|0', '10|0'];
-			_this.state = {
-				selectedType: types[0],
-				selectedTime: times[0],
-				activePanel: false,
-				types: types,
-				times: times
-			};
-			return _this;
-		}
-
-		_createClass(NewGame, [{
-			key: 'componentDidMount',
-			value: function componentDidMount() {
-				this.test = this.handleClick.bind(this);
-				window.document.body.addEventListener('click', this.test);
-			}
-		}, {
-			key: 'componentWillUnmount',
-			value: function componentWillUnmount() {
-				window.document.body.removeEventListener('click', this.test);
-			}
-		}, {
-			key: 'handleClick',
-			value: function handleClick(e) {
-				e.preventDefault();
-				var checking = { panel: ['typePanel', 'timePanel'], variable: ['selectedType', 'selectedTime'] };
-				if (checking.panel.includes(e.target.name)) {
-					var state = {};
-					state.activePanel = this.state.activePanel === e.target.name ? null : e.target.name;
-					this.setState(state);
-				} else if (checking.variable.includes(e.target.dataset.name)) {
-					var _state = {};
-					_state[e.target.dataset.name] = e.target.textContent;
-					this.setState(_state);
-				} else this.setState({ activePanel: false });
-			}
-		}, {
-			key: 'play',
-			value: function play() {
-				var _state2 = this.state;
-				var selectedType = _state2.selectedType;
-				var selectedTime = _state2.selectedTime;
-				var handler = this.props.handler;
-
-				handler({ type: 'play', selectedType: selectedType, selectedTime: selectedTime });
-			}
-		}, {
-			key: 'render',
-			value: function render() {
-				return _react2.default.createElement(_NewGame2.default, _extends({}, this.state, { playHandler: this.play.bind(this) }));
-			}
-		}]);
-
-		return NewGame;
-	}(_react2.default.Component);
-
-	window.RR = _extends({}, window.RR, { 'Play': NewGame });
-	exports.default = NewGame;
-
-/***/ },
 /* 263 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -29483,6 +29411,7 @@
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
+	exports.default = NewGameView;
 
 	var _react = __webpack_require__(1);
 
@@ -29490,7 +29419,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	exports.default = function (_ref) {
+	function NewGameView(_ref) {
 		var selectedType = _ref.selectedType;
 		var selectedTime = _ref.selectedTime;
 		var activePanel = _ref.activePanel;
@@ -29550,7 +29479,7 @@
 				)
 			)
 		);
-	};
+	}
 
 /***/ },
 /* 264 */
@@ -29570,9 +29499,9 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _entry = __webpack_require__(265);
+	var _Entry = __webpack_require__(265);
 
-	var _entry2 = _interopRequireDefault(_entry);
+	var _Entry2 = _interopRequireDefault(_Entry);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -29604,7 +29533,7 @@
 					'div',
 					{ id: 'Tournament' },
 					entries.map(function (data, i) {
-						return _react2.default.createElement(_entry2.default, _extends({ key: i }, data));
+						return _react2.default.createElement(_Entry2.default, _extends({ key: i }, data));
 					})
 				);
 			}
@@ -30090,12 +30019,11 @@
 
 		_createClass(Checker, [{
 			key: 'handleClick',
-			value: function handleClick(e) {
+			value: function handleClick() {
 				// console.log(e.target, this);
 				// console.log(this.props.active, this.props.possibleMove, this.props.showMove);
 				var _props = this.props;
 				var className = _props.className;
-				var active = _props.active;
 				var move = _props.move;
 				var hideMoves = _props.hideMoves;
 				var showMoves = _props.showMoves;
@@ -47980,8 +47908,7 @@
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	exports.default = Player;
 
 	var _react = __webpack_require__(1);
 
@@ -47989,42 +47916,17 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	function Player(_ref) {
+		var name = _ref.name;
+		var rating = _ref.rating;
+		var side = _ref.side;
 
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var Player = function (_React$Component) {
-		_inherits(Player, _React$Component);
-
-		function Player() {
-			_classCallCheck(this, Player);
-
-			return _possibleConstructorReturn(this, (Player.__proto__ || Object.getPrototypeOf(Player)).apply(this, arguments));
-		}
-
-		_createClass(Player, [{
-			key: 'render',
-			value: function render() {
-				// console.log('player render', this.props);
-				var _props = this.props;
-				var name = _props.name;
-				var rating = _props.rating;
-				var side = _props.side;
-
-				return _react2.default.createElement(
-					'div',
-					null,
-					name + ' ' + (rating ? '(' + rating + ')' : '') + ' and side is ' + side
-				);
-			}
-		}]);
-
-		return Player;
-	}(_react2.default.Component);
-
-	exports.default = Player;
+		return _react2.default.createElement(
+			'div',
+			null,
+			name + ' ' + (rating ? '(' + rating + ')' : '') + ' and side is ' + side
+		);
+	}
 
 /***/ },
 /* 612 */
@@ -56560,11 +56462,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _CheckersTable = __webpack_require__(267);
+	var _CheckersTable = __webpack_require__(671);
 
 	var _CheckersTable2 = _interopRequireDefault(_CheckersTable);
 
-	var _Player = __webpack_require__(611);
+	var _Player = __webpack_require__(673);
 
 	var _Player2 = _interopRequireDefault(_Player);
 
@@ -56757,13 +56659,349 @@
 		value: true
 	});
 
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactRedux = __webpack_require__(173);
+
+	var _Checker = __webpack_require__(672);
+
+	var _Checker2 = _interopRequireDefault(_Checker);
+
+	var _Rx = __webpack_require__(269);
+
+	var _Rx2 = _interopRequireDefault(_Rx);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var CheckersTable = function (_React$Component) {
+		_inherits(CheckersTable, _React$Component);
+
+		function CheckersTable(p) {
+			_classCallCheck(this, CheckersTable);
+
+			var _this = _possibleConstructorReturn(this, (CheckersTable.__proto__ || Object.getPrototypeOf(CheckersTable)).call(this, p));
+
+			var debug = true;
+			_this.state = {
+				messagesRow: '',
+				letters: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'],
+				keysMap: Object.keys(_this.props.table).sort(function (a, b) {
+					var aKeys = a.split('-');
+					var bKeys = b.split('-');
+					return (bKeys[0] - aKeys[0]) * 11 + (aKeys[1].charCodeAt(0) - bKeys[1].charCodeAt(0));
+				})
+			};
+			return _this;
+		}
+
+		_createClass(CheckersTable, [{
+			key: 'componentDidMount',
+			value: function componentDidMount() {
+				var _this2 = this;
+
+				var _props = this.props;
+				var updateAllPaths = _props.updateAllPaths;
+				var socket = _props.socket;
+				var moves = _props.moves;
+				var meta = _props.meta;
+
+				if (socket) {
+					updateAllPaths();
+					var $movesFromViewerArray = moves.flatMap(function (a) {
+						return a;
+					}); // Observable.fromEvent(socket, 'moves');
+					var $movesNormal = _Rx2.default.Observable.fromEvent(socket, 'move');
+					var $moves = _Rx2.default.Observable.merge($movesFromViewerArray, $movesNormal);
+					// const $meta = Rx.Observable.fromEvent(socket, 'meta');
+					// const $chatMessages = Rx.Observable.fromEvent(socket, 'chatMessages');
+					var $won = _Rx2.default.Observable.fromEvent(socket, 'won');
+					var $stop = _Rx2.default.Observable.merge($won);
+					this.subscription = $moves.takeUntil($stop).subscribe(function (a) {
+						console.log('observer', a);
+						var id = a.id;
+						var lastChecker = a.lastChecker;
+
+						_this2.move(id, lastChecker);
+					});
+				}
+			}
+		}, {
+			key: 'showMoves',
+			value: function showMoves(id) {
+				var piece = this.props.table[id];
+				if (piece.checker * this.props.turn > 0 && piece.paths.length > 0)
+					// console.log('Show move', piece.paths, id);
+					this.props.showMoves(piece.paths, id);
+			}
+		}, {
+			key: 'move',
+			value: function move(id) {
+				var lastChecker = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.props.lastChecker;
+				var _props2 = this.props;
+				var turn = _props2.turn;
+				var socket = _props2.socket;
+				var singlePlayer = _props2.singlePlayer;
+				var move = _props2.move;
+				var updateAllPaths = _props2.updateAllPaths;
+				var setSide = _props2.setSide;
+				var hideMoves = _props2.hideMoves;
+				var showMoves = _props2.showMoves;
+
+				lastChecker === this.props.lastChecker && !singlePlayer && socket.emit('move', { id: id, lastChecker: lastChecker });
+				var pieceTo = this.props.table[id];
+				var piece = this.props.table[lastChecker];
+				var consume = void 0;
+				// debugger;
+				if (piece.checker * turn > 0) {
+					// console.log('Moved', id, piece, pieceTo, piece.paths);
+					var paths = piece.paths.filter(function (path) {
+						return path.points[0].id === pieceTo.id;
+					});
+					var path = paths[0];
+					if (path.vectors.length > 0) consume = path.vectors[0].id;
+
+					paths = paths.map(function (p) {
+						return _extends({}, p, {
+							points: p.points.slice(1),
+							vectors: p.vectors.slice(1) });
+					}).filter(function (p) {
+						return p.points.length > 0;
+					});
+					path = paths[0];
+					var nextTurn = path && path.points.length > 0 ? turn : -turn;
+					move(piece, pieceTo, consume, nextTurn);
+					// console.log('Turnings', nextTurn, turn);
+					if (nextTurn === turn) {
+						// console.log('Show next move', paths, pieceTo.id);
+						hideMoves();
+						showMoves(paths, pieceTo.id);
+					} else hideMoves();
+					if (singlePlayer === true) setSide(nextTurn);
+					updateAllPaths();
+				}
+			}
+		}, {
+			key: 'render',
+			value: function render() {
+				var _this3 = this;
+
+				var _state = this.state;
+				var keysMap = _state.keysMap;
+				var letters = _state.letters;
+				var boardSize = this.props.boardSize;
+
+				return _react2.default.createElement(
+					'div',
+					{ className: 'checkers-table' },
+					_react2.default.createElement(
+						'div',
+						{ className: 'numbers', style: { fontSize: boardSize / 50 } },
+						[].concat(_toConsumableArray(Array(Math.sqrt(keysMap.length * 2)).keys())).map(function (i) {
+							return _react2.default.createElement(
+								'span',
+								{ key: 'n-' + i, className: 'number-' + (i + 1) },
+								i + 1
+							);
+						})
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'letters', style: { fontSize: boardSize / 50 } },
+						[].concat(_toConsumableArray(Array(Math.sqrt(keysMap.length * 2)).keys())).map(function (i) {
+							return _react2.default.createElement(
+								'span',
+								{ key: 'l-' + i, className: 'letter-' + (i + 1) },
+								letters[i]
+							);
+						})
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'checkers-table', 'data-whites': this.props.turn },
+						keysMap.map(function (a) {
+							return _react2.default.createElement(_Checker2.default, _extends({ id: a, key: a }, _this3.props.table[a], { hideMoves: _this3.props.hideMoves, showMoves: _this3.showMoves.bind(_this3), move: _this3.move.bind(_this3) }));
+						})
+					)
+				);
+			}
+		}]);
+
+		return CheckersTable;
+	}(_react2.default.Component);
+
+	var mapStateToProps = function mapStateToProps(store) {
+		var _store$game = store.game;
+		var table = _store$game.table;
+		var turn = _store$game.turn;
+		var lastChecker = _store$game.lastChecker;
+
+		return { table: table, turn: turn, lastChecker: lastChecker };
+	};
+	var mapDispatchToProps = function mapDispatchToProps(dispatch, ownProps) {
+		return {
+			hideMoves: function hideMoves() {
+				dispatch({ type: 'hideMoves' });
+			},
+			showMoves: function showMoves(paths, id) {
+				dispatch({ type: 'showMoves', paths: paths, id: id });
+			},
+			move: function move(piece, pieceTo, consume, turn) {
+				dispatch({ type: 'move', piece: piece, pieceTo: pieceTo, consume: consume, turn: turn });
+			},
+			updateAllPaths: function updateAllPaths() {
+				dispatch({ type: 'updateAllPaths' });
+			},
+			setSide: function setSide(side) {
+				dispatch({ type: 'setSide', side: side });
+			}
+		};
+	};
+
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(CheckersTable);
+
+/***/ },
+/* 672 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Checker = function (_React$Component) {
+		_inherits(Checker, _React$Component);
+
+		function Checker() {
+			_classCallCheck(this, Checker);
+
+			return _possibleConstructorReturn(this, (Checker.__proto__ || Object.getPrototypeOf(Checker)).apply(this, arguments));
+		}
+
+		_createClass(Checker, [{
+			key: 'handleClick',
+			value: function handleClick() {
+				// console.log(e.target, this);
+				// console.log(this.props.active, this.props.possibleMove, this.props.showMove);
+				var _props = this.props;
+				var className = _props.className;
+				var move = _props.move;
+				var hideMoves = _props.hideMoves;
+				var showMoves = _props.showMoves;
+				var id = _props.id;
+
+				switch (className) {
+					case 'can-move':
+						hideMoves();
+						showMoves(id);
+						break;
+					case 'active':
+						hideMoves();
+						break;
+					case 'possible-move':
+						move(id);
+						break;
+					default:
+						// hideMoves();
+						break;
+				}
+
+				// if (this.props.class == 'possible-move')
+				// 	return this.props.move(this.props.id),
+				// 	this.props.hideMove();
+				// this.props.hideMove();
+				// if (this.props.class == 'active')
+				// 	return;
+				// if (this.props.checker !== 0) {
+				// 	return this.props.showMove(this.props.id);
+				// }
+			}
+		}, {
+			key: 'render',
+			value: function render() {
+				return _react2.default.createElement('div', { className: 'checker ' + this.props.className, id: this.props.id, 'data-checker': this.props.checker, onClick: this.handleClick.bind(this) });
+			}
+		}]);
+
+		return Checker;
+	}(_react2.default.Component);
+
+	exports.default = Checker;
+
+/***/ },
+/* 673 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	exports.default = Player;
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function Player(_ref) {
+		var name = _ref.name;
+		var rating = _ref.rating;
+		var side = _ref.side;
+
+		return _react2.default.createElement(
+			'div',
+			null,
+			name + ' ' + (rating ? '(' + rating + ')' : '') + ' and side is ' + side
+		);
+	}
+
+/***/ },
+/* 674 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
 	var _redux = __webpack_require__(180);
 
-	var _reducers = __webpack_require__(672);
+	var _reducers = __webpack_require__(675);
 
 	var _reducers2 = _interopRequireDefault(_reducers);
 
-	var _temp = __webpack_require__(677);
+	var _temp = __webpack_require__(680);
 
 	var _temp2 = _interopRequireDefault(_temp);
 
@@ -56788,7 +57026,7 @@
 	exports.default = (0, _redux.createStore)(_reducers2.default, state, window.devToolsExtension && window.devToolsExtension());
 
 /***/ },
-/* 672 */
+/* 675 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -56801,9 +57039,9 @@
 
 	exports.default = logic;
 
-	var _pathing = __webpack_require__(673);
+	var _pathing = __webpack_require__(676);
 
-	var _temp = __webpack_require__(677);
+	var _temp = __webpack_require__(680);
 
 	var _temp2 = _interopRequireDefault(_temp);
 
@@ -56934,7 +57172,7 @@
 	}
 
 /***/ },
-/* 673 */
+/* 676 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -56944,7 +57182,7 @@
 	});
 	exports.findAllPaths = undefined;
 
-	var _all = __webpack_require__(674);
+	var _all = __webpack_require__(677);
 
 	var _all2 = _interopRequireDefault(_all);
 
@@ -56953,7 +57191,7 @@
 	exports.findAllPaths = _all2.default;
 
 /***/ },
-/* 674 */
+/* 677 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -56966,11 +57204,11 @@
 
 	exports.default = findAllPaths;
 
-	var _directions = __webpack_require__(675);
+	var _directions = __webpack_require__(678);
 
 	var _directions2 = _interopRequireDefault(_directions);
 
-	var _paths = __webpack_require__(676);
+	var _paths = __webpack_require__(679);
 
 	var _paths2 = _interopRequireDefault(_paths);
 
@@ -57039,7 +57277,7 @@
 	}
 
 /***/ },
-/* 675 */
+/* 678 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -57140,7 +57378,7 @@
 	}
 
 /***/ },
-/* 676 */
+/* 679 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -57246,7 +57484,7 @@
 	}
 
 /***/ },
-/* 677 */
+/* 680 */
 /***/ function(module, exports) {
 
 	"use strict";

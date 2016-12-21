@@ -1,1 +1,1 @@
-node_modules\.bin\webpack -w
+node_modules\.bin\webpack-dev-server --progress --colors --watch

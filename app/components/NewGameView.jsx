@@ -1,7 +1,14 @@
 import React from 'react';
 
-export default ({ selectedType, selectedTime, activePanel, types, times, playHandler }) => {
-	const spans = (variable, index, type) => <span key={index} data-name={type} className={`type ${variable.toLowerCase()}`}>{variable}</span>;
+export default function NewGameView({
+		selectedType,
+		selectedTime,
+		activePanel,
+		types,
+		times,
+		playHandler }) {
+	const spans = (variable, index, type) =>
+	<span key={index} data-name={type} className={`type ${variable.toLowerCase()}`}>{variable}</span>;
 	return(<nav id="NewGame" className="nav nav-tabs nav-justified">
 		<li className="col-md-6">
 			<a name="typePanel">{selectedType || 'Type'}</a>
@@ -17,4 +24,4 @@ export default ({ selectedType, selectedTime, activePanel, types, times, playHan
 		</li>
 		<li id="play" className="col-md-12"><button className="btn-primary btn" onClick={playHandler}>Play</button></li>
 	</nav>);
-};
+}

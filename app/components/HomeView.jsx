@@ -1,9 +1,9 @@
 import React from 'react';
-import Chat from '../Chat';
-import Live from '../live/';
-import NewGame from '../../containers/Newgame';
-import Tournament from '../tournament/';
-import SinglePlayerMatch from '../match/singleplayermatch';
+import Chat from './Chat';
+import Live from './Live';
+import NewGame from '../containers/NewGame';
+import Tournament from './Tournament';
+import SinglePlayerMatch from './Match/SinglePlayerMatch';
 
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 // import { connect } from 'react-redux';
@@ -15,7 +15,7 @@ const Li = ({ name, callback, active }) =>
 		<a data-to={name} onClick={callback}>{name}</a>
 	</li>);
 
-export default function Home({ socket, upperLinks, upperTabName, setUpperTabHandler, lowerTabName, lowerLinks, setLowerTabHandler, messages, matches, playHandler, children }) {
+export default function HomeView({ socket, upperLinks, upperTabName, setUpperTabHandler, lowerTabName, lowerLinks, setLowerTabHandler, messages, matches, playHandler, children }) {
 	// const { socket, upperLinks, upperTabName, setUpperTabHandler, playHandler } = this.props;
 	const ArbitraryComponent = window.RR[upperTabName];
 	const LowerArbitraryComponent = window.RR[lowerTabName];

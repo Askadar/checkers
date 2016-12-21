@@ -1,5 +1,5 @@
 import React from 'react';
-import HomeView from '../components/home';
+import HomeView from '../components/HomeView';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import io from 'socket.io-client';
@@ -17,7 +17,7 @@ class Home extends React.Component {
 			reconnectionDelay: 500,
 			reconnectionAttempts: 10
 		};
-		const socketPath = debug ? 'http://localhost:3000' : 'https://websockety-askadar.c9users.io:8080/';
+		const socketPath = debug ? 'http://localhost:3000' : 'http://zarahia.com:3000';
 
 		this.state = {
 			messages: [
