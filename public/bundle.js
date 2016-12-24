@@ -29262,6 +29262,8 @@
 
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 	var _react = __webpack_require__(1);
 
 	var _react2 = _interopRequireDefault(_react);
@@ -29272,21 +29274,99 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var Chat = function Chat(_ref) {
-		var data = _ref.data;
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
-		return _react2.default.createElement(
-			'div',
-			{ className: 'chat' },
-			data.map(function (messageData, i) {
-				return _react2.default.createElement(_ChatMessage2.default, _extends({ key: i }, messageData));
-			})
-		);
-	};
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	window.RR = _extends({}, window.RR, { Chat: Chat });
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	function smoothScroll(c, a, b, i) {
+		i++;if (i > 30) return;
+		c.scrollTop = a + (b - a) / 30 * i;
+		setTimeout(function () {
+			smoothScroll(c, a, b, i);
+		}, 20);
+	}
+
+	var Chat = function (_React$Component) {
+		_inherits(Chat, _React$Component);
+
+		function Chat(p) {
+			_classCallCheck(this, Chat);
+
+			var _this = _possibleConstructorReturn(this, (Chat.__proto__ || Object.getPrototypeOf(Chat)).call(this, p));
+
+			_this.state = {
+				message: '',
+				author: p.author || 'Foo',
+				data: p.data
+			};
+			return _this;
+		}
+
+		_createClass(Chat, [{
+			key: 'sendMessage',
+			value: function sendMessage() {
+				var _state = this.state;
+				var data = _state.data;
+				var author = _state.author;
+				var message = _state.message;
+
+				smoothScroll(this.refs.messagesBox, this.refs.messagesBox.scrollTop, this.refs.messagesBox.scrollHeight, 0);
+				this.setState({ message: '', data: [].concat(_toConsumableArray(data), [{ author: author, message: message, status: 'sending' }]) });
+			}
+		}, {
+			key: 'chatInputHandler',
+			value: function chatInputHandler(e) {
+				this.setState({ message: e.target.value });
+			}
+		}, {
+			key: 'chatSendMessageHandler',
+			value: function chatSendMessageHandler(e) {
+				e.preventDefault();
+				this.state.message !== '' && this.sendMessage();
+				// this.setState({ message: '' });
+			}
+		}, {
+			key: 'render',
+			value: function render() {
+				var _state2 = this.state;
+				var data = _state2.data;
+				var message = _state2.message;
+
+				return _react2.default.createElement(
+					'div',
+					{ className: 'chat' },
+					_react2.default.createElement(
+						'div',
+						{ className: 'messages', ref: 'messagesBox' },
+						data.map(function (messageData, i) {
+							return _react2.default.createElement(_ChatMessage2.default, _extends({ key: i }, messageData));
+						})
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'chat-input' },
+						_react2.default.createElement('textarea', { placeholder: 'Your message', type: 'text', value: message, onChange: this.chatInputHandler.bind(this) }),
+						_react2.default.createElement(
+							'button',
+							{ type: 'submit', onClick: this.chatSendMessageHandler.bind(this) },
+							'Send'
+						)
+					)
+				);
+			}
+		}]);
+
+		return Chat;
+	}(_react2.default.Component);
 
 	exports.default = Chat;
+
+
+	window.RR = _extends({}, window.RR, { Chat: Chat });
 
 /***/ },
 /* 260 */
@@ -29305,23 +29385,19 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	function self(name) {
+		return name === 'Foo';
+	}
+
 	function ChatMessage(_ref) {
 		var author = _ref.author;
 		var message = _ref.message;
+		var status = _ref.status;
 
 		return _react2.default.createElement(
 			'p',
-			null,
-			_react2.default.createElement(
-				'b',
-				null,
-				author
-			),
-			_react2.default.createElement(
-				'span',
-				null,
-				message
-			)
+			{ 'data-author': author, className: (status || '') + (self(author) ? ' own' : '') },
+			message
 		);
 	}
 

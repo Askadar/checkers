@@ -1,5 +1,9 @@
 import React from 'react';
 
-export default function ChatMessage({ author, message }) {
-	return <p ><b>{author}</b><span>{message}</span></p>;
+function self(name) {
+	return name === 'Foo';
+}
+
+export default function ChatMessage({ author, message, status }) {
+	return <p data-author={author} className={(status || '') + (self(author) ? ' own' : '')}>{message}</p>;
 }

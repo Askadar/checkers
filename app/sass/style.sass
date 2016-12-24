@@ -370,14 +370,50 @@ $btn-primary-border: darken($primary,10%)
 				&:after
 					content: ' P'
 
+
+@keyframes new
+	from
+		background: darken($primary,10%)
+	to
+		background: lighten($primary, 30%)
 .chat
-	p
-		margin: 0 1.5em
-		padding: 0.3em 0
-	b
-		display: inline-block
-		&:after
-			content: ': '
-	span
-		margin-left: 1em
-		display: inline-block
+	.messages
+		max-height: 24em
+		overflow-y: auto
+		p
+			margin: 0.4em 0.8em
+			padding: 1.7em 1.2em 0.6em
+			width: 85%
+			background: transparentize(lighten($primary, 20%), 0.2)
+			border-radius: 0.8rem
+			float: left
+			&.own
+				background: transparentize($primary, 0.2)
+				float: right
+			&:before
+				content: attr(data-author)
+				margin-top: -1.2em
+				margin-left: -0.4em
+				// display: inline-block
+				font-weight: 600
+				float: left
+			&.sending
+				background: red
+				animation: new 0.2s infinite alternate ease-in-out
+	.chat-input
+		min-height: 3em
+		padding: 0.4em 0.5em
+		textarea
+			width: calc(100% - 5em)
+			border: none
+			// margin: 1em 0
+			box-shadow: inset 0 0 10px -2px $primary
+		button
+			box-shadow: none
+			background: none
+			border: none
+			box-shadow: 0px 0px 1px 0px $primary
+			float: right
+			padding: 1em
+			box-sizing: border-box
+			border-radius: 2em
