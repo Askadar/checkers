@@ -1,5 +1,5 @@
 import React from 'react';
-import ChatMessage from './SmallViews/ChatMessage';
+import ChatMessage from './smallviews/chatmessage';
 
 function smoothScroll(c, a, b, i) {
 	i++; if (i > 30) return;

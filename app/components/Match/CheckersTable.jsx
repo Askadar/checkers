@@ -1,12 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import Checker from './Checker';
-import Rx from 'rxjs/Rx';
+import { Observable } from 'rxjs';
 
 class CheckersTable extends React.Component {
 	constructor(p) {
 		super(p);
-		const debug = true;
+
+		// const debug = true;
 		this.state = {
 			messagesRow: '',
 			letters: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'],
@@ -22,12 +23,12 @@ class CheckersTable extends React.Component {
 		if (socket) {
 			updateAllPaths();
 			const $movesFromViewerArray = moves.flatMap(a => a); // Observable.fromEvent(socket, 'moves');
-			const $movesNormal = Rx.Observable.fromEvent(socket, 'move');
-			const $moves = Rx.Observable.merge($movesFromViewerArray, $movesNormal);
+			const $movesNormal = Observable.fromEvent(socket, 'move');
+			const $moves = Observable.merge($movesFromViewerArray, $movesNormal);
 			// const $meta = Rx.Observable.fromEvent(socket, 'meta');
 			// const $chatMessages = Rx.Observable.fromEvent(socket, 'chatMessages');
-			const $won = Rx.Observable.fromEvent(socket, 'won');
-			const $stop = Rx.Observable.merge($won);
+			const $won = Observable.fromEvent(socket, 'won');
+			const $stop = Observable.merge($won);
 			this.subscription =
 			$moves.takeUntil($stop)
 				.subscribe(a => {

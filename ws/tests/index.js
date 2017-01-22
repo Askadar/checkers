@@ -72,7 +72,7 @@ test('[EHT] Enter Handler Tests', assert => {
 	enterHandler({ id: 'r' + (stub.store.counter - 1) }, stub.store, stub.emitter);
 	assert.notDeepEqual(stub.emitter.result, { type: 'err', data: { type: 'No room with such id' } }, 'should not throw error if we have room with such id');
 	enterHandler({ id: '-58458' }, stub.store, stub.emitter);
-	assert.deepEqual(stub.emitter.result, { type: 'err', data: { type: 'No room with such id' } }, 'should throw error because we do not have such room');
+	assert.deepEqual(stub.emitter.result, { type: 'wrongRoom', data: undefined }, 'should throw error because we do not have such room');
 	assert.equal(stub.store.r36237.id, 'r36237', 'should create room with correct id');
 
 	assert.end();

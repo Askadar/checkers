@@ -1,11 +1,12 @@
 import React from 'react';
 import NewGameView from '../components/NewGameView';
+import locale from '../config/locale';
 
 class NewGame extends React.Component {
 	constructor(p) {
 		super(p);
 
-		const types = ['Russian', 'World'];
+		const types = locale.matchTypes; // ['Russian', 'World'];
 		const times = ['15|0', '10|0'];
 		this.state = {
 			selectedType: types[0],

@@ -1,4 +1,5 @@
 import React from 'react';
+import locale from '../config/locale';
 
 export default function NewGameView({
 		selectedType,
@@ -22,6 +23,6 @@ export default function NewGameView({
 					{times.map((time, i) => spans(time, i, 'selectedTime'))}
 			</div>
 		</li>
-		<li id="play" className="col-md-12"><button className="btn-primary btn" onClick={playHandler}>Play</button></li>
+		<li id="play" className="col-md-12"><button className="btn-primary btn" onClick={playHandler}>{locale.Play}</button></li>
 	</nav>);
 }

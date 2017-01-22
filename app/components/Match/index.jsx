@@ -7,12 +7,11 @@ import { Observable } from 'rxjs';
 class Match extends Component {
 	constructor(p) {
 		super(p);
-		let player = { name: window.prompt('You\'re name?', 'Fixy'), rating: 2754 };
 		this.state = {
 			// player options
 			'$moves': null,
 			side: 0,
-			player,
+			player: p.player,
 			otherPlayer: { name: 'Opponent', rating: null },
 			// room and board settings
 			boardSize: (Math.min(window.innerHeight, window.innerWidth) * 8 / 10)

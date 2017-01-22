@@ -1,28 +1,29 @@
 import React from 'react';
 import Chat from './Chat';
 import Live from './Live';
-import NewGame from '../containers/NewGame';
+import NewGame from '../containers/newgame';
 import Tournament from './Tournament';
-import SinglePlayerMatch from './Match/SinglePlayerMatch';
+import SinglePlayerMatch from './match/singleplayermatch';
+import locale from '../config/locale';
 
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+// import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 // import { connect } from 'react-redux';
 // import { withRouter } from 'react-router';
 // import io from 'socket.io-client';
 
 const Li = ({ name, callback, active }) =>
 	(<li className={active ? 'active' : ''}>
-		<a data-to={name} onClick={callback}>{name}</a>
+		<a data-to={name} onClick={callback}>{locale[name]}</a>
 	</li>);
 
-export default function HomeView({ socket, upperLinks, upperTabName, setUpperTabHandler, lowerTabName, lowerLinks, setLowerTabHandler, messages, matches, playHandler, children }) {
+export default function HomeView({ socket, player, upperLinks, upperTabName, setUpperTabHandler, lowerTabName, lowerLinks, setLowerTabHandler, messages, matches, playHandler, children }) {
 	// const { socket, upperLinks, upperTabName, setUpperTabHandler, playHandler } = this.props;
 	const ArbitraryComponent = window.RR[upperTabName];
 	const LowerArbitraryComponent = window.RR[lowerTabName];
 	return (
 		<div className="col-md-12">
 			<div className="col-md-8">
-				{children && React.cloneElement(children, { socket }) || <SinglePlayerMatch />}
+				{children && React.cloneElement(children, { socket, player }) || <SinglePlayerMatch />}
 			</div>
 			<div className="col-md-4">
 				<div className="panel">

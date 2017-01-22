@@ -11,8 +11,12 @@ module.exports = class AssocArray extends Array {
 			this[entry] = entry;
 			return 'r' + (this.counter++);
 		}
-		else
-      throw new Error('Such room already exist');
+		throw new Error('Such room already exist');
+	}
+	toTransferenceProtocol() {
+		console.log(this);
+		const arr = this.map(({ players, id, type, time }) => {return { players, roomId: id, type, time };});
+		return arr.length === 0 ? [] : arr;
 	}
 	destroy(id) {
 		switch (typeof id) {
