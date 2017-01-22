@@ -8,7 +8,17 @@ let rooms = new AssocArray(); // holds all active rooms ids or maybe room object
 
 io.on('connection', socket => {
 	// setInterval(()=>socket.emit('move','testing stuff'), 1000);
-	socket.uid = uuid.v4();
+	console.log('socket\'s request prop', socket.handshake.query.uid);
+	// demo
+	socket.emit('matches', rooms.toTransferenceProtocol());
+	// send mathces from the beggining
+	console.log(socket.uid);
+	if (socket.handshake.query.uid)
+		socket.uid = socket.handshake.query.uid;
+	else {
+		socket.uid = uuid.v4();
+		socket.emit('uid', socket.uid);
+	}
 	socket.on('reconnect', nr => {
 		console.log('reconnected, nr: ', nr);
 	});
@@ -26,6 +36,11 @@ io.on('connection', socket => {
 		enterHandler(data, rooms, socket);
 		// we always have room existing if we try this one (so no assholes could exploit router auto-entering and create countless rooms) ((though they still could try to exploit 'play' event))
 	});
+	socket.on('requestMatches', () => {
+		console.log('onRequestMatches Handler', socket.room);
+		socket.emit('matches', rooms.toTransferenceProtocol());
+		// we always have room existing if we try this one (so no assholes could exploit router auto-entering and create countless rooms) ((though they still could try to exploit 'play' event))
+	});
 	socket.on('move', data => {
 		moveHandler(data, rooms, socket);
 	});
@@ -41,7 +56,8 @@ io.on('reconnect', nr => {
 io.on('disconnect', () => {
 	console.log('io disconnected');
 });
+
 // setInterval(()=>console.log(rooms),5000)
-io.set('origins', '*askadar.github.io*:*');
+io.set('origins', '*askadar.github.io*:*, *v-damki.com*:*');
 io.listen(port);
 console.log('listening on port', port);
