@@ -815,6 +815,40 @@ var routes = exports.routes = oneOfType([route, arrayOf(route)]);
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+var ru = exports.ru = {
+	noLiveGames: 'Идущих игр не найдено',
+	Play: 'Играть',
+	Tournament: 'Турниры',
+	Live: 'Идущие игры',
+	Chat: 'Чат',
+	matchTypes: ['Русские Безранговые (новичок)', 'Русские Безранговые (интересующийся)', 'Русские Безранговые (профессионал)'],
+	andSide: 'играет за ',
+	'-1': 'черных',
+	'1': 'белых',
+	'win-1': 'Черные',
+	'win1': 'Белые',
+	winPrefix: 'У'
+};
+var en = exports.en = {
+	noLiveGames: 'No live games found',
+	Play: 'Play',
+	Tournament: 'Tournament',
+	Live: 'Live',
+	Chat: 'Chat',
+	matchTypes: ['Russian Without rank (novice)', 'Russian Without rank (interested)', 'Russian Without rank (professional)']
+};
+exports.default = ru;
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
 /* WEBPACK VAR INJECTION */(function(global) {
 
 /**
@@ -1426,7 +1460,7 @@ exports.decodePayloadAsBinary = function (data, binaryType, callback) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1463,7 +1497,7 @@ exports['default'] = {
 };
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1683,31 +1717,6 @@ function formatPattern(pattern, params) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 13 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-exports.connect = exports.Provider = undefined;
-
-var _Provider = __webpack_require__(124);
-
-var _Provider2 = _interopRequireDefault(_Provider);
-
-var _connect = __webpack_require__(125);
-
-var _connect2 = _interopRequireDefault(_connect);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { "default": obj };
-}
-
-exports.Provider = _Provider2["default"];
-exports.connect = _connect2["default"];
-
-/***/ }),
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1741,7 +1750,7 @@ Object.defineProperty(exports, 'routerShape', {
   }
 });
 
-var _PatternUtils = __webpack_require__(12);
+var _PatternUtils = __webpack_require__(13);
 
 Object.defineProperty(exports, 'formatPattern', {
   enumerable: true,
@@ -1878,32 +1887,23 @@ exports.createMemoryHistory = _createMemoryHistory3.default;
 "use strict";
 
 
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-var ru = exports.ru = {
-	noLiveGames: 'Идущих игр не найдено',
-	Play: 'Играть',
-	Tournament: 'Турниры',
-	Live: 'Идущие игры',
-	Chat: 'Чат',
-	matchTypes: ['Русские Безранговые (новичок)', 'Русские Безранговые (интересующийся)', 'Русские Безранговые (профессионал)'],
-	andSide: 'играет за ',
-	'-1': 'черных',
-	'1': 'белых',
-	'win-1': 'Черные',
-	'win1': 'Белые',
-	winPrefix: 'У'
-};
-var en = exports.en = {
-	noLiveGames: 'No live games found',
-	Play: 'Play',
-	Tournament: 'Tournament',
-	Live: 'Live',
-	Chat: 'Chat',
-	matchTypes: ['Russian Without rank (novice)', 'Russian Without rank (interested)', 'Russian Without rank (professional)']
-};
-exports.default = ru;
+exports.__esModule = true;
+exports.connect = exports.Provider = undefined;
+
+var _Provider = __webpack_require__(124);
+
+var _Provider2 = _interopRequireDefault(_Provider);
+
+var _connect = __webpack_require__(125);
+
+var _connect2 = _interopRequireDefault(_connect);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { "default": obj };
+}
+
+exports.Provider = _Provider2["default"];
+exports.connect = _connect2["default"];
 
 /***/ }),
 /* 16 */
@@ -2397,7 +2397,7 @@ exports.default = deprecateObjectProperties;
  * Module dependencies.
  */
 
-var parser = __webpack_require__(10);
+var parser = __webpack_require__(11);
 var Emitter = __webpack_require__(23);
 
 /**
@@ -3263,7 +3263,7 @@ var _routerWarning = __webpack_require__(2);
 
 var _routerWarning2 = _interopRequireDefault(_routerWarning);
 
-var _Actions = __webpack_require__(11);
+var _Actions = __webpack_require__(12);
 
 var _computeChangedRoutes2 = __webpack_require__(140);
 
@@ -4001,7 +4001,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactRedux = __webpack_require__(13);
+var _reactRedux = __webpack_require__(15);
 
 var _Checker = __webpack_require__(79);
 
@@ -4221,7 +4221,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _locale = __webpack_require__(15);
+var _locale = __webpack_require__(10);
 
 var _locale2 = _interopRequireDefault(_locale);
 
@@ -5104,7 +5104,7 @@ function polling(opts) {
 
 var Transport = __webpack_require__(21);
 var parseqs = __webpack_require__(28);
-var parser = __webpack_require__(10);
+var parser = __webpack_require__(11);
 var inherit = __webpack_require__(16);
 var yeast = __webpack_require__(68);
 var debug = __webpack_require__(6)('engine.io-client:polling');
@@ -5513,7 +5513,7 @@ var _invariant = __webpack_require__(4);
 
 var _invariant2 = _interopRequireDefault(_invariant);
 
-var _Actions = __webpack_require__(11);
+var _Actions = __webpack_require__(12);
 
 var _PathUtils = __webpack_require__(8);
 
@@ -5782,7 +5782,7 @@ var _PathUtils = __webpack_require__(8);
 
 var _AsyncUtils = __webpack_require__(112);
 
-var _Actions = __webpack_require__(11);
+var _Actions = __webpack_require__(12);
 
 var _createLocation2 = __webpack_require__(114);
 
@@ -6599,7 +6599,7 @@ var _invariant2 = _interopRequireDefault(_invariant);
 
 var _RouteUtils = __webpack_require__(7);
 
-var _PatternUtils = __webpack_require__(12);
+var _PatternUtils = __webpack_require__(13);
 
 var _InternalPropTypes = __webpack_require__(9);
 
@@ -8470,7 +8470,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactRedux = __webpack_require__(13);
+var _reactRedux = __webpack_require__(15);
 
 var _reactRouter = __webpack_require__(14);
 
@@ -8490,8 +8490,38 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Root = function (_React$Component) {
-	_inherits(Root, _React$Component);
+var Test = function (_React$Component) {
+	_inherits(Test, _React$Component);
+
+	function Test() {
+		_classCallCheck(this, Test);
+
+		return _possibleConstructorReturn(this, (Test.__proto__ || Object.getPrototypeOf(Test)).apply(this, arguments));
+	}
+
+	_createClass(Test, [{
+		key: 'render',
+		value: function render() {
+			return _react2.default.createElement(
+				'div',
+				null,
+				'Zagert activated his powah!! ',
+				_react2.default.createElement(
+					'a',
+					{ href: '/checkers/' },
+					'Move it dammit!'
+				)
+			);
+		}
+	}]);
+
+	return Test;
+}(_react2.default.Component);
+
+window.debug = false;
+
+var Root = function (_React$Component2) {
+	_inherits(Root, _React$Component2);
 
 	function Root() {
 		_classCallCheck(this, Root);
@@ -8513,9 +8543,10 @@ var Root = function (_React$Component) {
 						{ path: '/' },
 						_react2.default.createElement(
 							_reactRouter.Route,
-							{ path: 'checkers/', component: _home2.default },
-							_react2.default.createElement(_reactRouter.Route, { path: 'match/:roomId', component: _match2.default })
-						)
+							{ path: '/checkers/', component: _home2.default },
+							_react2.default.createElement(_reactRouter.Route, { path: '/checkers/match/:roomId', component: _match2.default })
+						),
+						_react2.default.createElement(_reactRouter.Route, { path: '/checkers/zag/', component: Test })
 					)
 				)
 			);
@@ -8729,7 +8760,7 @@ var _singleplayermatch = __webpack_require__(81);
 
 var _singleplayermatch2 = _interopRequireDefault(_singleplayermatch);
 
-var _locale = __webpack_require__(15);
+var _locale = __webpack_require__(10);
 
 var _locale2 = _interopRequireDefault(_locale);
 
@@ -8757,6 +8788,7 @@ var Li = function Li(_ref) {
 
 function HomeView(_ref2) {
 	var socket = _ref2.socket;
+	var room = _ref2.room;
 	var player = _ref2.player;
 	var upperLinks = _ref2.upperLinks;
 	var upperTabName = _ref2.upperTabName;
@@ -8778,7 +8810,7 @@ function HomeView(_ref2) {
 		_react2.default.createElement(
 			'div',
 			{ className: 'col-md-8' },
-			children && _react2.default.cloneElement(children, { socket: socket, player: player }) || _react2.default.createElement(_singleplayermatch2.default, null)
+			children && _react2.default.cloneElement(children, { socket: socket, room: room, player: player }) || _react2.default.createElement(_singleplayermatch2.default, null)
 		),
 		_react2.default.createElement(
 			'div',
@@ -8857,7 +8889,7 @@ var _Match = __webpack_require__(77);
 
 var _Match2 = _interopRequireDefault(_Match);
 
-var _locale = __webpack_require__(15);
+var _locale = __webpack_require__(10);
 
 var _locale2 = _interopRequireDefault(_locale);
 
@@ -8901,7 +8933,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _locale = __webpack_require__(15);
+var _locale = __webpack_require__(10);
 
 var _locale2 = _interopRequireDefault(_locale);
 
@@ -9080,8 +9112,8 @@ function Match(_ref) {
 		'li',
 		{ className: 'list-group-item' },
 		_react2.default.createElement(
-			'a',
-			{ href: '/checkers/match/' + roomId },
+			_reactRouter.Link,
+			{ to: '/checkers/match/' + roomId },
 			stringedPlayers[0] + ' - ' + stringedPlayers[1] + ' | ' + type + ', ' + time
 		)
 	);
@@ -9261,7 +9293,7 @@ var _Player = __webpack_require__(36);
 
 var _Player2 = _interopRequireDefault(_Player);
 
-var _reactRedux = __webpack_require__(13);
+var _reactRedux = __webpack_require__(15);
 
 var _rxjs = __webpack_require__(34);
 
@@ -9363,14 +9395,22 @@ var Match = function (_Component) {
 			var won = _props.won;
 			var socket = _props.socket;
 			var turn = _props.turn;
+			var room = _props.room;
 
 			return _react2.default.createElement(
 				'div',
-				null,
+				{ 'data-roomId': room },
 				_react2.default.createElement(
 					'p',
 					null,
-					'multipleya'
+					'multipleya ',
+					Object.keys(player).map(function (key) {
+						return _react2.default.createElement(
+							'span',
+							null,
+							key + ' = ' + player[key]
+						);
+					})
 				),
 				_react2.default.createElement(_Player2.default, otherPlayer),
 				_react2.default.createElement(
@@ -9464,7 +9504,7 @@ var _Player = __webpack_require__(36);
 
 var _Player2 = _interopRequireDefault(_Player);
 
-var _reactRedux = __webpack_require__(13);
+var _reactRedux = __webpack_require__(15);
 
 var _rxjs = __webpack_require__(34);
 
@@ -9594,7 +9634,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _locale = __webpack_require__(15);
+var _locale = __webpack_require__(10);
 
 var _locale2 = _interopRequireDefault(_locale);
 
@@ -9681,7 +9721,7 @@ var _HomeView = __webpack_require__(73);
 
 var _HomeView2 = _interopRequireDefault(_HomeView);
 
-var _reactRedux = __webpack_require__(13);
+var _reactRedux = __webpack_require__(15);
 
 var _reactRouter = __webpack_require__(14);
 
@@ -9700,15 +9740,14 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var Home = function (_React$Component) {
 	_inherits(Home, _React$Component);
 
-	function Home(p, context) {
+	function Home(p) {
 		_classCallCheck(this, Home);
 
 		var _this = _possibleConstructorReturn(this, (Home.__proto__ || Object.getPrototypeOf(Home)).call(this, p));
 
-		var debug = true;
 		var cookie = 'uid=' + sessionStorage.uid;
 		var player = { name: window.prompt('You\'re name?', 'Fixy'), rating: '-' };
-		_this.router = context.router;
+		// this.router = context.router;
 		var upperLinks = ['Play' /* , 'Tournament'*/];
 		var lowerLinks = [/* 'Chat',*/'Live'];
 
@@ -9718,7 +9757,7 @@ var Home = function (_React$Component) {
 			reconnectionAttempts: 10,
 			query: cookie
 		};
-		var socketPath = debug ? 'http://localhost:3000' : 'https://zarahia.com:3000';
+		var socketPath = window.debug ? 'http://localhost:3000' : 'https://zarahia.com:3000';
 
 		_this.state = {
 			// messages: [
@@ -9729,6 +9768,7 @@ var Home = function (_React$Component) {
 			// 	{ message: 'Capicola bacon beef ex bresaola, andouille ad tenderloin.', author: 'Foo' }
 			// ],
 			player: player,
+			room: '',
 			matches: [
 				// { players: ['Яшко (3085)', 'Ляшко (3627)'], roomId: 375854 },
 				// { players: ['Панко (3125)', 'Ганко (3485)'], roomId: 375855 },
@@ -9756,6 +9796,7 @@ var Home = function (_React$Component) {
 
 			socket.on('roomCreated', function (data) {
 				resetBoard();
+				_this2.setState({ room: data });
 				router.push('/checkers/match/' + data);
 			});
 			socket.on('uid', function (uid) {
@@ -9801,6 +9842,7 @@ var Home = function (_React$Component) {
 		value: function render() {
 			var _state = this.state;
 			var socket = _state.socket;
+			var room = _state.room;
 			var player = _state.player;
 			var upperLinks = _state.upperLinks;
 			var upperTabName = _state.upperTabName;
@@ -9812,7 +9854,7 @@ var Home = function (_React$Component) {
 			var setLowerTab = this.setLowerTab;
 			var playHandler = this.playHandler;
 
-			return _react2.default.createElement(_HomeView2.default, { socket: socket, player: player, upperLinks: upperLinks, upperTabName: upperTabName, lowerLinks: lowerLinks, lowerTabName: lowerTabName, setUpperTabHandler: setUpperTab.bind(this), setLowerTabHandler: setLowerTab.bind(this), playHandler: playHandler.bind(this), messages: messages, matches: matches, children: this.props.children });
+			return _react2.default.createElement(_HomeView2.default, { socket: socket, room: room, player: player, upperLinks: upperLinks, upperTabName: upperTabName, lowerLinks: lowerLinks, lowerTabName: lowerTabName, setUpperTabHandler: setUpperTab.bind(this), setLowerTabHandler: setLowerTab.bind(this), playHandler: playHandler.bind(this), messages: messages, matches: matches, children: this.props.children });
 		}
 	}]);
 
@@ -9854,7 +9896,7 @@ var _NewGameView = __webpack_require__(75);
 
 var _NewGameView2 = _interopRequireDefault(_NewGameView);
 
-var _locale = __webpack_require__(15);
+var _locale = __webpack_require__(10);
 
 var _locale2 = _interopRequireDefault(_locale);
 
@@ -9900,7 +9942,8 @@ var NewGame = function (_React$Component) {
 	}, {
 		key: 'handleClick',
 		value: function handleClick(e) {
-			e.preventDefault();
+			// e.preventDefault();
+			// Comented because it DESTROYS router like black guy DESTROYS teen girl's *****
 			var checking = { panel: ['typePanel', 'timePanel'], variable: ['selectedType', 'selectedTime'] };
 			if (checking.panel.includes(e.target.name)) {
 				var state = {};
@@ -11122,7 +11165,7 @@ module.exports = __webpack_require__(102);
  * @api public
  *
  */
-module.exports.parser = __webpack_require__(10);
+module.exports.parser = __webpack_require__(11);
 
 /***/ }),
 /* 102 */
@@ -11141,7 +11184,7 @@ var transports = __webpack_require__(40);
 var Emitter = __webpack_require__(23);
 var debug = __webpack_require__(6)('engine.io-client:socket');
 var index = __webpack_require__(48);
-var parser = __webpack_require__(10);
+var parser = __webpack_require__(11);
 var parseuri = __webpack_require__(49);
 var parsejson = __webpack_require__(122);
 var parseqs = __webpack_require__(28);
@@ -11269,7 +11312,7 @@ Socket.protocol = parser.protocol; // this is an int
 Socket.Socket = Socket;
 Socket.Transport = __webpack_require__(21);
 Socket.transports = __webpack_require__(40);
-Socket.parser = __webpack_require__(10);
+Socket.parser = __webpack_require__(11);
 
 /**
  * Creates transport of the given type.
@@ -12531,7 +12574,7 @@ function unloadHandler() {
  */
 
 var Transport = __webpack_require__(21);
-var parser = __webpack_require__(10);
+var parser = __webpack_require__(11);
 var parseqs = __webpack_require__(28);
 var inherit = __webpack_require__(16);
 var yeast = __webpack_require__(68);
@@ -13092,7 +13135,7 @@ var _invariant = __webpack_require__(4);
 
 var _invariant2 = _interopRequireDefault(_invariant);
 
-var _Actions = __webpack_require__(11);
+var _Actions = __webpack_require__(12);
 
 var _PathUtils = __webpack_require__(8);
 
@@ -13291,7 +13334,7 @@ var _warning = __webpack_require__(5);
 
 var _warning2 = _interopRequireDefault(_warning);
 
-var _Actions = __webpack_require__(11);
+var _Actions = __webpack_require__(12);
 
 var _PathUtils = __webpack_require__(8);
 
@@ -13367,7 +13410,7 @@ var _invariant2 = _interopRequireDefault(_invariant);
 
 var _PathUtils = __webpack_require__(8);
 
-var _Actions = __webpack_require__(11);
+var _Actions = __webpack_require__(12);
 
 var _createHistory = __webpack_require__(45);
 
@@ -16292,7 +16335,7 @@ module.exports = exports['default'];
 
 exports.__esModule = true;
 
-var _PatternUtils = __webpack_require__(12);
+var _PatternUtils = __webpack_require__(13);
 
 function routeParamsChanged(route, prevState, nextState) {
   if (!route.path) return false;
@@ -16429,7 +16472,7 @@ module.exports = exports['default'];
 
 exports.__esModule = true;
 
-var _PatternUtils = __webpack_require__(12);
+var _PatternUtils = __webpack_require__(13);
 
 /**
  * Extracts an object of params the given route cares about from
@@ -16495,7 +16538,7 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
 
 exports.default = isActive;
 
-var _PatternUtils = __webpack_require__(12);
+var _PatternUtils = __webpack_require__(13);
 
 function deepEqual(a, b) {
   if (a == b) return true;
@@ -16777,7 +16820,7 @@ var _makeStateWithLocation = __webpack_require__(57);
 
 var _makeStateWithLocation2 = _interopRequireDefault(_makeStateWithLocation);
 
-var _PatternUtils = __webpack_require__(12);
+var _PatternUtils = __webpack_require__(13);
 
 var _routerWarning = __webpack_require__(2);
 

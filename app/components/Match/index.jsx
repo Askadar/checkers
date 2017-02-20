@@ -58,10 +58,10 @@ class Match extends Component {
 	render() {
 		// console.log(this.props);
 		const { $moves, $meta, player, otherPlayer, boardSize } = this.state;
-		const { won, socket, turn } = this.props;
+		const { won, socket, turn, room } = this.props;
 		return (
-			<div>
-			<p>multipleya</p>
+			<div data-roomId={room}>
+			<p>multipleya {Object.keys(player).map(key => <span>{`${key} = ${player[key]}`}</span>)}</p>
 				<Player {...otherPlayer}/>
 				<p>{`Сейчас ход ${turn === 1
 						? 'белых'

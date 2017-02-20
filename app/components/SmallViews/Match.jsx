@@ -5,7 +5,7 @@ export default function Match({ players, roomId, type, time }) {
 	let stringedPlayers = players.map(player => `${player.name} (${player.rating})`);
 	return(
 		<li className="list-group-item">
-			<a href={`/checkers/match/${roomId}`}>{`${stringedPlayers[0]} - ${stringedPlayers[1]} | ${type}, ${time}`}</a>
+			<Link to={`/checkers/match/${roomId}`}>{`${stringedPlayers[0]} - ${stringedPlayers[1]} | ${type}, ${time}`}</Link>
 		</li>
 	);
 }

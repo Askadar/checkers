@@ -24,7 +24,8 @@ class NewGame extends React.Component {
 		window.document.body.removeEventListener('click', this.test);
 	}
 	handleClick(e) {
-		e.preventDefault();
+		// e.preventDefault();
+		// Comented because it DESTROYS router like black guy DESTROYS teen girl's *****
 		const checking = { panel: ['typePanel', 'timePanel'], variable: ['selectedType', 'selectedTime'] };
 		if (checking.panel.includes(e.target.name)) {
 			let state = {};

@@ -5,12 +5,11 @@ import { withRouter } from 'react-router';
 import io from 'socket.io-client';
 
 class Home extends React.Component {
-	constructor(p, context) {
+	constructor(p) {
 		super(p);
-		let debug = true;
 		const cookie = 'uid=' + sessionStorage.uid;
 		const player = { name: window.prompt('You\'re name?', 'Fixy'), rating: '-' };
-		this.router = context.router;
+		// this.router = context.router;
 		const upperLinks = ['Play'/* , 'Tournament'*/];
 		const lowerLinks = [/* 'Chat',*/'Live'];
 
@@ -20,7 +19,8 @@ class Home extends React.Component {
 			reconnectionAttempts: 10,
 			query: cookie
 		};
-		const socketPath = debug ? 'http://localhost:3000' : 'https://zarahia.com:3000';
+		const socketPath =
+		window.debug ? 'http://localhost:3000' : 'https://zarahia.com:3000';
 
 		this.state = {
 			// messages: [
@@ -31,6 +31,7 @@ class Home extends React.Component {
 			// 	{ message: 'Capicola bacon beef ex bresaola, andouille ad tenderloin.', author: 'Foo' }
 			// ],
 			player,
+			room: '',
 			matches: [
 				// { players: ['Яшко (3085)', 'Ляшко (3627)'], roomId: 375854 },
 				// { players: ['Панко (3125)', 'Ганко (3485)'], roomId: 375855 },
@@ -49,6 +50,7 @@ class Home extends React.Component {
 		const { router, resetBoard } = this.props;
 		socket.on('roomCreated', data => {
 			resetBoard();
+			this.setState({ room: data });
 			router.push('/checkers/match/' + data);
 		});
 		socket.on('uid', uid => {
@@ -82,10 +84,10 @@ class Home extends React.Component {
 		socket.emit('play', { type: selectedType, time: selectedTime });
 	}
 	render() {
-		const { socket, player, upperLinks, upperTabName, lowerLinks, lowerTabName, messages, matches } = this.state;
+		const { socket, room, player, upperLinks, upperTabName, lowerLinks, lowerTabName, messages, matches } = this.state;
 		const { setUpperTab, setLowerTab, playHandler } = this;
 		return (
-			<HomeView socket={socket} player={player} upperLinks={upperLinks} upperTabName={upperTabName} lowerLinks={lowerLinks} lowerTabName={lowerTabName} setUpperTabHandler={setUpperTab.bind(this)} setLowerTabHandler={setLowerTab.bind(this)} playHandler={playHandler.bind(this)} messages={messages} matches={matches} children={this.props.children}/>
+			<HomeView socket={socket} room={room} player={player} upperLinks={upperLinks} upperTabName={upperTabName} lowerLinks={lowerLinks} lowerTabName={lowerTabName} setUpperTabHandler={setUpperTab.bind(this)} setLowerTabHandler={setLowerTab.bind(this)} playHandler={playHandler.bind(this)} messages={messages} matches={matches} children={this.props.children}/>
 		);
 	}
 }
