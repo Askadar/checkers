@@ -29,13 +29,16 @@ function enterHandler(data, store, emitter) {
 }
 
 function moveHandler(data, store, emitter) {
-	console.log(data);
+	console.log('moving', data, emitter && emitter.id);
 	emitter.room.pushMove(data);
 	emitter.to(emitter.room).emit('move', data);
 }
 
 function wonHandler() {
-
+	// TODO close room and remove it from listing, (save to db?)
+}
+function pingHandler() {
+	// TODO ping-pong da shiet out of socket
 }
 
 module.exports = { playHandler, enterHandler, moveHandler, wonHandler };

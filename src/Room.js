@@ -17,7 +17,6 @@ module.exports = class Room {
 		if (!this.closed) {
 			this.users.push(socket);
 			socket.join(this.id);
-			socket.room = this;
 			let side;
 			// (Math.round(Math.random()) === 0 ? '-1' : '1'
 			switch (this.players.length) {
@@ -26,7 +25,10 @@ module.exports = class Room {
 			default: side = 0;
 			}
 			let { players } = this;
-			players.length < 2 && players.push({ ...player, side });
+			if (players.length < 2) {
+				players.push({ ...player, side });
+				socket.room = this;
+			}
 			socket.emit('meta', { type: 'side', side });
 			socket.emit('meta', { type: 'players', players });
 			socket.broadcast.to(this.id).emit('meta', { type: 'players', players });

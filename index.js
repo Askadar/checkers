@@ -10,6 +10,7 @@ io.on('connection', socket => {
 	// setInterval(()=>socket.emit('move','testing stuff'), 1000);
 	console.log('socket\'s request prop', socket.handshake.query.uid);
 	// demo
+	// socket.io = io;
 	socket.emit('matches', rooms.toTransferenceProtocol());
 	// send mathces from the beggining
 	console.log(socket.uid);
@@ -34,6 +35,7 @@ io.on('connection', socket => {
 	socket.on('enterRoom', data => {
 		console.log('onEnterRoom Handler', socket.room, data);
 		enterHandler(data, rooms, socket);
+		io.emit('matches', rooms.toTransferenceProtocol());
 		// we always have room existing if we try this one (so no assholes could exploit router auto-entering and create countless rooms) ((though they still could try to exploit 'play' event))
 	});
 	socket.on('requestMatches', () => {
