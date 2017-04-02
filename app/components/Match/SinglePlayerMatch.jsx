@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import CheckersTable from './CheckersTable';
-import Player from './Player';
 import { connect } from 'react-redux';
 import { Observable } from 'rxjs';
 import WinScreen from './winscreen';
+import locale from '../../config/locale';
 
 class SinglePlayerMatch extends Component {
 	constructor(p) {
@@ -19,8 +19,9 @@ class SinglePlayerMatch extends Component {
 		};
 	}
 	componentWillMount() {
-		this.props.setSide(1);
-		this.props.updateAllPaths();
+		this.resetBoard();
+		// this.props.setSide(1);
+		// this.props.updateAllPaths();
 		const $resizeThrottled = Observable.fromEvent(window, 'resize').auditTime(350);
 		this.resizeSubscriber = $resizeThrottled.subscribe(() => this.resizeBoard());
 	}
@@ -31,16 +32,21 @@ class SinglePlayerMatch extends Component {
 		const boardSize = (Math.min(window.innerHeight, window.innerWidth) * 8 / 10);
 		this.setState({ boardSize });
 	}
+	resetBoard() {
+		const { resetBoard, setSide, updateAllPaths } = this.props;
+		resetBoard();
+		setSide(1);
+		updateAllPaths();
+	}
 	render() {
 		console.log(this.props);
-		const { player, otherPlayer, boardSize } = this.state;
+		const { boardSize } = this.state;
 		const { won, turn } = this.props;
 		return (
 			<div>
-				<Player {...otherPlayer}/>
-				<p>{`Сейчас ход ${turn === 1
-						? 'белых'
-						: 'черных'}.`}</p>
+				{/* <Player {...otherPlayer}/> */}
+				<p><button onClick={this.resetBoard.bind(this)} className="butt" >{locale.resetSinglePlayerBoard}</button></p>
+				<p>{`${locale.currentMove} ${locale[turn]}`}</p>
 				<div className="checkers-table-container center-block" style={{
 					height: boardSize,
 					width: boardSize
@@ -50,7 +56,7 @@ class SinglePlayerMatch extends Component {
 					</div>
 					<CheckersTable boardSize={boardSize} turn={turn} singlePlayer/>
 				</div>
-				<Player {...player}/>
+				{/* <Player {...player}/> */}
 			</div>
 		);
 	}
@@ -65,6 +71,9 @@ export default connect((s) => {
 		},
 		setSide(side) {
 			dispatch({ type: 'setSide', side });
+		},
+		resetBoard() {
+			dispatch({ type: 'resetBoard' });
 		}
 	};
 })(SinglePlayerMatch);

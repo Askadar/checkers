@@ -22,19 +22,20 @@ class CheckersTable extends React.Component {
 		const { updateAllPaths, socket, moves, meta } = this.props;
 		if (socket) {
 			updateAllPaths();
-			const $movesFromViewerArray = moves.flatMap(a => a); // Observable.fromEvent(socket, 'moves');
+			const $movesFromViewerArray = moves.concatMap(a => a); // Observable.fromEvent(socket, 'moves');
 			const $movesNormal = Observable.fromEvent(socket, 'move');
-			const $moves = Observable.merge($movesFromViewerArray, $movesNormal);
+			const $moves = Observable.concat($movesFromViewerArray, $movesNormal);
 			// const $meta = Rx.Observable.fromEvent(socket, 'meta');
 			// const $chatMessages = Rx.Observable.fromEvent(socket, 'chatMessages');
 			const $won = Observable.fromEvent(socket, 'won');
-			const $stop = Observable.merge($won);
+			const $stop = Observable.concat($won);
 			this.subscription =
-			$moves.takeUntil($stop)
+			$moves
+			.takeUntil($stop)
 				.subscribe(a => {
 					console.log('observer', a);
 					const { id, lastChecker } = a;
-					this.move(id, lastChecker);
+					this.moveHandle(id, lastChecker);
 				});
 		}
 	}
@@ -45,9 +46,9 @@ class CheckersTable extends React.Component {
 			this.props.showMoves(piece.paths, id);
 
 	}
-	move(id, lastChecker = this.props.lastChecker) {
+	moveHandle(id, lastChecker = this.props.lastChecker) {
 		const { turn, socket, singlePlayer, move, updateAllPaths, setSide, hideMoves, showMoves } = this.props;
-		lastChecker === this.props.lastChecker && !singlePlayer && socket.emit('move', { id, lastChecker });
+		lastChecker === this.props.lastChecker && !singlePlayer && socket.emit('move', { id, lastChecker, turn });
 		const pieceTo = this.props.table[id];
 		const piece = this.props.table[lastChecker];
 		let consume;
@@ -102,7 +103,7 @@ class CheckersTable extends React.Component {
 				</div>
 				<div className="checkers-table" data-whites={this.props.turn}>
 				{keysMap.map((a) => {
-					return <Checker id={a} key={a} {...this.props.table[a]} hideMoves={this.props.hideMoves} showMoves={this.showMoves.bind(this)} move={this.move.bind(this)}/>;
+					return <Checker id={a} key={a} {...this.props.table[a]} hideMoves={this.props.hideMoves} showMoves={this.showMoves.bind(this)} move={this.moveHandle.bind(this)}/>;
 				})}
 				</div>
 			</div>
@@ -130,7 +131,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 		},
 		setSide(side) {
 			dispatch({ type: 'setSide', side });
-		}
+		},
 	};
 };
 

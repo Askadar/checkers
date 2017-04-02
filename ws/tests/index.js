@@ -1,11 +1,15 @@
 const test = require('tape');
 const { playHandler, enterHandler, moveHandler } = require('../src/handlers');
-const AssocArray = require('../src/AssocArray');
+const { Rooms } = require('../src/AssocArray');
 const Room = require('../src/Room');
+
 class Emitter {
+	constructor() {
+		this.user = { room: null, uid: '42' }; // so it'l pretend to be freshsocket
+	}
 	emit(message, data) {
 		this.result = { type: message, data };
-		this.room = null; // so it'l pretend to be freshsocket
+		this.user = { room: null, uid: '42' }; // so it'l pretend to be freshsocket
 		this.destination = null;
 	}
 	join(id) {
@@ -21,7 +25,7 @@ class Emitter {
 class ServerStub {
 	constructor(data = { type: 'Zag', time: '30' }) {
 		this.data = data;
-		this.store = new AssocArray();
+		this.store = new Rooms();
 		this.emitter = new Emitter();
 	}
 }
@@ -83,7 +87,7 @@ test('[MHT] Move Handler Tests', assert => {
 	const stub = new ServerStub(data);
 	assert.plan(2);
 	const pushMove = function pushMove() { return 'mock';};
-	stub.emitter.room = { pushMove };
+	stub.emitter.user.room = { pushMove };
 	// assert.equal(stub.emitter.to, null);
 	assert.pass();
 	moveHandler(stub.data, stub.store, stub.emitter);

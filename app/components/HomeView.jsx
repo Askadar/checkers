@@ -16,14 +16,14 @@ const Li = ({ name, callback, active }) =>
 		<a data-to={name} onClick={callback}>{locale[name]}</a>
 	</li>);
 
-export default function HomeView({ socket, room, player, upperLinks, upperTabName, setUpperTabHandler, lowerTabName, lowerLinks, setLowerTabHandler, messages, matches, playHandler, children }) {
+export default function HomeView({ socket, room, player, upperLinks, upperTabName, setUpperTabHandler, lowerTabName, lowerLinks, setLowerTabHandler, messages, matches, playHandler, children, status }) {
 	// const { socket, upperLinks, upperTabName, setUpperTabHandler, playHandler } = this.props;
 	const ArbitraryComponent = window.RR[upperTabName];
 	const LowerArbitraryComponent = window.RR[lowerTabName];
 	return (
 		<div className="col-md-12">
 			<div className="col-md-8">
-				{children && React.cloneElement(children, { socket, room, player }) || <SinglePlayerMatch />}
+				{children && React.cloneElement(children, { socket, room, user: player }) || <SinglePlayerMatch />}
 			</div>
 			<div className="col-md-4">
 
@@ -37,7 +37,7 @@ export default function HomeView({ socket, room, player, upperLinks, upperTabNam
 							transitionEnterTimeout={800}
 							transitionLeaveTimeout={500}> */}
 							<div className="tab-content">
-							<ArbitraryComponent key={ArbitraryComponent.name} handler={ArbitraryComponent.name === 'NewGame' ? playHandler : null}/>
+							<ArbitraryComponent key={ArbitraryComponent.name} status={status} handler={ArbitraryComponent.name === 'NewGame' ? playHandler : null}/>
 							</div>
 						{/* </ReactCSSTransitionGroup> */}
 				</div>

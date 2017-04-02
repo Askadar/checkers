@@ -6,8 +6,8 @@ export default function findAllPaths(table, game) {
 	let newTable = {};
 	let t0 = performance.now();
 	let bWhiteMovesOnly = true;
-	let ruledVal = true;
-	let sidesHash = { '1': 0, '-1': 0 };
+	// let ruledVal = true;
+	// let sidesHash = { '1': 0, '-1': 0 };
 	// if (turn * playerSide < 0)		{
 	// 	return table;
 	// }
@@ -21,7 +21,7 @@ export default function findAllPaths(table, game) {
 					...table[pieceKey],
 					paths: findPaths(table, table[pieceKey])
 				};
-			
+
 			else if (table[pieceKey].checker % 2 === 0)
 				// console.log('going to lookup paths for', table[pieceKey]);
 				newTable[pieceKey] = {
@@ -29,7 +29,7 @@ export default function findAllPaths(table, game) {
 					paths: checkDirections(table, table[pieceKey], table[pieceKey]).filter(p => p.points.length > 0 && p.points.length >= p.vectors.length)
 				};
 				// console.log('Paths for '+pieceKey, newTable[pieceKey].paths);
-			
+
 			newTable[pieceKey].className = newTable[pieceKey].paths.length > 0 ? (newTable[pieceKey].className === 'active' ? 'active' : (turn * playerSide > 0 ? 'can-move' : '')) : '';
 			bWhiteMovesOnly = bWhiteMovesOnly
 				? !newTable[pieceKey].paths.some(path => path.weight > 0)
@@ -37,12 +37,12 @@ export default function findAllPaths(table, game) {
 		}
 		else
 			newTable[pieceKey] = table[pieceKey];
-		
+
 		// if (ruledVal
 		// 	&& sidesHash[newTable[pieceKey].checker > 0 ? 1 : (newTable[pieceKey].checker < 0 ? -1 : 0 )] === 0
 		// 	&& newTable[pieceKey].paths.some(p=>p.weight > 0))
 		// 	sidesHash[newTable[pieceKey].checker] = 1;
-	
+
 	// TODO: fix this thingy later
 	console.log('White moves only', bWhiteMovesOnly);
 	if (rules.onlyBeatIfPossible && !bWhiteMovesOnly)
@@ -53,7 +53,7 @@ export default function findAllPaths(table, game) {
 					.filter(path => path.weight > 0);
 				newTable[key].className = newTable[key].paths.length > 0 ? newTable[key].className : '';
 			});
-	
+
 	// if (sidesHash[-1] == 1 || sidesHash[1] == 1){
 	// 	for (let pieceKey in newTable){
 	// 		newTable[pieceKey].paths = newTable[pieceKey].paths ? newTable[pieceKey].paths.filter(p=>p.weight >= sidesHash[(newTable[pieceKey].checker > 0 ? 1 : -1)]) : newTable[pieceKey].paths;
@@ -63,6 +63,6 @@ export default function findAllPaths(table, game) {
 	if (t1 - t0 > 5)
 		console.log('Pathing took ' + (t1 - t0) + ' milliseconds.');
 		// debugger;
-	 // log pathing time only on really slow occasions
+		// log pathing time only on really slow occasions
 	return newTable;
 }

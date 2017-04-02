@@ -3246,6 +3246,12 @@ input[type="button"].btn-block {
   border: none;
   border-radius: 0; }
 
+html .debug {
+  display: none; }
+
+html.debug .debug {
+  display: block; }
+
 @-webkit-keyframes bounceIn {
   from, 20%, 40%, 60%, 80%, to {
     -webkit-animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
@@ -3405,6 +3411,16 @@ input[type="button"].btn-block {
       box-shadow: 0 0 1px 0px rgba(40, 165, 210, 0.85); }
       #NewGame .type-panel span.type:hover, #NewGame .time-panel span.type:hover {
         background: #4fb8de; }
+
+button.butt {
+  border: none;
+  background: none;
+  padding: 0; }
+  button.butt:focus {
+    background: none;
+    border: none;
+    box-sizing: content-box;
+    box-shadow: none; }
 
 @-webkit-keyframes possible-move {
   0% {
@@ -3646,15 +3662,16 @@ input[type="button"].btn-block {
   padding: 0;
   font-size: 1rem;
   border-radius: 15% 0; }
-  .game-result .type {
+  .game-result > span {
     display: block;
-    font-size: 1.3em;
-    text-align: center; }
-  .game-result .message {
-    color: #468cdc; }
-  .game-result .side {
     text-align: center;
-    display: block;
+    font-size: 1em; }
+  .game-result .type {
+    font-size: 1.3em; }
+  .game-result .message {
+    color: #468cdc;
+    font-size: 1em; }
+  .game-result .side {
     font-size: 1.2em; }
     .game-result .side:before {
       content: "Winner is: "; }

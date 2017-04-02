@@ -47,7 +47,7 @@ class NewGame extends React.Component {
 	}
 	render() {
 		return (
-			<NewGameView {...this.state} playHandler={this.play.bind(this)}/>
+			<NewGameView {...this.state} status={this.props.status} playHandler={this.play.bind(this)}/>
 		);
 	}
 }

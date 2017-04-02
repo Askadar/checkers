@@ -6,7 +6,7 @@
   "scripts": {
     "test": "babel-tape-runner tests/**/*.js | faucet",
     "start": "babel-node .",
-    "nodemon": "nodemon -x \"npm test && npm start\""
+    "nodemon": "nodemon -x \"npm start\""
   },
   "author": "",
   "license": "ISC",

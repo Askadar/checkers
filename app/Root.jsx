@@ -10,7 +10,7 @@ class Test extends React.Component {
 	}
 }
 
-window.debug = false;
+window.local = false;
 
 export default class Root extends React.Component {
 	render() {

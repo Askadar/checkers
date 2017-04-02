@@ -1,22 +1,17 @@
-module.exports = class AssocArray extends Array {
+// module.exports =
+class AssocArray extends Array {
 	// this one depends on overriden toString method to identify entries, that should be pretty obvious, though
 	constructor() {
 		super();
-		this.counter = '36237';
 	}
 	static get [Symbol.species]() { return Array; }
 	create(entry) {
 		if (!this[entry]) {
-			this.push(entry);
+			const index = this.push(entry);
 			this[entry] = entry;
-			return 'r' + (this.counter++);
+			return index;
 		}
-		throw new Error('Such room already exist');
-	}
-	toTransferenceProtocol() {
-		console.log(this);
-		const arr = this.map(({ players, id, type, time }) => {return { players, roomId: id, type, time };});
-		return arr.length === 0 ? [] : arr;
+		throw new Error('Such entry already exist');
 	}
 	destroy(id) {
 		switch (typeof id) {
@@ -37,4 +32,26 @@ module.exports = class AssocArray extends Array {
 		}
 		return null;
 	}
-};
+}
+
+class Rooms extends AssocArray {
+	constructor() {
+		super();
+		this.counter = '36237';
+	}
+	create(entry) {
+		if (!this[entry]) {
+			this.push(entry);
+			this[entry] = entry;
+			return 'r' + (this.counter++);
+		}
+		throw new Error('Such room already exist');
+	}
+	toTransferenceProtocol() {
+		console.log(this);
+		const arr = this.filter(a => !a.closed).map(({ players, id, type, time }) => {return { players, roomId: id, type, time };});
+		return arr.length === 0 ? [] : arr;
+	}
+}
+
+module.exports = { Rooms, AssocArray };

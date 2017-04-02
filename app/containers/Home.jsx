@@ -7,8 +7,9 @@ import io from 'socket.io-client';
 class Home extends React.Component {
 	constructor(p) {
 		super(p);
-		const cookie = 'uid=' + sessionStorage.uid;
-		const player = { name: window.prompt('You\'re name?', 'Fixy'), rating: '-' };
+		const name = sessionStorage.name ? sessionStorage.name : window.prompt('You\'re name?', 'Fixy');
+		sessionStorage.name = name;
+		const player = { name, rating: '' };
 		// this.router = context.router;
 		const upperLinks = ['Play'/* , 'Tournament'*/];
 		const lowerLinks = [/* 'Chat',*/'Live'];
@@ -17,10 +18,10 @@ class Home extends React.Component {
 			reconnection: true,
 			reconnectionDelay: 500,
 			reconnectionAttempts: 10,
-			query: cookie
+			query: sessionStorage.uid ? 'uid=' + sessionStorage.uid : null
 		};
 		const socketPath =
-		window.debug ? 'http://localhost:3000' : 'https://zarahia.com:3000';
+		window.local ? 'http://localhost:3000' : 'http://zarahia.com:3000';
 
 		this.state = {
 			// messages: [
@@ -42,7 +43,8 @@ class Home extends React.Component {
 			upperLinks,
 			lowerTabName: lowerLinks[0],
 			lowerLinks,
-			socket: io(socketPath, socketOptions)
+			socket: io(socketPath, socketOptions),
+			status: 'connecting'
 		};
 	}
 	componentWillMount() {
@@ -53,21 +55,32 @@ class Home extends React.Component {
 			this.setState({ room: data });
 			router.push('/checkers/match/' + data);
 		});
+		socket.on('alreadyPlaying', data => {
+			if (confirm(locale.alreadyPlaying(data))) {
+				resetBoard();
+				this.setState({ room: data });
+				router.push('/checkers/match/' + data);
+			}
+		});
 		socket.on('uid', uid => {
 			sessionStorage.uid = uid;
 		});
-		socket.on('message', data => {
-			console.log(data);
-		});
+		// socket.on('message', data => {
+		// 	console.log(data);
+		// });
 		socket.on('matches', data => {
-			console.log(data);
+			// console.log(data);
 			this.setState({ matches: data });
 		});
 		socket.on('wrongRoom', data => {
-			console.log(data);
+			// console.log(data);
 			router.push('/checkers/');
 			// this.setState({ matches: data });
 		});
+		const connected = (a) => { this.setState({ status: 'connected' }); console.log('connected', a);};
+		socket.on('connect', connected);
+		// socket.on('reconnect', connected);
+
 		// socket.emit('requestMatches');
 	}
 	setUpperTab(event) {
@@ -84,10 +97,10 @@ class Home extends React.Component {
 		socket.emit('play', { type: selectedType, time: selectedTime });
 	}
 	render() {
-		const { socket, room, player, upperLinks, upperTabName, lowerLinks, lowerTabName, messages, matches } = this.state;
+		const { socket, room, player, upperLinks, upperTabName, lowerLinks, lowerTabName, messages, matches, status } = this.state;
 		const { setUpperTab, setLowerTab, playHandler } = this;
 		return (
-			<HomeView socket={socket} room={room} player={player} upperLinks={upperLinks} upperTabName={upperTabName} lowerLinks={lowerLinks} lowerTabName={lowerTabName} setUpperTabHandler={setUpperTab.bind(this)} setLowerTabHandler={setLowerTab.bind(this)} playHandler={playHandler.bind(this)} messages={messages} matches={matches} children={this.props.children}/>
+			<HomeView socket={socket} room={room} player={player} upperLinks={upperLinks} upperTabName={upperTabName} lowerLinks={lowerLinks} lowerTabName={lowerTabName} setUpperTabHandler={setUpperTab.bind(this)} setLowerTabHandler={setLowerTab.bind(this)} playHandler={playHandler.bind(this)} status={status} messages={messages} matches={matches} children={this.props.children}/>
 		);
 	}
 }

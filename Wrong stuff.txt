@@ -1,0 +1,18 @@
+! 1. "multipleya name = <First player name>rating = -side = 1" - when joining as viewer, think about server code probably. Nope, render and assignation.
+!? 2. Move didn't transfer "emitter.room.pushMove(data);",mid-game, after some pause
+	! 2.1 Should have been fixed after Reconnect™ update
+! 3. Show playa disabled button while connecting to sever or when connection is lost.
+~	3.2 Make it spinnnnnnnnn, bruh
+!4. Other party can continue move after first death. [ducktaped]
+	4.2 Player can choose another piece when multi-funking deathes
+- 5. After rooms decoupling, moves go in single arrays
+! 6. Room closes and let players start another game after it
+? 7. Match have russian non localized text
+8. Somehow funked up path finding
+	8.1 when multiplaying, white move to 4f, but black player only know that 3e could go 4d
+	? 8.2 Only occurs when playing as black? Pathing definetely fucked up, that's sad
+! 9. User reconnecting
+! 10. Showing error message when user tries to play while having ongoing match. And check to not include viewers and closed rooms
+! 11. Fix player view to include that "it's you, and that one is your opponent"
+! 12. Reset singleplayr board and add button to do so manually
+!? 13. Timer functionality

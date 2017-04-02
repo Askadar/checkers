@@ -7,7 +7,8 @@ export default function NewGameView({
 		activePanel,
 		types,
 		times,
-		playHandler }) {
+		playHandler,
+		status }) {
 	const spans = (variable, index, type) =>
 	<span key={index} data-name={type} className={`type ${variable.toLowerCase()}`}>{variable}</span>;
 	return(<nav id="NewGame" className="nav nav-tabs nav-justified">
@@ -23,6 +24,6 @@ export default function NewGameView({
 					{times.map((time, i) => spans(time, i, 'selectedTime'))}
 			</div>
 		</li>
-		<li id="play" className="col-md-12"><button className="btn-primary btn" onClick={playHandler}>{locale.Play}</button></li>
+		<li id="play" className="col-md-12"><button className="btn-primary btn" onClick={playHandler} disabled={status !== 'connected'}>{locale.Play}</button></li>
 	</nav>);
 }

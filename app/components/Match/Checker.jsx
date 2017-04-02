@@ -9,7 +9,8 @@ class Checker extends React.Component {
 			move,
 			hideMoves,
 			showMoves,
-			id
+			id,
+			cantDeactivate
 		} = this.props;
 		switch (className) {
 		case 'can-move':
@@ -17,7 +18,8 @@ class Checker extends React.Component {
 			showMoves(id);
 			break;
 		case 'active':
-			hideMoves();
+			if (!cantDeactivate)
+				hideMoves();
 			break;
 		case 'possible-move':
 			move(id);

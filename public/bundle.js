@@ -614,6 +614,53 @@ function localstorage() {
 "use strict";
 
 
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+var ru = exports.ru = {
+	noLiveGames: 'Идущих игр не найдено',
+	Play: 'Играть',
+	Tournament: 'Турниры',
+	Live: 'Идущие игры',
+	Chat: 'Чат',
+	matchTypes: ['Русские Безранговые (новичок)', 'Русские Безранговые (интересующийся)', 'Русские Безранговые (профессионал)'],
+	andSide: 'играет за ',
+	'-1': 'черных',
+	'1': 'белых',
+	'currentMove': 'Сейчас ход',
+	'win-1': 'Черные',
+	'win1': 'Белые',
+	winPrefix: 'У',
+	backToSingleplayer: 'Вернуться на тренировочную доску (оффлайн игра)',
+	resetSinglePlayerBoard: 'Сбросить игру',
+	opponent: 'Оппонент: ',
+	alreadyPlaying: function alreadyPlaying(text) {
+		return 'Вы уже играете в комнате ' + text.slice(1) + '. Переместиться в нее?';
+	}
+};
+var en = exports.en = {
+	noLiveGames: 'No live games found',
+	Play: 'Play',
+	Tournament: 'Tournament',
+	Live: 'Live',
+	Chat: 'Chat',
+	matchTypes: ['Russian Without rank (novice)', 'Russian Without rank (interested)', 'Russian Without rank (professional)'],
+	backToSingleplayer: 'Back to practise board (offline game)',
+	alreadyPlaying: function alreadyPlaying(text) {
+		return 'Already playing in room ' + text.slice(1) + '. Switch to it now?';
+	}
+};
+exports.default = ru;
+
+window.locale = ru;
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 exports.__esModule = true;
 
 var _extends = Object.assign || function (target) {
@@ -717,7 +764,7 @@ function createRoutes(routes) {
 }
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -773,7 +820,7 @@ function parsePath(path) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -809,40 +856,6 @@ var component = exports.component = oneOfType([func, string]);
 var components = exports.components = oneOfType([component, object]);
 var route = exports.route = oneOfType([object, element]);
 var routes = exports.routes = oneOfType([route, arrayOf(route)]);
-
-/***/ }),
-/* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-var ru = exports.ru = {
-	noLiveGames: 'Идущих игр не найдено',
-	Play: 'Играть',
-	Tournament: 'Турниры',
-	Live: 'Идущие игры',
-	Chat: 'Чат',
-	matchTypes: ['Русские Безранговые (новичок)', 'Русские Безранговые (интересующийся)', 'Русские Безранговые (профессионал)'],
-	andSide: 'играет за ',
-	'-1': 'черных',
-	'1': 'белых',
-	'win-1': 'Черные',
-	'win1': 'Белые',
-	winPrefix: 'У'
-};
-var en = exports.en = {
-	noLiveGames: 'No live games found',
-	Play: 'Play',
-	Tournament: 'Tournament',
-	Live: 'Live',
-	Chat: 'Chat',
-	matchTypes: ['Russian Without rank (novice)', 'Russian Without rank (interested)', 'Russian Without rank (professional)']
-};
-exports.default = ru;
 
 /***/ }),
 /* 11 */
@@ -1726,7 +1739,7 @@ function formatPattern(pattern, params) {
 exports.__esModule = true;
 exports.createMemoryHistory = exports.hashHistory = exports.browserHistory = exports.applyRouterMiddleware = exports.formatPattern = exports.useRouterHistory = exports.match = exports.routerShape = exports.locationShape = exports.PropTypes = exports.RoutingContext = exports.RouterContext = exports.createRoutes = exports.useRoutes = exports.RouteContext = exports.Lifecycle = exports.History = exports.Route = exports.Redirect = exports.IndexRoute = exports.IndexRedirect = exports.withRouter = exports.IndexLink = exports.Link = exports.Router = undefined;
 
-var _RouteUtils = __webpack_require__(7);
+var _RouteUtils = __webpack_require__(8);
 
 Object.defineProperty(exports, 'createRoutes', {
   enumerable: true,
@@ -1965,7 +1978,7 @@ var _runTransitionHook = __webpack_require__(26);
 
 var _runTransitionHook2 = _interopRequireDefault(_runTransitionHook);
 
-var _PathUtils = __webpack_require__(8);
+var _PathUtils = __webpack_require__(9);
 
 var _deprecate = __webpack_require__(25);
 
@@ -2168,7 +2181,7 @@ var _getRouteParams = __webpack_require__(142);
 
 var _getRouteParams2 = _interopRequireDefault(_getRouteParams);
 
-var _RouteUtils = __webpack_require__(7);
+var _RouteUtils = __webpack_require__(8);
 
 var _routerWarning = __webpack_require__(2);
 
@@ -3134,7 +3147,7 @@ var _deprecateObjectProperties = __webpack_require__(20);
 
 var _deprecateObjectProperties2 = _interopRequireDefault(_deprecateObjectProperties);
 
-var _InternalPropTypes = __webpack_require__(9);
+var _InternalPropTypes = __webpack_require__(10);
 
 var InternalPropTypes = _interopRequireWildcard(_InternalPropTypes);
 
@@ -4053,21 +4066,21 @@ var CheckersTable = function (_React$Component) {
 
 			if (socket) {
 				updateAllPaths();
-				var $movesFromViewerArray = moves.flatMap(function (a) {
+				var $movesFromViewerArray = moves.concatMap(function (a) {
 					return a;
 				}); // Observable.fromEvent(socket, 'moves');
 				var $movesNormal = _rxjs.Observable.fromEvent(socket, 'move');
-				var $moves = _rxjs.Observable.merge($movesFromViewerArray, $movesNormal);
+				var $moves = _rxjs.Observable.concat($movesFromViewerArray, $movesNormal);
 				// const $meta = Rx.Observable.fromEvent(socket, 'meta');
 				// const $chatMessages = Rx.Observable.fromEvent(socket, 'chatMessages');
 				var $won = _rxjs.Observable.fromEvent(socket, 'won');
-				var $stop = _rxjs.Observable.merge($won);
+				var $stop = _rxjs.Observable.concat($won);
 				this.subscription = $moves.takeUntil($stop).subscribe(function (a) {
 					console.log('observer', a);
 					var id = a.id;
 					var lastChecker = a.lastChecker;
 
-					_this2.move(id, lastChecker);
+					_this2.moveHandle(id, lastChecker);
 				});
 			}
 		}
@@ -4080,8 +4093,8 @@ var CheckersTable = function (_React$Component) {
 				this.props.showMoves(piece.paths, id);
 		}
 	}, {
-		key: 'move',
-		value: function move(id) {
+		key: 'moveHandle',
+		value: function moveHandle(id) {
 			var lastChecker = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.props.lastChecker;
 			var _props2 = this.props;
 			var turn = _props2.turn;
@@ -4093,7 +4106,7 @@ var CheckersTable = function (_React$Component) {
 			var hideMoves = _props2.hideMoves;
 			var showMoves = _props2.showMoves;
 
-			lastChecker === this.props.lastChecker && !singlePlayer && socket.emit('move', { id: id, lastChecker: lastChecker });
+			lastChecker === this.props.lastChecker && !singlePlayer && socket.emit('move', { id: id, lastChecker: lastChecker, turn: turn });
 			var pieceTo = this.props.table[id];
 			var piece = this.props.table[lastChecker];
 			var consume = void 0;
@@ -4165,7 +4178,7 @@ var CheckersTable = function (_React$Component) {
 					'div',
 					{ className: 'checkers-table', 'data-whites': this.props.turn },
 					keysMap.map(function (a) {
-						return _react2.default.createElement(_Checker2.default, _extends({ id: a, key: a }, _this3.props.table[a], { hideMoves: _this3.props.hideMoves, showMoves: _this3.showMoves.bind(_this3), move: _this3.move.bind(_this3) }));
+						return _react2.default.createElement(_Checker2.default, _extends({ id: a, key: a }, _this3.props.table[a], { hideMoves: _this3.props.hideMoves, showMoves: _this3.showMoves.bind(_this3), move: _this3.moveHandle.bind(_this3) }));
 					})
 				)
 			);
@@ -4215,27 +4228,52 @@ exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.default = Player;
+exports.default = WinScreen;
 
 var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _locale = __webpack_require__(10);
+var _locale = __webpack_require__(7);
 
 var _locale2 = _interopRequireDefault(_locale);
 
+var _reactRouter = __webpack_require__(14);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function Player(_ref) {
-	var name = _ref.name;
-	var rating = _ref.rating;
+function WinScreen(_ref) {
+	var type = _ref.type;
 	var side = _ref.side;
+	var message = _ref.message;
 
 	return _react2.default.createElement(
 		'div',
-		null,
-		name + ' ' + (rating ? '(' + rating + ')' : '') + ' ' + _locale2.default.andSide + ' ' + _locale2.default[side]
+		{ className: 'game-result' },
+		_react2.default.createElement(
+			'span',
+			{ className: 'side' },
+			_locale2.default['win' + side]
+		),
+		_react2.default.createElement(
+			'span',
+			{ className: 'type' },
+			_locale2.default[type]
+		),
+		_react2.default.createElement(
+			'span',
+			{ className: 'message' },
+			_locale2.default.winPrefix + ' ' + _locale2.default[side * -1] + ' ' + message
+		),
+		_react2.default.createElement(
+			'span',
+			{ className: 'link' },
+			_react2.default.createElement(
+				_reactRouter.Link,
+				{ to: '/checkers/' },
+				_locale2.default.backToSingleplayer
+			)
+		)
 	);
 }
 
@@ -5515,7 +5553,7 @@ var _invariant2 = _interopRequireDefault(_invariant);
 
 var _Actions = __webpack_require__(12);
 
-var _PathUtils = __webpack_require__(8);
+var _PathUtils = __webpack_require__(9);
 
 var _ExecutionEnvironment = __webpack_require__(17);
 
@@ -5778,7 +5816,7 @@ var _deepEqual = __webpack_require__(97);
 
 var _deepEqual2 = _interopRequireDefault(_deepEqual);
 
-var _PathUtils = __webpack_require__(8);
+var _PathUtils = __webpack_require__(9);
 
 var _AsyncUtils = __webpack_require__(112);
 
@@ -6081,7 +6119,7 @@ var _warning2 = _interopRequireDefault(_warning);
 
 var _ExecutionEnvironment = __webpack_require__(17);
 
-var _PathUtils = __webpack_require__(8);
+var _PathUtils = __webpack_require__(9);
 
 var _runTransitionHook = __webpack_require__(26);
 
@@ -6597,11 +6635,11 @@ var _invariant = __webpack_require__(4);
 
 var _invariant2 = _interopRequireDefault(_invariant);
 
-var _RouteUtils = __webpack_require__(7);
+var _RouteUtils = __webpack_require__(8);
 
 var _PatternUtils = __webpack_require__(13);
 
-var _InternalPropTypes = __webpack_require__(9);
+var _InternalPropTypes = __webpack_require__(10);
 
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
@@ -8478,7 +8516,7 @@ var _home = __webpack_require__(84);
 
 var _home2 = _interopRequireDefault(_home);
 
-var _match = __webpack_require__(80);
+var _match = __webpack_require__(81);
 
 var _match2 = _interopRequireDefault(_match);
 
@@ -8518,7 +8556,7 @@ var Test = function (_React$Component) {
 	return Test;
 }(_react2.default.Component);
 
-window.debug = false;
+window.local = false;
 
 var Root = function (_React$Component2) {
 	_inherits(Root, _React$Component2);
@@ -8756,11 +8794,11 @@ var _Tournament = __webpack_require__(78);
 
 var _Tournament2 = _interopRequireDefault(_Tournament);
 
-var _singleplayermatch = __webpack_require__(81);
+var _singleplayermatch = __webpack_require__(82);
 
 var _singleplayermatch2 = _interopRequireDefault(_singleplayermatch);
 
-var _locale = __webpack_require__(10);
+var _locale = __webpack_require__(7);
 
 var _locale2 = _interopRequireDefault(_locale);
 
@@ -8800,6 +8838,7 @@ function HomeView(_ref2) {
 	var matches = _ref2.matches;
 	var playHandler = _ref2.playHandler;
 	var children = _ref2.children;
+	var status = _ref2.status;
 
 	// const { socket, upperLinks, upperTabName, setUpperTabHandler, playHandler } = this.props;
 	var ArbitraryComponent = window.RR[upperTabName];
@@ -8810,7 +8849,7 @@ function HomeView(_ref2) {
 		_react2.default.createElement(
 			'div',
 			{ className: 'col-md-8' },
-			children && _react2.default.cloneElement(children, { socket: socket, room: room, player: player }) || _react2.default.createElement(_singleplayermatch2.default, null)
+			children && _react2.default.cloneElement(children, { socket: socket, room: room, user: player }) || _react2.default.createElement(_singleplayermatch2.default, null)
 		),
 		_react2.default.createElement(
 			'div',
@@ -8828,7 +8867,7 @@ function HomeView(_ref2) {
 				_react2.default.createElement(
 					'div',
 					{ className: 'tab-content' },
-					_react2.default.createElement(ArbitraryComponent, { key: ArbitraryComponent.name, handler: ArbitraryComponent.name === 'NewGame' ? playHandler : null })
+					_react2.default.createElement(ArbitraryComponent, { key: ArbitraryComponent.name, status: status, handler: ArbitraryComponent.name === 'NewGame' ? playHandler : null })
 				)
 			)
 		),
@@ -8889,7 +8928,7 @@ var _Match = __webpack_require__(77);
 
 var _Match2 = _interopRequireDefault(_Match);
 
-var _locale = __webpack_require__(10);
+var _locale = __webpack_require__(7);
 
 var _locale2 = _interopRequireDefault(_locale);
 
@@ -8933,7 +8972,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _locale = __webpack_require__(10);
+var _locale = __webpack_require__(7);
 
 var _locale2 = _interopRequireDefault(_locale);
 
@@ -8946,6 +8985,7 @@ function NewGameView(_ref) {
 	var types = _ref.types;
 	var times = _ref.times;
 	var playHandler = _ref.playHandler;
+	var status = _ref.status;
 
 	var spans = function spans(variable, index, type) {
 		return _react2.default.createElement(
@@ -8994,7 +9034,7 @@ function NewGameView(_ref) {
 			{ id: 'play', className: 'col-md-12' },
 			_react2.default.createElement(
 				'button',
-				{ className: 'btn-primary btn', onClick: playHandler },
+				{ className: 'btn-primary btn', onClick: playHandler, disabled: status !== 'connected' },
 				_locale2.default.Play
 			)
 		)
@@ -9105,7 +9145,8 @@ function Match(_ref) {
 	var type = _ref.type;
 	var time = _ref.time;
 
-	var stringedPlayers = players.map(function (player) {
+	var stringedPlayers = Object.keys(players).map(function (i) {
+		var player = players[i];
 		return player.name + ' (' + player.rating + ')';
 	});
 	return _react2.default.createElement(
@@ -9114,7 +9155,7 @@ function Match(_ref) {
 		_react2.default.createElement(
 			_reactRouter.Link,
 			{ to: '/checkers/match/' + roomId },
-			stringedPlayers[0] + ' - ' + stringedPlayers[1] + ' | ' + type + ', ' + time
+			stringedPlayers[0] + ' - ' + (stringedPlayers[1] || '( )') + ' | ' + type + ', ' + time
 		)
 	);
 }
@@ -9229,6 +9270,7 @@ var Checker = function (_React$Component) {
 			var hideMoves = _props.hideMoves;
 			var showMoves = _props.showMoves;
 			var id = _props.id;
+			var cantDeactivate = _props.cantDeactivate;
 
 			switch (className) {
 				case 'can-move':
@@ -9236,7 +9278,7 @@ var Checker = function (_React$Component) {
 					showMoves(id);
 					break;
 				case 'active':
-					hideMoves();
+					if (!cantDeactivate) hideMoves();
 					break;
 				case 'possible-move':
 					move(id);
@@ -9278,6 +9320,43 @@ exports.default = Checker;
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
+exports.default = Player;
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _locale = __webpack_require__(7);
+
+var _locale2 = _interopRequireDefault(_locale);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function Player(_ref) {
+	var name = _ref.name;
+	var rating = _ref.rating;
+	var side = _ref.side;
+	var opponent = _ref.opponent;
+
+	return _react2.default.createElement(
+		'div',
+		null,
+		'' + (opponent ? _locale2.default.opponent : '') + name + ' ' + (rating ? '(' + rating + ')' : '') + ' ' + _locale2.default.andSide + ' ' + _locale2.default[side]
+	);
+}
+
+/***/ }),
+/* 81 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -9289,13 +9368,21 @@ var _CheckersTable = __webpack_require__(35);
 
 var _CheckersTable2 = _interopRequireDefault(_CheckersTable);
 
-var _Player = __webpack_require__(36);
+var _Player = __webpack_require__(80);
 
 var _Player2 = _interopRequireDefault(_Player);
 
 var _reactRedux = __webpack_require__(15);
 
 var _rxjs = __webpack_require__(34);
+
+var _winscreen = __webpack_require__(36);
+
+var _winscreen2 = _interopRequireDefault(_winscreen);
+
+var _locale = __webpack_require__(7);
+
+var _locale2 = _interopRequireDefault(_locale);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -9330,50 +9417,56 @@ var Match = function (_Component) {
 		value: function componentWillMount() {
 			var _this2 = this;
 
-			console.log('mounting', this.props);
+			console.log('match mounting');
 			var socket = this.props.socket;
 
 			var roomId = this.props.routeParams.roomId ? this.props.routeParams.roomId : '-1';
-			var $movesFromViewerArray = _rxjs.Observable.fromEvent(socket, 'moves');
+			var $movesFromViewerArray = _rxjs.Observable.fromEvent(socket, 'moves').take(1);
 			var $metaStream = _rxjs.Observable.fromEvent(socket, 'meta');
 
 			var $resizeThrottled = _rxjs.Observable.fromEvent(window, 'resize').auditTime(350);
-			this.resizeSubscriber = $resizeThrottled.subscribe(function (a) {
-				console.log('resize event', a);_this2.resizeBoard();
+			this.resizeSubscriber = $resizeThrottled.subscribe(function () {
+				return _this2.resizeBoard();
 			});
 
-			$metaStream.delay(25).subscribe(function (a) {
-				(function () {
-					switch (a.type) {
-						case 'side':
-							_this2.setState({ side: a.side });
-							_this2.props.setSide(a.side);
-							_this2.props.updateAllPaths();
-							break;
-						case 'players':
-							var players = a.players;
-							var side = _this2.state.side;
+			this.metaStream = $metaStream.subscribe(function (a) {
+				switch (a.type) {
+					case 'side':
+						_this2.setState({ side: a.side });
+						_this2.props.setSide(a.side);
+						_this2.props.updateAllPaths();
+						break;
+					case 'players':
+						var players = a.players;
+						var side = _this2.state.side;
 
-							var player = void 0;
-							if (side === 0) side = 1;
-							player = players.find(function (pl) {
-								return +pl.side === +side;
-							});
-							var otherPlayer = players.find(function (pl) {
-								return +pl.side !== +side;
-							});
-							_this2.setState({ player: player, otherPlayer: otherPlayer ? otherPlayer : _this2.state.otherPlayer });
-							break;
-					}
-				})();
+						var player = void 0;
+						if (+side === 0) side = 1;
+						player = players[side];
+						var otherPlayer = players[-side];
+						_this2.setState({ player: player, otherPlayer: otherPlayer ? otherPlayer : _this2.state.otherPlayer });
+						break;
+				}
 			});
-			roomId !== '-1' && socket.emit('enterRoom', { id: roomId, player: this.state.player });
+			roomId !== '-1' && socket.emit('enterRoom', { id: roomId, player: this.props.user });
 			this.setState({ '$moves': $movesFromViewerArray, '$meta': $metaStream });
+			console.log('match set its own state at mounting');
 		}
 	}, {
-		key: 'componentWillUnount',
-		value: function componentWillUnount() {
+		key: 'componentDidMount',
+		value: function componentDidMount() {
+			console.log('match mounted');
+		}
+	}, {
+		key: 'componentWillReceiveProps',
+		value: function componentWillReceiveProps(props) {
+			props.won && props.socket.emit('won');
+		}
+	}, {
+		key: 'componentWillUnmount',
+		value: function componentWillUnmount() {
 			this.resizeSubscriber.unsubscribe();
+			this.metaStream.unsubscribe();
 		}
 	}, {
 		key: 'resizeBoard',
@@ -9391,32 +9484,34 @@ var Match = function (_Component) {
 			var player = _state.player;
 			var otherPlayer = _state.otherPlayer;
 			var boardSize = _state.boardSize;
+			var side = _state.side;
 			var _props = this.props;
 			var won = _props.won;
 			var socket = _props.socket;
 			var turn = _props.turn;
 			var room = _props.room;
+			var user = _props.user;
 
 			return _react2.default.createElement(
 				'div',
 				{ 'data-roomId': room },
 				_react2.default.createElement(
 					'p',
-					null,
+					{ className: 'debug' },
 					'multipleya ',
-					Object.keys(player).map(function (key) {
+					Object.keys(user).map(function (key) {
 						return _react2.default.createElement(
 							'span',
-							null,
-							key + ' = ' + player[key]
+							{ key: key },
+							' ' + key + ' = ' + user[key]
 						);
 					})
 				),
-				_react2.default.createElement(_Player2.default, otherPlayer),
+				_react2.default.createElement(_Player2.default, _extends({ opponent: side !== 0 }, otherPlayer)),
 				_react2.default.createElement(
 					'p',
 					null,
-					'\u0421\u0435\u0439\u0447\u0430\u0441 \u0445\u043E\u0434 ' + (turn === 1 ? 'белых' : 'черных') + '.'
+					_locale2.default.currentMove + ' ' + _locale2.default[turn]
 				),
 				_react2.default.createElement(
 					'div',
@@ -9427,7 +9522,7 @@ var Match = function (_Component) {
 					_react2.default.createElement(
 						'div',
 						{ className: won ? 'won' : '' },
-						_react2.default.createElement(WinScreen, won)
+						_react2.default.createElement(_winscreen2.default, won)
 					),
 					_react2.default.createElement(_CheckersTable2.default, { boardSize: boardSize, socket: socket, moves: $moves, meta: $meta })
 				),
@@ -9452,35 +9547,8 @@ exports.default = (0, _reactRedux.connect)(function (s) {
 	};
 })(Match);
 
-
-var WinScreen = function WinScreen(_ref) {
-	var type = _ref.type;
-	var side = _ref.side;
-	var message = _ref.message;
-
-	return _react2.default.createElement(
-		'div',
-		{ className: 'game-result' },
-		_react2.default.createElement(
-			'span',
-			{ className: 'side' },
-			side === 1 ? 'white' : 'black'
-		),
-		_react2.default.createElement(
-			'span',
-			{ className: 'type' },
-			type
-		),
-		_react2.default.createElement(
-			'span',
-			{ className: 'message' },
-			message
-		)
-	);
-};
-
 /***/ }),
-/* 81 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9500,17 +9568,17 @@ var _CheckersTable = __webpack_require__(35);
 
 var _CheckersTable2 = _interopRequireDefault(_CheckersTable);
 
-var _Player = __webpack_require__(36);
-
-var _Player2 = _interopRequireDefault(_Player);
-
 var _reactRedux = __webpack_require__(15);
 
 var _rxjs = __webpack_require__(34);
 
-var _winscreen = __webpack_require__(82);
+var _winscreen = __webpack_require__(36);
 
 var _winscreen2 = _interopRequireDefault(_winscreen);
+
+var _locale = __webpack_require__(7);
+
+var _locale2 = _interopRequireDefault(_locale);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -9545,8 +9613,9 @@ var SinglePlayerMatch = function (_Component) {
 		value: function componentWillMount() {
 			var _this2 = this;
 
-			this.props.setSide(1);
-			this.props.updateAllPaths();
+			this.resetBoard();
+			// this.props.setSide(1);
+			// this.props.updateAllPaths();
 			var $resizeThrottled = _rxjs.Observable.fromEvent(window, 'resize').auditTime(350);
 			this.resizeSubscriber = $resizeThrottled.subscribe(function () {
 				return _this2.resizeBoard();
@@ -9564,25 +9633,42 @@ var SinglePlayerMatch = function (_Component) {
 			this.setState({ boardSize: boardSize });
 		}
 	}, {
+		key: 'resetBoard',
+		value: function resetBoard() {
+			var _props = this.props;
+			var resetBoard = _props.resetBoard;
+			var setSide = _props.setSide;
+			var updateAllPaths = _props.updateAllPaths;
+
+			resetBoard();
+			setSide(1);
+			updateAllPaths();
+		}
+	}, {
 		key: 'render',
 		value: function render() {
 			console.log(this.props);
-			var _state = this.state;
-			var player = _state.player;
-			var otherPlayer = _state.otherPlayer;
-			var boardSize = _state.boardSize;
-			var _props = this.props;
-			var won = _props.won;
-			var turn = _props.turn;
+			var boardSize = this.state.boardSize;
+			var _props2 = this.props;
+			var won = _props2.won;
+			var turn = _props2.turn;
 
 			return _react2.default.createElement(
 				'div',
 				null,
-				_react2.default.createElement(_Player2.default, otherPlayer),
 				_react2.default.createElement(
 					'p',
 					null,
-					'\u0421\u0435\u0439\u0447\u0430\u0441 \u0445\u043E\u0434 ' + (turn === 1 ? 'белых' : 'черных') + '.'
+					_react2.default.createElement(
+						'button',
+						{ onClick: this.resetBoard.bind(this), className: 'butt' },
+						_locale2.default.resetSinglePlayerBoard
+					)
+				),
+				_react2.default.createElement(
+					'p',
+					null,
+					_locale2.default.currentMove + ' ' + _locale2.default[turn]
 				),
 				_react2.default.createElement(
 					'div',
@@ -9596,8 +9682,7 @@ var SinglePlayerMatch = function (_Component) {
 						_react2.default.createElement(_winscreen2.default, won)
 					),
 					_react2.default.createElement(_CheckersTable2.default, { boardSize: boardSize, turn: turn, singlePlayer: true })
-				),
-				_react2.default.createElement(_Player2.default, player)
+				)
 			);
 		}
 	}]);
@@ -9614,57 +9699,12 @@ exports.default = (0, _reactRedux.connect)(function (s) {
 		},
 		setSide: function setSide(side) {
 			dispatch({ type: 'setSide', side: side });
+		},
+		resetBoard: function resetBoard() {
+			dispatch({ type: 'resetBoard' });
 		}
 	};
 })(SinglePlayerMatch);
-
-/***/ }),
-/* 82 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports.default = WinScreen;
-
-var _react = __webpack_require__(1);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _locale = __webpack_require__(10);
-
-var _locale2 = _interopRequireDefault(_locale);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function WinScreen(_ref) {
-	var type = _ref.type;
-	var side = _ref.side;
-	var message = _ref.message;
-
-	return _react2.default.createElement(
-		'div',
-		{ className: 'game-result' },
-		_react2.default.createElement(
-			'span',
-			{ className: 'side' },
-			_locale2.default['win' + side]
-		),
-		_react2.default.createElement(
-			'span',
-			{ className: 'type' },
-			_locale2.default[type]
-		),
-		_react2.default.createElement(
-			'span',
-			{ className: 'message' },
-			_locale2.default.winPrefix + ' ' + _locale2.default[side * -1] + ' ' + message
-		)
-	);
-}
 
 /***/ }),
 /* 83 */
@@ -9745,8 +9785,9 @@ var Home = function (_React$Component) {
 
 		var _this = _possibleConstructorReturn(this, (Home.__proto__ || Object.getPrototypeOf(Home)).call(this, p));
 
-		var cookie = 'uid=' + sessionStorage.uid;
-		var player = { name: window.prompt('You\'re name?', 'Fixy'), rating: '-' };
+		var name = sessionStorage.name ? sessionStorage.name : window.prompt('You\'re name?', 'Fixy');
+		sessionStorage.name = name;
+		var player = { name: name, rating: '' };
 		// this.router = context.router;
 		var upperLinks = ['Play' /* , 'Tournament'*/];
 		var lowerLinks = [/* 'Chat',*/'Live'];
@@ -9755,9 +9796,9 @@ var Home = function (_React$Component) {
 			reconnection: true,
 			reconnectionDelay: 500,
 			reconnectionAttempts: 10,
-			query: cookie
+			query: sessionStorage.uid ? 'uid=' + sessionStorage.uid : null
 		};
-		var socketPath = window.debug ? 'http://localhost:3000' : 'https://zarahia.com:3000';
+		var socketPath = window.local ? 'http://localhost:3000' : 'http://zarahia.com:3000';
 
 		_this.state = {
 			// messages: [
@@ -9779,7 +9820,8 @@ var Home = function (_React$Component) {
 			upperLinks: upperLinks,
 			lowerTabName: lowerLinks[0],
 			lowerLinks: lowerLinks,
-			socket: (0, _socket2.default)(socketPath, socketOptions)
+			socket: (0, _socket2.default)(socketPath, socketOptions),
+			status: 'connecting'
 		};
 		return _this;
 	}
@@ -9799,21 +9841,34 @@ var Home = function (_React$Component) {
 				_this2.setState({ room: data });
 				router.push('/checkers/match/' + data);
 			});
+			socket.on('alreadyPlaying', function (data) {
+				if (confirm(locale.alreadyPlaying(data))) {
+					resetBoard();
+					_this2.setState({ room: data });
+					router.push('/checkers/match/' + data);
+				}
+			});
 			socket.on('uid', function (uid) {
 				sessionStorage.uid = uid;
 			});
-			socket.on('message', function (data) {
-				console.log(data);
-			});
+			// socket.on('message', data => {
+			// 	console.log(data);
+			// });
 			socket.on('matches', function (data) {
-				console.log(data);
+				// console.log(data);
 				_this2.setState({ matches: data });
 			});
 			socket.on('wrongRoom', function (data) {
-				console.log(data);
+				// console.log(data);
 				router.push('/checkers/');
 				// this.setState({ matches: data });
 			});
+			var connected = function connected(a) {
+				_this2.setState({ status: 'connected' });console.log('connected', a);
+			};
+			socket.on('connect', connected);
+			// socket.on('reconnect', connected);
+
 			// socket.emit('requestMatches');
 		}
 	}, {
@@ -9850,11 +9905,12 @@ var Home = function (_React$Component) {
 			var lowerTabName = _state.lowerTabName;
 			var messages = _state.messages;
 			var matches = _state.matches;
+			var status = _state.status;
 			var setUpperTab = this.setUpperTab;
 			var setLowerTab = this.setLowerTab;
 			var playHandler = this.playHandler;
 
-			return _react2.default.createElement(_HomeView2.default, { socket: socket, room: room, player: player, upperLinks: upperLinks, upperTabName: upperTabName, lowerLinks: lowerLinks, lowerTabName: lowerTabName, setUpperTabHandler: setUpperTab.bind(this), setLowerTabHandler: setLowerTab.bind(this), playHandler: playHandler.bind(this), messages: messages, matches: matches, children: this.props.children });
+			return _react2.default.createElement(_HomeView2.default, { socket: socket, room: room, player: player, upperLinks: upperLinks, upperTabName: upperTabName, lowerLinks: lowerLinks, lowerTabName: lowerTabName, setUpperTabHandler: setUpperTab.bind(this), setLowerTabHandler: setLowerTab.bind(this), playHandler: playHandler.bind(this), status: status, messages: messages, matches: matches, children: this.props.children });
 		}
 	}]);
 
@@ -9896,7 +9952,7 @@ var _NewGameView = __webpack_require__(75);
 
 var _NewGameView2 = _interopRequireDefault(_NewGameView);
 
-var _locale = __webpack_require__(10);
+var _locale = __webpack_require__(7);
 
 var _locale2 = _interopRequireDefault(_locale);
 
@@ -9968,7 +10024,7 @@ var NewGame = function (_React$Component) {
 	}, {
 		key: 'render',
 		value: function render() {
-			return _react2.default.createElement(_NewGameView2.default, _extends({}, this.state, { playHandler: this.play.bind(this) }));
+			return _react2.default.createElement(_NewGameView2.default, _extends({}, this.state, { status: this.props.status, playHandler: this.play.bind(this) }));
 		}
 	}]);
 
@@ -10056,12 +10112,10 @@ function logic(state, action) {
 			});
 		case 'showMoves':
 			var paths = [].concat(_toConsumableArray(action.paths));
-			// debugger;
-			paths.map(function (path) {
-				// path.points.map(point=>{
-				table[path.points[0].id].className = 'possible-move';
-				// })
-			});
+			if (game.turn * game.playerSide > 0) // WS.4 ducktap, kinda working
+				paths.map(function (path) {
+					table[path.points[0].id].className = 'possible-move';
+				});
 			table[action.id].className = 'active';
 			return _extends({}, state, {
 				game: _extends({}, game, {
@@ -10074,7 +10128,6 @@ function logic(state, action) {
 			var pieceTo = action.pieceTo;
 			var consume = action.consume;
 			var turn = action.turn;
-			// console.log('Moving debug', piece, pieceTo, consume, turn);
 
 			var sequentialWhiteMoves = game.sequentialWhiteMoves;
 			if (consume) {
@@ -10158,8 +10211,8 @@ function findAllPaths(table, game) {
 	var newTable = {};
 	var t0 = performance.now();
 	var bWhiteMovesOnly = true;
-	var ruledVal = true;
-	var sidesHash = { '1': 0, '-1': 0 };
+	// let ruledVal = true;
+	// let sidesHash = { '1': 0, '-1': 0 };
 	// if (turn * playerSide < 0)		{
 	// 	return table;
 	// }
@@ -10238,7 +10291,7 @@ function checkDirections(table, piece, pieceFrom) {
 		emptyVectors: []
 	};
 
-	//console.log('Checking directions', path, pieceFrom);
+	// console.log('Checking directions', path, pieceFrom);
 	// const directionHash = {
 	// 	'-1': [	-2, 1,-1],
 	// 	'-2': [	2, -1,-2],
@@ -10252,65 +10305,69 @@ function checkDirections(table, piece, pieceFrom) {
 		'2': [-2, -1, 1, 2]
 	};
 	var paths = [path];
-	for (var i in directions) {
+
+	var _loop = function _loop(i) {
 		var direction = directions[i];
 		var nextPiece = table[pieceFrom.connected[direction]];
 		var whiteMovesOnly = true;
 		var currentPath = _extends({}, path);
-		if (nextPiece == undefined || nextPiece.checker * piece.checker > 0) continue;
+		if (nextPiece == undefined || nextPiece.checker * piece.checker > 0) return 'continue';
 		while (nextPiece) {
 			var nextConnectedPiece = table[nextPiece.connected[direction]];
 			if (nextPiece.checker == 0 || currentPath.vectors.some(function (v) {
 				return v.id == nextPiece.id;
-			}) /*|| (nextPiece.id == piece.id && currentPath.vectors.length > 0)*/) {
-					//we got empty spot or eaten checker
+			}) /* || (nextPiece.id == piece.id && currentPath.vectors.length > 0)*/) {
+					// we got empty spot or eaten checker
 					if (whiteMovesOnly) {
 						currentPath.emptyVectors = currentPath.emptyVectors.concat(nextPiece);
 					} else {
-						//send em flyin', kidding, go to directions
+						// send em flyin', kidding, go to directions
 						if (!currentPath.emptyVectors.some(function (p) {
 							return nextPiece.id == p.id;
-						}) /*&& !currentPath.points.some(p=>nextPiece.id == p.id)*/) {
-								paths = paths.concat(checkDirections(table, piece, nextPiece, directionHash[direction], _extends({}, currentPath, {
-									points: [].concat(_toConsumableArray(currentPath.points), [nextPiece])
-								})));
-							}
+						}) /* && !currentPath.points.some(p=>nextPiece.id == p.id)*/) paths = paths.concat(checkDirections(table, piece, nextPiece, directionHash[direction], _extends({}, currentPath, {
+								points: [].concat(_toConsumableArray(currentPath.points), [nextPiece])
+							})));
+
 						// else {
 						// 	currentPath.points = currentPath.points.concat(nextPiece);
 						// }
 					}
-				} else if (nextPiece.checker * piece.checker < 0 && nextConnectedPiece && nextConnectedPiece.checker === 0 /*&& !currentPath.vectors.some(v=>v.id == nextPiece.id)*/) {
-					//we got enemy and there's empty spot behind it
+			} else if (nextPiece.checker * piece.checker < 0 && nextConnectedPiece && nextConnectedPiece.checker === 0 /* && !currentPath.vectors.some(v=>v.id == nextPiece.id)*/) {
+					// we got enemy and there's empty spot behind it
 					if (whiteMovesOnly) {
 						currentPath.vectors = currentPath.vectors.concat(nextPiece);
 						// currentPath.points = currentPath.points.concat(nextConnectedPiece);
 						currentPath.weight += 1;
-						whiteMovesOnly = false; //somewhat a solition, just don't forget (yeah, sure) about strange doubled points in some cases
-						//break;
+						whiteMovesOnly = false; // somewhat a solition, just don't forget (yeah, sure) about strange doubled points in some cases
+						// break;
 						// paths = paths.concat(checkDirections(table, piece, nextConnectedPiece, directionHash[direction], {
 						// ...currentPath
 						// }))
 					} else {
-							//stumbled across another enemy piece
-							break; //stop path finding and let other instance of this function take care of it
+							// stumbled across another enemy piece
+							break; // stop path finding and let other instance of this function take care of it
 						}
-				} else if (nextPiece.checker * piece.checker > 0 && whiteMovesOnly && currentPath.vectors.length == 0) {
+			} else if (nextPiece.checker * piece.checker > 0 && whiteMovesOnly && currentPath.vectors.length == 0) {
 				currentPath.weight = -1;
-				break; //stumbled across our piece, and we haven't got any enemy, and all is bad, we should go just die (other direction, actually, or really die)
-			} else {
-				break;
-			}
+				break; // stumbled across our piece, and we haven't got any enemy, and all is bad, we should go just die (other direction, actually, or really die)
+			} else break;
+
 			nextPiece = table[nextPiece.connected[direction]];
 		}
-		if (whiteMovesOnly && piece == pieceFrom) {
-			//we haven't found anyone, so spuff all points in 0-weighted paths
+		if (whiteMovesOnly && piece == pieceFrom) // we haven't found anyone, so spuff all points in 0-weighted paths
 			paths = paths.concat(currentPath.emptyVectors.map(function (a) {
 				return { weight: 0, points: [a], vectors: [] };
 			}));
-		}
+
 		paths = paths.concat(currentPath);
+	};
+
+	for (var i in directions) {
+		var _ret = _loop(i);
+
+		if (_ret === 'continue') continue;
 	}
-	//console.log('Got paths for direction', paths);
+	// console.log('Got paths for direction', paths);
 	return paths;
 }
 
@@ -13137,7 +13194,7 @@ var _invariant2 = _interopRequireDefault(_invariant);
 
 var _Actions = __webpack_require__(12);
 
-var _PathUtils = __webpack_require__(8);
+var _PathUtils = __webpack_require__(9);
 
 var _ExecutionEnvironment = __webpack_require__(17);
 
@@ -13336,7 +13393,7 @@ var _warning2 = _interopRequireDefault(_warning);
 
 var _Actions = __webpack_require__(12);
 
-var _PathUtils = __webpack_require__(8);
+var _PathUtils = __webpack_require__(9);
 
 function createLocation() {
   var location = arguments.length <= 0 || arguments[0] === undefined ? '/' : arguments[0];
@@ -13408,7 +13465,7 @@ var _invariant = __webpack_require__(4);
 
 var _invariant2 = _interopRequireDefault(_invariant);
 
-var _PathUtils = __webpack_require__(8);
+var _PathUtils = __webpack_require__(9);
 
 var _Actions = __webpack_require__(12);
 
@@ -15414,7 +15471,7 @@ var _routerWarning = __webpack_require__(2);
 
 var _routerWarning2 = _interopRequireDefault(_routerWarning);
 
-var _InternalPropTypes = __webpack_require__(9);
+var _InternalPropTypes = __webpack_require__(10);
 
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
@@ -15508,7 +15565,7 @@ var _Redirect = __webpack_require__(53);
 
 var _Redirect2 = _interopRequireDefault(_Redirect);
 
-var _InternalPropTypes = __webpack_require__(9);
+var _InternalPropTypes = __webpack_require__(10);
 
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
@@ -15575,9 +15632,9 @@ var _invariant = __webpack_require__(4);
 
 var _invariant2 = _interopRequireDefault(_invariant);
 
-var _RouteUtils = __webpack_require__(7);
+var _RouteUtils = __webpack_require__(8);
 
-var _InternalPropTypes = __webpack_require__(9);
+var _InternalPropTypes = __webpack_require__(10);
 
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
@@ -15716,9 +15773,9 @@ var _invariant = __webpack_require__(4);
 
 var _invariant2 = _interopRequireDefault(_invariant);
 
-var _RouteUtils = __webpack_require__(7);
+var _RouteUtils = __webpack_require__(8);
 
-var _InternalPropTypes = __webpack_require__(9);
+var _InternalPropTypes = __webpack_require__(10);
 
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
@@ -15857,13 +15914,13 @@ var _createTransitionManager = __webpack_require__(31);
 
 var _createTransitionManager2 = _interopRequireDefault(_createTransitionManager);
 
-var _InternalPropTypes = __webpack_require__(9);
+var _InternalPropTypes = __webpack_require__(10);
 
 var _RouterContext = __webpack_require__(19);
 
 var _RouterContext2 = _interopRequireDefault(_RouterContext);
 
-var _RouteUtils = __webpack_require__(7);
+var _RouteUtils = __webpack_require__(8);
 
 var _RouterUtils = __webpack_require__(54);
 
@@ -16714,7 +16771,7 @@ var _createTransitionManager = __webpack_require__(31);
 
 var _createTransitionManager2 = _interopRequireDefault(_createTransitionManager);
 
-var _RouteUtils = __webpack_require__(7);
+var _RouteUtils = __webpack_require__(8);
 
 var _RouterUtils = __webpack_require__(54);
 
@@ -16826,7 +16883,7 @@ var _routerWarning = __webpack_require__(2);
 
 var _routerWarning2 = _interopRequireDefault(_routerWarning);
 
-var _RouteUtils = __webpack_require__(7);
+var _RouteUtils = __webpack_require__(8);
 
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };

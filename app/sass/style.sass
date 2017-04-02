@@ -70,7 +70,10 @@ $btn-primary-border: darken($primary,10%)
 	border: none
 	border-radius: 0
 
-
+html .debug
+	display: none
+html.debug .debug
+	display: block
 // ReactCSSTransitionGroup
 @keyframes bounceIn
 	from, 20%, 40%, 60%, 80%, to
@@ -118,6 +121,16 @@ $btn-primary-border: darken($primary,10%)
 
 // end ReactCSSTransitionGroup
 @import newgame
+
+button.butt
+	border: none
+	background: none
+	padding: 0
+	&:focus
+		background: none
+		border: none
+		box-sizing: content-box
+		box-shadow: none
 
 @keyframes possible-move
 	0%
@@ -309,15 +322,16 @@ $btn-primary-border: darken($primary,10%)
 	padding: 0
 	font-size: 1rem
 	border-radius: 15% 0
-	.type
+	& > span
 		display: block
-		font-size: 1.3em
 		text-align: center
+		font-size: 1em
+	.type
+		font-size: 1.3em
 	.message
 		color: rgb(70,140,220)
+		font-size: 1em
 	.side
-		text-align: center
-		display: block
 		font-size: 1.2em
 		&:before
 			content: "Winner is: "

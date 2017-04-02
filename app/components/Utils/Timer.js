@@ -1,16 +1,18 @@
 export default class Timer {
-	constructor() {
+	constructor(callback) {
 		this.reset();
+		this.callback = callback;
 	}
 	set(time) {
 		this.time = time;
 	}
 	start() {
 		this.lastTS = Date.now();
-		this.ticking = setInterval(this.tick, 200);
+		this.ticking = setInterval(this.tick.bind(this), 50);
 	}
 	pause() {
 		this.ticking = clearInterval(this.ticking);
+		return this.elapsed;
 	}
 	reset() {
 		this.elapsed = 0;
@@ -19,7 +21,7 @@ export default class Timer {
 	tick() {
 		if(this.ticking) {
 			const now = Date.now();
-			this.elapsed += (this.lastTS - now) / 1000;
+			this.elapsed += (now - this.lastTS) / 1000;
 			if(this.elapsed > this.time)
 				this.finished();
 			this.lastTS = now;
@@ -28,8 +30,11 @@ export default class Timer {
 			console.warn('tick() method called while timer stopped');
 	}
 	finished() {
-
+		console.log('timer finished, exact time is: ', this.elapsed);
+		if(this.callback) {
+			const { elapsed, time } = this;
+			this.callback({ elapsed, time });
+		}
+		this.reset();
 	}
-	// toString() {
-	// }
 }

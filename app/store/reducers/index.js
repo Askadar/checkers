@@ -71,12 +71,10 @@ export default function logic(state, action) {
 		};
 	case 'showMoves':
 		let paths = [...action.paths];
-			// debugger;
-		paths.map(path => {
-				// path.points.map(point=>{
-			table[path.points[0].id].className = 'possible-move';
-				// })
-		});
+		if (game.turn * game.playerSide > 0) // WS.4 ducktap, kinda working
+			paths.map(path => {
+				table[path.points[0].id].className = 'possible-move';
+			});
 		table[action.id].className = 'active';
 		return {
 			...state,
@@ -90,7 +88,6 @@ export default function logic(state, action) {
 		};
 	case 'move':
 		const { piece, pieceTo, consume, turn } = action;
-			// console.log('Moving debug', piece, pieceTo, consume, turn);
 		let sequentialWhiteMoves = game.sequentialWhiteMoves;
 		if (consume) {
 			table[consume].checker = 0;
@@ -142,7 +139,8 @@ export default function logic(state, action) {
 				continue;
 		won = noPieces ? { side: -game.turn, type: 'no pieces left', message: `${game.turn} side have no more pieces` } : won;
 
-		if (noPaths) won = { side: -game.turn, type: 'no moves left', message: `${game.turn} side have no more moves` };
+		if (noPaths)
+			won = { side: -game.turn, type: 'no moves left', message: `${game.turn} side have no more moves` };
 		return {
 			...state,
 			game: {
